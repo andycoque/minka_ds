@@ -54,7 +54,7 @@ const columns: ColumnDef<Client>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue<Client["status"]>("status")
-      const variant = { Active: "success", Inactive: "ghost", Pending: "warning" } as const
+      const variant = { Active: "success", Inactive: "ghost", Pending: "pending" } as const
       return <Badge variant={variant[status]}>{status}</Badge>
     },
   },
