@@ -1,0 +1,227 @@
+/*
+ * Primitive tokens — raw scale values, no semantic meaning.
+ * These are the source of truth. Never use them directly in components.
+ * Semantic tokens (semantic.css) consume these and are what components use.
+ */
+
+:root {
+  /* --- Neutral scale --- */
+  --primitive-neutral-0:    #ffffff;
+  --primitive-neutral-50:   #eeeeee;
+  --primitive-neutral-100:  #e6e6e6;
+  --primitive-neutral-200:  #d9d9d9;
+  --primitive-neutral-300:  #c7c7c7;
+  --primitive-neutral-400:  #b6b6b6;
+  --primitive-neutral-500:  #a1a1a1;
+  --primitive-neutral-600:  #838383;
+  --primitive-neutral-700:  #6f6f6f;
+  --primitive-neutral-800:  #4a4a4a;
+  --primitive-neutral-900:  #2e2e2e;
+  --primitive-neutral-950:  #1f1f1f;
+  --primitive-neutral-1000: #000000;
+
+  /* --- Color scales --- */
+
+  --primitive-red-50:  oklch(0.95 0.03 28);
+  --primitive-red-100: oklch(0.93 0.05 28);
+  --primitive-red-200: oklch(0.89 0.07 28);
+  --primitive-red-300: oklch(0.84 0.11 28);
+  --primitive-red-400: oklch(0.79 0.16 28);
+  --primitive-red-500: oklch(0.73 0.21 28);
+  --primitive-red-600: oklch(0.63 0.29 28);
+  --primitive-red-700: oklch(0.55 0.25 28);
+  --primitive-red-800: oklch(0.41 0.19 28);
+  --primitive-red-900: oklch(0.29 0.13 28);
+  --primitive-red-950: oklch(0.24 0.11 28);
+
+  --primitive-bronze-50:  oklch(0.95 0.04 63);
+  --primitive-bronze-100: oklch(0.93 0.06 63);
+  --primitive-bronze-200: oklch(0.89 0.09 63);
+  --primitive-bronze-300: oklch(0.84 0.14 63);
+  --primitive-bronze-400: oklch(0.78 0.2 63);
+  --primitive-bronze-500: oklch(0.72 0.19 63);
+  --primitive-bronze-600: oklch(0.62 0.16 63);
+  --primitive-bronze-700: oklch(0.55 0.14 63);
+  --primitive-bronze-800: oklch(0.42 0.11 63);
+  --primitive-bronze-900: oklch(0.3 0.08 63);
+  --primitive-bronze-950: oklch(0.25 0.06 63);
+
+  --primitive-yellow-50:  oklch(0.94 0.12 98);
+  --primitive-yellow-100: oklch(0.92 0.17 98);
+  --primitive-yellow-200: oklch(0.88 0.21 98);
+  --primitive-yellow-300: oklch(0.83 0.2 98);
+  --primitive-yellow-400: oklch(0.77 0.18 98);
+  --primitive-yellow-500: oklch(0.71 0.17 98);
+  --primitive-yellow-600: oklch(0.61 0.15 98);
+  --primitive-yellow-700: oklch(0.54 0.13 98);
+  --primitive-yellow-800: oklch(0.41 0.1 98);
+  --primitive-yellow-900: oklch(0.3 0.07 98);
+  --primitive-yellow-950: oklch(0.25 0.06 98);
+
+  --primitive-lulo-50:  oklch(0.94 0.24 112);
+  --primitive-lulo-100: oklch(0.92 0.23 112);
+  --primitive-lulo-200: oklch(0.87 0.22 112);
+  --primitive-lulo-300: oklch(0.82 0.21 112);
+  --primitive-lulo-400: oklch(0.76 0.2 112);
+  --primitive-lulo-500: oklch(0.7 0.18 112);
+  --primitive-lulo-600: oklch(0.61 0.15 112);
+  --primitive-lulo-700: oklch(0.53 0.14 112);
+  --primitive-lulo-800: oklch(0.41 0.1 112);
+  --primitive-lulo-900: oklch(0.3 0.08 112);
+  --primitive-lulo-950: oklch(0.24 0.06 112);
+
+  --primitive-green-50:  oklch(0.93 0.15 139);
+  --primitive-green-100: oklch(0.9 0.23 139);
+  --primitive-green-200: oklch(0.85 0.32 139);
+  --primitive-green-300: oklch(0.8 0.3 139);
+  --primitive-green-400: oklch(0.75 0.28 139);
+  --primitive-green-500: oklch(0.69 0.25 139);
+  --primitive-green-600: oklch(0.59 0.22 139);
+  --primitive-green-700: oklch(0.52 0.19 139);
+  --primitive-green-800: oklch(0.4 0.15 139);
+  --primitive-green-900: oklch(0.29 0.11 139);
+  --primitive-green-950: oklch(0.24 0.09 139);
+
+  --primitive-aquamarine-50:  oklch(0.93 0.12 167);
+  --primitive-aquamarine-100: oklch(0.9 0.17 167);
+  --primitive-aquamarine-200: oklch(0.85 0.24 167);
+  --primitive-aquamarine-300: oklch(0.8 0.22 167);
+  --primitive-aquamarine-400: oklch(0.74 0.21 167);
+  --primitive-aquamarine-500: oklch(0.68 0.19 167);
+  --primitive-aquamarine-600: oklch(0.59 0.16 167);
+  --primitive-aquamarine-700: oklch(0.52 0.14 167);
+  --primitive-aquamarine-800: oklch(0.39 0.11 167);
+  --primitive-aquamarine-900: oklch(0.29 0.08 167);
+  --primitive-aquamarine-950: oklch(0.23 0.07 167);
+
+  --primitive-sea-50:  oklch(0.94 0.04 220);
+  --primitive-sea-100: oklch(0.92 0.06 220);
+  --primitive-sea-200: oklch(0.88 0.1 220);
+  --primitive-sea-300: oklch(0.82 0.15 220);
+  --primitive-sea-400: oklch(0.75 0.18 220);
+  --primitive-sea-500: oklch(0.69 0.17 220);
+  --primitive-sea-600: oklch(0.6 0.14 220);
+  --primitive-sea-700: oklch(0.52 0.13 220);
+  --primitive-sea-800: oklch(0.4 0.1 220);
+  --primitive-sea-900: oklch(0.29 0.07 220);
+  --primitive-sea-950: oklch(0.24 0.06 220);
+
+  --primitive-blue-50:  oklch(0.95 0.03 257);
+  --primitive-blue-100: oklch(0.93 0.04 257);
+  --primitive-blue-200: oklch(0.88 0.06 257);
+  --primitive-blue-300: oklch(0.83 0.09 257);
+  --primitive-blue-400: oklch(0.77 0.13 257);
+  --primitive-blue-500: oklch(0.71 0.16 257);
+  --primitive-blue-600: oklch(0.62 0.23 257);
+  --primitive-blue-700: oklch(0.54 0.24 257);
+  --primitive-blue-800: oklch(0.41 0.18 257);
+  --primitive-blue-900: oklch(0.3 0.13 257);
+  --primitive-blue-950: oklch(0.24 0.11 257);
+
+  --primitive-purple-50:  oklch(0.95 0.03 289);
+  --primitive-purple-100: oklch(0.93 0.04 289);
+  --primitive-purple-200: oklch(0.89 0.06 289);
+  --primitive-purple-300: oklch(0.84 0.1 289);
+  --primitive-purple-400: oklch(0.78 0.13 289);
+  --primitive-purple-500: oklch(0.72 0.17 289);
+  --primitive-purple-600: oklch(0.63 0.23 289);
+  --primitive-purple-700: oklch(0.56 0.28 289);
+  --primitive-purple-800: oklch(0.42 0.25 289);
+  --primitive-purple-900: oklch(0.3 0.18 289);
+  --primitive-purple-950: oklch(0.24 0.14 289);
+
+  --primitive-fuchsia-50:  oklch(0.95 0.04 320);
+  --primitive-fuchsia-100: oklch(0.93 0.06 320);
+  --primitive-fuchsia-200: oklch(0.89 0.09 320);
+  --primitive-fuchsia-300: oklch(0.85 0.14 320);
+  --primitive-fuchsia-400: oklch(0.79 0.19 320);
+  --primitive-fuchsia-500: oklch(0.74 0.24 320);
+  --primitive-fuchsia-600: oklch(0.64 0.33 320);
+  --primitive-fuchsia-700: oklch(0.56 0.29 320);
+  --primitive-fuchsia-800: oklch(0.42 0.22 320);
+  --primitive-fuchsia-900: oklch(0.3 0.16 320);
+  --primitive-fuchsia-950: oklch(0.24 0.13 320);
+
+  --primitive-flamingo-50:  oklch(0.95 0.03 360);
+  --primitive-flamingo-100: oklch(0.93 0.05 360);
+  --primitive-flamingo-200: oklch(0.89 0.08 360);
+  --primitive-flamingo-300: oklch(0.84 0.12 360);
+  --primitive-flamingo-400: oklch(0.79 0.17 360);
+  --primitive-flamingo-500: oklch(0.74 0.23 360);
+  --primitive-flamingo-600: oklch(0.63 0.29 360);
+  --primitive-flamingo-700: oklch(0.55 0.25 360);
+  --primitive-flamingo-800: oklch(0.42 0.19 360);
+  --primitive-flamingo-900: oklch(0.3 0.13 360);
+  --primitive-flamingo-950: oklch(0.24 0.11 360);
+
+  /* --- Radius scale --- */
+  --primitive-radius-none: 0;
+  --primitive-radius-xs:   0.25rem;
+  --primitive-radius-sm:   0.375rem;
+  --primitive-radius-md:   0.5rem;
+  --primitive-radius-lg:   0.625rem;
+  --primitive-radius-xl:   0.875rem;
+  --primitive-radius-2xl:  1.25rem;
+  --primitive-radius-full: 9999px;
+
+  /* --- Spacing scale (extends Tailwind, documented here for reference) --- */
+  --primitive-space-1:  0.25rem;
+  --primitive-space-2:  0.5rem;
+  --primitive-space-3:  0.75rem;
+  --primitive-space-4:  1rem;
+  --primitive-space-5:  1.25rem;
+  --primitive-space-6:  1.5rem;
+  --primitive-space-8:  2rem;
+  --primitive-space-10: 2.5rem;
+  --primitive-space-12: 3rem;
+  --primitive-space-16: 4rem;
+
+  /* --- Typography scale --- */
+  --primitive-font-size-2xs:  0.625rem;  /* 10px */
+  --primitive-font-size-xs:   0.75rem;   /* 12px */
+  --primitive-font-size-sm:   0.875rem;  /* 14px */
+  --primitive-font-size-base: 1rem;      /* 16px */
+  --primitive-font-size-lg:   1.125rem;  /* 18px */
+  --primitive-font-size-xl:   1.25rem;   /* 20px */
+  --primitive-font-size-2xl:  1.5rem;    /* 24px */
+  --primitive-font-size-3xl:  1.875rem;  /* 30px */
+  --primitive-font-size-4xl:  2.25rem;   /* 36px */
+  --primitive-font-size-5xl:  3rem;      /* 48px */
+  --primitive-font-size-6xl:  3.75rem;   /* 60px */
+  --primitive-font-size-7xl:  4.5rem;    /* 72px */
+  --primitive-font-size-8xl:  6rem;      /* 96px */
+
+  --primitive-font-weight-400: 400;
+  --primitive-font-weight-500: 500;
+  --primitive-font-weight-600: 600;
+
+  --primitive-font-style-normal: normal;
+  --primitive-font-style-italic: italic;
+
+  --primitive-line-height-none:    1;      /* single-line headings, labels */
+  --primitive-line-height-tight:   1.25;   /* large display, hero */
+  --primitive-line-height-snug:    1.375;  /* subheadings */
+  --primitive-line-height-normal:  1.5;    /* default body */
+  --primitive-line-height-relaxed: 1.625;  /* long-form paragraphs */
+  --primitive-line-height-loose:   1.75;   /* editorial, very readable body */
+
+  /* --- Letter spacing --- */
+  --primitive-letter-spacing-tight:  -0.04em; /* display, hero text */
+  --primitive-letter-spacing-normal:  0em;    /* body, default */
+  --primitive-letter-spacing-wide:    0.1em;  /* uppercase labels, overlines */
+
+  /* --- Shadow scale --- */
+  --primitive-shadow-xs: 0 1px 2px oklch(0 0 0 / 0.05);
+  --primitive-shadow-sm: 0 1px 3px oklch(0 0 0 / 0.10), 0 1px 2px oklch(0 0 0 / 0.06);
+  --primitive-shadow-md: 0 4px 6px oklch(0 0 0 / 0.07), 0 2px 4px oklch(0 0 0 / 0.06);
+  --primitive-shadow-lg: 0 10px 15px oklch(0 0 0 / 0.10), 0 4px 6px oklch(0 0 0 / 0.05);
+  --primitive-shadow-xl: 0 20px 25px oklch(0 0 0 / 0.10), 0 8px 10px oklch(0 0 0 / 0.04);
+
+  /* --- Z-index scale --- */
+  --primitive-z-base:    0;
+  --primitive-z-raised:  10;
+  --primitive-z-overlay: 100;
+  --primitive-z-modal:   200;
+  --primitive-z-toast:   300;
+  --primitive-z-tooltip: 400;
+}

@@ -1,0 +1,44 @@
+/* ── Extended text utility variants ─────────────────────────────────────────
+   Import this file in your app's CSS after @import "tailwindcss" so these
+   utilities are available alongside the base text styles defined in globals.css.
+
+   Does NOT set font-family — that's the consuming app's responsibility.
+   ────────────────────────────────────────────────────────────────────────── */
+@layer utilities {
+  .text-body-lg-light {
+    font-size:      var(--primitive-font-size-lg);
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-body-light {
+    font-size:      var(--primitive-font-size-base);
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-body-sm-light {
+    font-size:      var(--primitive-font-size-sm);
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-caption-sm {
+    font-size:      var(--primitive-font-size-2xs);
+    font-weight:    var(--primitive-font-weight-500);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-caption-light {
+    font-size:      var(--primitive-font-size-xs);
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-caption-sm-light {
+    font-size:      var(--primitive-font-size-2xs);
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+}
