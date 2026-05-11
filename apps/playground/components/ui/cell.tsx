@@ -18,7 +18,7 @@ function TextStack({ primary, secondary, className }: {
   )
 }
 
-function MonoCell({ children, className }: {
+function DataCell({ children, className }: {
   children: React.ReactNode
   className?: string
 }) {
@@ -58,4 +58,4 @@ function ActionCell({ children, className }: {
   )
 }
 
-export { TextStack, MonoCell, AmountCell, BadgeCell, ActionCell }
+export { TextStack, DataCell, AmountCell, BadgeCell, ActionCell }

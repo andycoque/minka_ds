@@ -24,15 +24,15 @@ function TextStack({ primary, secondary, className }: TextStackProps) {
   )
 }
 
-// ── MonoCell ──────────────────────────────────────────────────────────────────
-// Single-line monospace text. Use for IDs, codes, hashes.
+// ── DataCell ──────────────────────────────────────────────────────────────────
+// Single-line plain data value. Use for IDs, timestamps, codes.
 
-interface MonoCellProps {
+interface DataCellProps {
   children: React.ReactNode
   className?: string
 }
 
-function MonoCell({ children, className }: MonoCellProps) {
+function DataCell({ children, className }: DataCellProps) {
   return (
     <span
       className={cn(
@@ -94,10 +94,10 @@ function ActionCell({ children, className }: ActionCellProps) {
   )
 }
 
-export { TextStack, MonoCell, AmountCell, BadgeCell, ActionCell }
+export { TextStack, DataCell, AmountCell, BadgeCell, ActionCell }
 export type {
   TextStackProps,
-  MonoCellProps,
+  DataCellProps,
   AmountCellProps,
   BadgeCellProps,
   ActionCellProps,

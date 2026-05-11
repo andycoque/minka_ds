@@ -25,8 +25,6 @@ const badgeVariants = cva(
           "bg-[var(--color-bg-error)] text-[var(--color-feedback-error)] border-transparent",
         info:
           "bg-[var(--color-bg-info)] text-[var(--color-feedback-info)] border-transparent",
-        pending:
-          "bg-[var(--color-bg-warning)] text-[var(--color-text-default)] border-transparent",
         outline:
           "border-[var(--color-border-default)] text-[var(--color-text-default)] [a&]:hover:bg-[var(--color-action-ghost-hover)]",
         ghost:

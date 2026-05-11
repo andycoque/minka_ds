@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { DataTable, DataTableColumnHeader } from "@/components/ui/data-table"
-import { TextStack, MonoCell, AmountCell } from "@/components/ui/cell"
+import { TextStack, DataCell, AmountCell } from "@/components/ui/cell"
 
 type Client = {
   id: string
@@ -29,7 +29,7 @@ const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "id",
     header: "ID",
-    cell: ({ row }) => <MonoCell>{row.getValue("id")}</MonoCell>,
+    cell: ({ row }) => <DataCell>{row.getValue("id")}</DataCell>,
   },
   {
     accessorKey: "name",
@@ -47,7 +47,7 @@ const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "lastActivity",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Last activity" />,
-    cell: ({ row }) => <MonoCell>{row.getValue("lastActivity")}</MonoCell>,
+    cell: ({ row }) => <DataCell>{row.getValue("lastActivity")}</DataCell>,
   },
   {
     accessorKey: "status",
