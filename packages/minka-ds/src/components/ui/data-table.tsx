@@ -7,7 +7,6 @@ import {
   VisibilityState,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type Table as TanstackTable,
@@ -16,15 +15,6 @@ import { ChevronsUpDown, ChevronUp, ChevronDown, Columns3Cog } from "lucide-reac
 
 import { cn } from "../../lib/utils"
 import { Button } from "./button"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "./pagination"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -43,12 +33,6 @@ import {
 } from "./table"
 
 // ── Column header with sort control ──────────────────────────────────────────
-
-interface DataTableColumnHeaderProps<TData, TValue>
-  extends React.HTMLAttributes<HTMLDivElement> {
-  column: TanstackTable<TData>["getColumn"] extends (id: string) => infer C ? NonNullable<C> : never
-  title: string
-}
 
 function DataTableColumnHeader<TData, TValue>({
   column,
@@ -117,108 +101,61 @@ function DataTableColumnToggle<TData>({
   )
 }
 
-// ── Pagination ────────────────────────────────────────────────────────────────
-
-function getPageNumbers(currentPage: number, totalPages: number): (number | "ellipsis")[] {
-  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
-  const pages: (number | "ellipsis")[] = [1]
-  if (currentPage > 3) pages.push("ellipsis")
-  const start = Math.max(2, currentPage - 1)
-  const end = Math.min(totalPages - 1, currentPage + 1)
-  for (let i = start; i <= end; i++) pages.push(i)
-  if (currentPage < totalPages - 2) pages.push("ellipsis")
-  pages.push(totalPages)
-  return pages
-}
-
-function DataTablePagination<TData>({
-  table,
-}: {
-  table: TanstackTable<TData>
-}) {
-  const currentPage = table.getState().pagination.pageIndex + 1
-  const totalPages = table.getPageCount()
-  const pages = getPageNumbers(currentPage, totalPages)
-
-  return (
-    <div className="flex items-center justify-between">
-      <p className="text-body-sm text-[var(--color-text-muted)]">
-        Page {currentPage} of {totalPages}
-      </p>
-      <Pagination className="mx-0 w-auto justify-end">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => table.previousPage()}
-              aria-disabled={!table.getCanPreviousPage()}
-              className={cn(!table.getCanPreviousPage() && "pointer-events-none opacity-50")}
-            />
-          </PaginationItem>
-          {pages.map((page, i) =>
-            page === "ellipsis" ? (
-              <PaginationItem key={`ellipsis-${i}`}>
-                <PaginationEllipsis />
-              </PaginationItem>
-            ) : (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  isActive={page === currentPage}
-                  onClick={() => table.setPageIndex(page - 1)}
-                  className="cursor-pointer"
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            )
-          )}
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => table.nextPage()}
-              aria-disabled={!table.getCanNextPage()}
-              className={cn(!table.getCanNextPage() && "pointer-events-none opacity-50")}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-    </div>
-  )
-}
-
 // ── DataTable ─────────────────────────────────────────────────────────────────
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  pageSize?: number
+  batchSize?: number
   onRowClick?: (row: TData) => void
+  className?: string
 }
 
 function DataTable<TData, TValue>({
   columns,
   data,
-  pageSize = 10,
+  batchSize = 20,
   onRowClick,
+  className,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [displayCount, setDisplayCount] = React.useState(batchSize)
+  const [hasMore, setHasMore] = React.useState(data.length > batchSize)
+
+  const displayedData = React.useMemo(
+    () => data.slice(0, displayCount),
+    [data, displayCount]
+  )
 
   const table = useReactTable({
-    data,
+    data: displayedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
-    initialState: { pagination: { pageSize } },
     state: { sorting, columnVisibility },
   })
 
+  function handleScroll(e: React.UIEvent<HTMLDivElement>) {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget
+    const remaining = scrollHeight - scrollTop - clientHeight
+    setHasMore(remaining > 2 || displayCount < data.length)
+    if (remaining < 120) {
+      setDisplayCount((c) => Math.min(c + batchSize, data.length))
+    }
+  }
+
   return (
-    <div className="space-y-4">
-      <div className="rounded-[var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] overflow-hidden">
+    <div className={cn("relative flex flex-col min-h-0", className)}>
+      <div
+        onScroll={handleScroll}
+        className="flex-1 min-h-0 overflow-auto rounded-[var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] [&_[data-slot=table-container]]:overflow-visible"
+      >
+
         <Table className="[&_th:first-child]:pl-4 [&_td:first-child]:pl-4">
-          <TableHeader className="bg-[var(--color-bg-base)]">
+          <TableHeader className="sticky top-0 z-10 bg-[var(--color-bg-base)]">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header, index) => (
@@ -265,15 +202,15 @@ function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      {hasMore && (
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 rounded-b-[var(--radius-card)] bg-gradient-to-t from-[var(--color-bg-raised)] to-transparent" />
+      )}
     </div>
   )
-
 }
 
 export {
   DataTable,
   DataTableColumnHeader,
   DataTableColumnToggle,
-  DataTablePagination,
 }

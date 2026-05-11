@@ -1,6 +1,9 @@
 // Utilities
 export { cn } from "./lib/utils"
 
+// Hooks
+export { usePlatform } from "./hooks/use-platform"
+
 // Components
 export * from "./components/ui/badge"
 export * from "./components/ui/cell"
@@ -15,6 +18,7 @@ export * from "./components/ui/dialog"
 export * from "./components/ui/dropdown-menu"
 export * from "./components/ui/input"
 export * from "./components/ui/input-group"
+export * from "./components/ui/kbd"
 export * from "./components/ui/label"
 export * from "./components/ui/pagination"
 export * from "./components/ui/select"

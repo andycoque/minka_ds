@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Kbd } from "@/components/ui/kbd"
+import { CornerDownLeft, Command, ArrowBigUp, Option } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -89,9 +91,39 @@ export default function DesignSystemPlayground() {
                 <Badge variant="warning">Warning</Badge>
                 <Badge variant="error">Error</Badge>
                 <Badge variant="info">Info</Badge>
-                <Badge variant="pending">Pending</Badge>
                 <Badge variant="outline">Outline</Badge>
                 <Badge variant="ghost">Ghost</Badge>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Kbd */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Kbd</h2>
+              <div className="rounded-lg border border-[var(--color-border-default)] divide-y divide-[var(--color-border-subtle)]">
+                <div className="flex items-center gap-4 px-4 py-3">
+                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Mac</span>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <Kbd><CornerDownLeft className="size-3" /></Kbd>
+                    <Kbd><CornerDownLeft className="size-3" /> open</Kbd>
+                    <Kbd><Command className="size-3" /> K</Kbd>
+                    <Kbd><ArrowBigUp className="size-3" /> <Command className="size-3" /> P</Kbd>
+                    <Kbd><Option className="size-3" /></Kbd>
+                    <Kbd>Esc</Kbd>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 px-4 py-3">
+                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Windows</span>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <Kbd><CornerDownLeft className="size-3" /></Kbd>
+                    <Kbd><CornerDownLeft className="size-3" /> open</Kbd>
+                    <Kbd>Ctrl K</Kbd>
+                    <Kbd><ArrowBigUp className="size-3" /> Ctrl P</Kbd>
+                    <Kbd><Option className="size-3" /></Kbd>
+                    <Kbd>Esc</Kbd>
+                  </div>
+                </div>
               </div>
             </section>
 
