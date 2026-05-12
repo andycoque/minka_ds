@@ -35,15 +35,15 @@ export default function DesignSystemPlayground() {
           <div className="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] divide-y divide-[var(--color-border-subtle)]">
             <div className="flex items-center gap-3 px-4 py-3">
               <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Install</span>
-              <code className="text-body-sm font-mono text-[var(--color-text-default)]">npm install minka-ds</code>
+              <code className="text-body-sm font-mono px-3 py-1.5 rounded-md bg-[var(--color-bg-canvas)] border border-[var(--color-border-subtle)] text-[var(--color-text-default)]">npm install minka-ds</code>
             </div>
             <div className="flex items-center gap-3 px-4 py-3">
               <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Import</span>
-              <code className="text-body-sm font-mono text-[var(--color-text-default)]">{"import { Button, SearchBar, FilterCombobox } from 'minka-ds'"}</code>
+              <code className="text-body-sm font-mono px-3 py-1.5 rounded-md bg-[var(--color-bg-canvas)] border border-[var(--color-border-subtle)] text-[var(--color-text-default)]">{"import { Button, SearchBar, FilterCombobox } from 'minka-ds'"}</code>
             </div>
             <div className="flex items-center gap-3 px-4 py-3">
               <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Tokens</span>
-              <code className="text-body-sm font-mono text-[var(--color-text-default)]">{"import 'minka-ds/tokens/primitives.css'"}</code>
+              <code className="text-body-sm font-mono px-3 py-1.5 rounded-md bg-[var(--color-bg-canvas)] border border-[var(--color-border-subtle)] text-[var(--color-text-default)]">{"import 'minka-ds/tokens/primitives.css'"}</code>
             </div>
           </div>
         </div>
