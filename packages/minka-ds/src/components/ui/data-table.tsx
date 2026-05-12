@@ -155,7 +155,7 @@ function DataTable<TData, TValue>({
       >
 
         <Table className="[&_th:first-child]:pl-4 [&_td:first-child]:pl-4">
-          <TableHeader className="sticky top-0 z-10 bg-[var(--color-bg-base)]">
+          <TableHeader className="sticky top-0 [z-index:var(--z-sticky)] bg-[var(--color-bg-base)]">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header, index) => (

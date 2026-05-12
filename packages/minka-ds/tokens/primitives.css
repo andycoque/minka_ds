@@ -218,9 +218,10 @@
   --primitive-shadow-xl: 0 20px 25px oklch(0 0 0 / 0.10), 0 8px 10px oklch(0 0 0 / 0.04);
 
   /* --- Z-index scale --- */
-  --primitive-z-base:    0;
-  --primitive-z-raised:  10;
-  --primitive-z-overlay: 100;
+  --primitive-z-base:      0;
+  --primitive-z-raised:    10;
+  --primitive-z-dropdown:  20;
+  --primitive-z-overlay:   100;
   --primitive-z-modal:   200;
   --primitive-z-toast:   300;
   --primitive-z-tooltip: 400;
