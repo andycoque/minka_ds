@@ -4,7 +4,9 @@ import { Kbd } from "@/components/ui/kbd"
 import { CalendarDemo } from "./calendar-demo"
 import { FilterChipDemo } from "./filter-chip-demo"
 import { FilterComboboxDemo } from "./filter-combobox-demo"
+import { CodeBlock } from "./code-block"
 import { SearchBarDemo } from "./search-bar-demo"
+import { AlertDemo } from "./alert-demo"
 import { CornerDownLeft, Command, ArrowBigUp, Option } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -32,19 +34,10 @@ export default function DesignSystemPlayground() {
               minka-product-ui — component playground & token reference
             </p>
           </div>
-          <div className="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] divide-y divide-[var(--color-border-subtle)]">
-            <div className="flex items-center gap-3 px-4 py-3">
-              <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Install</span>
-              <code className="text-body-sm font-mono px-3 py-1.5 rounded-md bg-[var(--color-bg-canvas)] border border-[var(--color-border-subtle)] text-[var(--color-text-default)]">npm install minka-ds</code>
-            </div>
-            <div className="flex items-center gap-3 px-4 py-3">
-              <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Import</span>
-              <code className="text-body-sm font-mono px-3 py-1.5 rounded-md bg-[var(--color-bg-canvas)] border border-[var(--color-border-subtle)] text-[var(--color-text-default)]">{"import { Button, SearchBar, FilterCombobox } from 'minka-ds'"}</code>
-            </div>
-            <div className="flex items-center gap-3 px-4 py-3">
-              <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Tokens</span>
-              <code className="text-body-sm font-mono px-3 py-1.5 rounded-md bg-[var(--color-bg-canvas)] border border-[var(--color-border-subtle)] text-[var(--color-text-default)]">{"import 'minka-ds/tokens/primitives.css'"}</code>
-            </div>
+          <div className="space-y-2">
+            <CodeBlock code="npm install minka-ds" />
+            <CodeBlock code="import { Button, SearchBar, FilterCombobox } from 'minka-ds'" />
+            <CodeBlock code="import 'minka-ds/tokens/primitives.css'" />
           </div>
         </div>
 
@@ -146,6 +139,14 @@ export default function DesignSystemPlayground() {
             <section className="space-y-3">
               <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Search Bar</h2>
               <SearchBarDemo />
+            </section>
+
+            <Separator />
+
+            {/* Alert */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Alert</h2>
+              <AlertDemo />
             </section>
 
             <Separator />
