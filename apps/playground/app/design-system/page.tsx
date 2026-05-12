@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Kbd } from "@/components/ui/kbd"
+import { CalendarDemo } from "./calendar-demo"
+import { FilterChipDemo } from "./filter-chip-demo"
+import { FilterComboboxDemo } from "./filter-combobox-demo"
+import { SearchBarDemo } from "./search-bar-demo"
 import { CornerDownLeft, Command, ArrowBigUp, Option } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -94,6 +98,38 @@ export default function DesignSystemPlayground() {
                 <Badge variant="outline">Outline</Badge>
                 <Badge variant="ghost">Ghost</Badge>
               </div>
+            </section>
+
+            <Separator />
+
+            {/* Calendar */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Calendar</h2>
+              <CalendarDemo />
+            </section>
+
+            <Separator />
+
+            {/* FilterChip */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Filter Chip</h2>
+              <FilterChipDemo />
+            </section>
+
+            <Separator />
+
+            {/* FilterCombobox */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Filter Combobox</h2>
+              <FilterComboboxDemo />
+            </section>
+
+            <Separator />
+
+            {/* SearchBar */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Search Bar</h2>
+              <SearchBarDemo />
             </section>
 
             <Separator />

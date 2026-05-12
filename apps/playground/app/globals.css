@@ -199,7 +199,7 @@
 
   /* component z-index aliases */
   --z-sticky:   var(--primitive-z-raised);
-  --z-dropdown: var(--primitive-z-raised);
+  --z-dropdown: var(--primitive-z-dropdown);
   --z-popover:  var(--primitive-z-overlay);
   --z-backdrop: var(--primitive-z-overlay);
   --z-modal:    var(--primitive-z-modal);
