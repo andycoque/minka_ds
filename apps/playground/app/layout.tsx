@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Instrument_Serif } from "next/font/google";
+import { Instrument_Serif, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AgentationWidget } from "./agentation-widget";
 import "./globals.css";
@@ -17,6 +17,11 @@ const ppNeueMontreal = localFont({
     { path: "../public/fonts/PPNeueMontreal-BoldItalic.woff2",   weight: "700", style: "italic" },
   ],
   variable: "--font-pp-neue-montreal",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
 });
 
 const instrumentSerif = Instrument_Serif({
@@ -39,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${ppNeueMontreal.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${ppNeueMontreal.variable} ${instrumentSerif.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col"><TooltipProvider>{children}</TooltipProvider><AgentationWidget /></body>
     </html>
