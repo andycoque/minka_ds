@@ -3,6 +3,11 @@
    utilities are available alongside the base text styles defined in globals.css.
 
    Does NOT set font-family — that's the consuming app's responsibility.
+
+   Serif variants come in two tiers:
+     base  — mirrors the sans scale exactly (same pixel size)
+     -lg   — one primitive step up, to compensate for serif's optical smallness
+   Weight is fixed at 400 — display serifs typically have no bold cut.
    ────────────────────────────────────────────────────────────────────────── */
 @layer utilities {
   .text-body-lg-light {
@@ -40,5 +45,140 @@
     font-weight:    var(--primitive-font-weight-400);
     line-height:    var(--primitive-line-height-normal);
     letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+
+  /* ── Serif variants ──────────────────────────────────────────────────────
+     base: same size as the sans equivalent
+     -lg:  one primitive step up for optical compensation                    */
+
+  /* Headings — base */
+  .text-heading-1-serif {
+    font-size:      var(--primitive-font-size-4xl);   /* 36px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-tight);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-heading-2-serif {
+    font-size:      var(--primitive-font-size-3xl);   /* 30px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-heading-3-serif {
+    font-size:      var(--primitive-font-size-2xl);   /* 24px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-heading-4-serif {
+    font-size:      var(--primitive-font-size-xl);    /* 20px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+
+  /* Headings — lg */
+  .text-heading-1-lg-serif {
+    font-size:      var(--primitive-font-size-5xl);   /* 48px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-tight);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-heading-2-lg-serif {
+    font-size:      var(--primitive-font-size-4xl);   /* 36px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-heading-3-lg-serif {
+    font-size:      var(--primitive-font-size-3xl);   /* 30px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-heading-4-lg-serif {
+    font-size:      var(--primitive-font-size-2xl);   /* 24px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+
+  /* Body — base */
+  .text-body-lg-serif {
+    font-size:      var(--primitive-font-size-lg);    /* 18px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-body-serif {
+    font-size:      var(--primitive-font-size-base);  /* 16px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-body-sm-serif {
+    font-size:      var(--primitive-font-size-sm);    /* 14px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+
+  /* Body — lg */
+  .text-body-xl-serif {
+    font-size:      var(--primitive-font-size-xl);    /* 20px — body-lg stepped up */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-body-sm-lg-serif {
+    font-size:      var(--primitive-font-size-base);  /* 16px — body-sm stepped up */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+
+  /* Caption — base */
+  .text-caption-serif {
+    font-size:      var(--primitive-font-size-xs);    /* 12px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-caption-sm-serif {
+    font-size:      var(--primitive-font-size-2xs);   /* 10px */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+
+  /* Caption — lg */
+  .text-caption-lg-serif {
+    font-size:      var(--primitive-font-size-sm);    /* 14px — caption stepped up */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
+  }
+  .text-caption-sm-lg-serif {
+    font-size:      var(--primitive-font-size-xs);    /* 12px — caption-sm stepped up */
+    font-weight:    var(--primitive-font-weight-400);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+    font-family:    var(--font-serif);
   }
 }
