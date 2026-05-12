@@ -27,8 +27,8 @@ export default function DesignSystemPlayground() {
       <div className="mx-auto max-w-5xl px-6 py-12 space-y-16">
 
         {/* Header */}
-        <div className="space-y-4">
-          <div className="space-y-2">
+        <div className="space-y-2">
+          <div className="space-y-1">
             <h1 className="text-heading-1">Design System</h1>
             <p className="text-body text-[var(--color-text-muted)]">
               minka-product-ui — component playground & token reference

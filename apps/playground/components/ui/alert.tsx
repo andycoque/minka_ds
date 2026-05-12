@@ -11,13 +11,13 @@ const alertVariants = cva(
         default:
           "bg-[var(--color-bg-raised)] border-[var(--color-border-default)] text-[var(--color-text-default)] [&>svg]:text-[var(--color-text-muted)]",
         info:
-          "bg-[var(--color-bg-info)] border-[var(--color-border-info)] text-[var(--color-text-info)] [&>svg]:text-[var(--color-feedback-info)]",
+          "bg-[var(--color-bg-info)] border-[var(--color-border-info)] text-[var(--color-text-default)] [&>svg]:text-[var(--color-text-default)]",
         success:
-          "bg-[var(--color-bg-success)] border-[var(--color-border-success)] text-[var(--color-text-success)] [&>svg]:text-[var(--color-feedback-success)]",
+          "bg-[var(--color-bg-success)] border-[var(--color-border-success)] text-[var(--color-text-default)] [&>svg]:text-[var(--color-text-default)]",
         warning:
-          "bg-[var(--color-bg-warning)] border-[var(--color-border-warning)] text-[var(--color-text-warning)] [&>svg]:text-[var(--color-feedback-warning)]",
+          "bg-[var(--color-bg-warning)] border-[var(--color-border-warning)] text-[var(--color-text-default)] [&>svg]:text-[var(--color-text-default)]",
         error:
-          "bg-[var(--color-bg-error)] border-[var(--color-border-error)] text-[var(--color-text-error)] [&>svg]:text-[var(--color-feedback-error)]",
+          "bg-[var(--color-bg-error)] border-[var(--color-border-error)] text-[var(--color-text-default)] [&>svg]:text-[var(--color-text-default)]",
       },
     },
     defaultVariants: {
