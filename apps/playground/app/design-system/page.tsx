@@ -25,11 +25,27 @@ export default function DesignSystemPlayground() {
       <div className="mx-auto max-w-5xl px-6 py-12 space-y-16">
 
         {/* Header */}
-        <div className="space-y-2">
-          <h1 className="text-heading-1">Design System</h1>
-          <p className="text-body text-[var(--color-text-muted)]">
-            minka-product-ui — component playground & token reference
-          </p>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <h1 className="text-heading-1">Design System</h1>
+            <p className="text-body text-[var(--color-text-muted)]">
+              minka-product-ui — component playground & token reference
+            </p>
+          </div>
+          <div className="rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] divide-y divide-[var(--color-border-subtle)]">
+            <div className="flex items-center gap-3 px-4 py-3">
+              <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Install</span>
+              <code className="text-body-sm font-mono text-[var(--color-text-default)]">npm install minka-ds</code>
+            </div>
+            <div className="flex items-center gap-3 px-4 py-3">
+              <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Import</span>
+              <code className="text-body-sm font-mono text-[var(--color-text-default)]">{"import { Button, SearchBar, FilterCombobox } from 'minka-ds'"}</code>
+            </div>
+            <div className="flex items-center gap-3 px-4 py-3">
+              <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Tokens</span>
+              <code className="text-body-sm font-mono text-[var(--color-text-default)]">{"import 'minka-ds/tokens/primitives.css'"}</code>
+            </div>
+          </div>
         </div>
 
         <Tabs defaultValue="components">
