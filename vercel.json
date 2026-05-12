@@ -1,0 +1,6 @@
+{
+  "buildCommand": "turbo build --filter=minka-product-ui",
+  "outputDirectory": "apps/playground/.next",
+  "framework": "nextjs",
+  "installCommand": "npm install"
+}
