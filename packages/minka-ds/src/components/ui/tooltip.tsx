@@ -54,4 +54,30 @@ function TooltipContent({
   )
 }
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+function TooltipLabel({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="tooltip-label"
+      className={cn("text-caption text-[var(--color-text-inverse)]", className)}
+      {...props}
+    />
+  )
+}
+
+function TooltipDescription({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="tooltip-description"
+      className={cn("text-caption text-[var(--color-text-inverse-muted)]", className)}
+      {...props}
+    />
+  )
+}
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, TooltipLabel, TooltipDescription }

@@ -1,0 +1,13 @@
+/*
+ * Gradient tokens — semantic gradient expressions.
+ * Import after primitives.css. References semantic tokens (e.g. --color-bg-canvas)
+ * which are resolved at paint time, so import order with app globals doesn't matter.
+ */
+
+:root {
+  --gradient-page: linear-gradient(180deg, var(--color-bg-base) 0%, var(--color-bg-base) 20%, var(--primitive-neutral-0) 100%);
+}
+
+.dark {
+  --gradient-page: linear-gradient(180deg, var(--color-bg-base) 0%, var(--color-bg-base) 20%, var(--primitive-neutral-800) 100%);
+}

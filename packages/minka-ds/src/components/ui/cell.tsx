@@ -10,12 +10,13 @@ import { cn } from "../../lib/utils"
 interface TextStackProps {
   primary: React.ReactNode
   secondary?: React.ReactNode
+  inline?: boolean
   className?: string
 }
 
-function TextStack({ primary, secondary, className }: TextStackProps) {
+function TextStack({ primary, secondary, inline, className }: TextStackProps) {
   return (
-    <div className={cn("flex flex-col gap-0.5", className)}>
+    <div className={cn(inline ? "flex flex-row items-baseline gap-1.5" : "flex flex-col gap-0.5", className)}>
       <span className="text-caption-light text-[var(--color-text-default)]">{primary}</span>
       {secondary && (
         <span className="text-caption-sm-light text-[var(--color-text-muted)]">{secondary}</span>

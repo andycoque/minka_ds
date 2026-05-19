@@ -184,13 +184,16 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageSize?: number
+  variant?: "default" | "compact"
 }
 
 function DataTable<TData, TValue>({
   columns,
   data,
   pageSize = 10,
+  variant = "default",
 }: DataTableProps<TData, TValue>) {
+  const compact = variant === "compact"
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
 
@@ -209,7 +212,10 @@ function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       <div className="rounded-[var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] overflow-hidden">
-        <Table className="[&_th:first-child]:pl-4 [&_td:first-child]:pl-4">
+        <Table className={cn(
+          "[&_th:first-child]:pl-4 [&_td:first-child]:pl-4",
+          compact && "[&_th]:h-7 [&_th]:text-caption [&_th]:text-[var(--color-text-default)] [&_td]:h-11 [&_td]:py-1.5 [&_td]:text-body-sm"
+        )}>
           <TableHeader className="bg-[var(--color-bg-base)]">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

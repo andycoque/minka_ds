@@ -101,13 +101,14 @@ function SearchBar({
           onFocus={onFocus}
           autoComplete="off"
         />
-        {(!!value || (hasFilterCategories && !hasActiveFilters)) && (
+        {(!!value || (hasFilterCategories && !hasActiveFilters) || (!value && !!kbdHint)) && (
           <InputGroupAddon align="inline-end">
             {value && (
               <InputGroupButton size="sm" variant="ghost" onClick={() => onChange("")} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]">
                 <XIcon className="size-4" />
               </InputGroupButton>
             )}
+            {!value && kbdHint && !hasFilterCategories && <Kbd>{kbdHint}</Kbd>}
             {hasFilterCategories && !hasActiveFilters && (
               <>
                 {!value && kbdHint && <Kbd>{kbdHint}</Kbd>}

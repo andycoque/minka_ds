@@ -4,6 +4,7 @@
 
 /* Primitives — raw scale values, source of truth */
 @import "../tokens/primitives.css";
+@import "../tokens/gradients.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -145,6 +146,7 @@
   --color-text-hint:          var(--primitive-neutral-400);
   --color-text-disabled:      var(--primitive-neutral-300);
   --color-text-inverse:       var(--primitive-neutral-0);
+  --color-text-inverse-muted: var(--primitive-neutral-500);
   --color-text-link:          var(--primitive-blue-600);
   --color-text-link-hover:    var(--primitive-blue-700);
   --color-text-link-active:   var(--primitive-blue-800);
@@ -203,6 +205,7 @@
   --z-popover:  var(--primitive-z-overlay);
   --z-backdrop: var(--primitive-z-overlay);
   --z-modal:    var(--primitive-z-modal);
+  --z-floating: var(--primitive-z-floating);
   --z-toast:    var(--primitive-z-toast);
   --z-tooltip:  var(--primitive-z-tooltip);
 
@@ -282,6 +285,7 @@
   --color-text-hint:          var(--primitive-neutral-600);
   --color-text-disabled:      var(--primitive-neutral-700);
   --color-text-inverse:       var(--primitive-neutral-950);
+  --color-text-inverse-muted: var(--primitive-neutral-600);
   --color-text-link:          var(--primitive-blue-300);
   --color-text-link-hover:    var(--primitive-blue-200);
   --color-text-link-active:   var(--primitive-blue-100);

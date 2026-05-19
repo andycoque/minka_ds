@@ -108,16 +108,19 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   batchSize?: number
   onRowClick?: (row: TData) => void
+  variant?: "default" | "compact"
   className?: string
 }
 
 function DataTable<TData, TValue>({
   columns,
   data,
-  batchSize = 20,
+  batchSize = 40,
   onRowClick,
+  variant = "default",
   className,
 }: DataTableProps<TData, TValue>) {
+  const compact = variant === "compact"
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [displayCount, setDisplayCount] = React.useState(batchSize)
@@ -154,15 +157,21 @@ function DataTable<TData, TValue>({
         className="flex-1 min-h-0 overflow-auto rounded-[var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] [&_[data-slot=table-container]]:overflow-visible"
       >
 
-        <Table className="[&_th:first-child]:pl-4 [&_td:first-child]:pl-4">
-          <TableHeader className="sticky top-0 [z-index:var(--z-sticky)] bg-[var(--color-bg-base)]">
+        <Table className={cn(
+          "[&_th:first-child]:pl-4 [&_td:first-child]:pl-4",
+          compact && "[&_th]:h-7 [&_th]:text-caption [&_th]:text-[var(--color-text-default)] [&_td]:h-11 [&_td]:py-1.5 [&_td]:text-body-sm"
+        )}>
+          <TableHeader className={cn(
+            "sticky top-0 [z-index:var(--z-sticky)]",
+            "bg-[var(--color-bg-base)]"
+          )}>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header, index) => (
                   <TableHead key={header.id}>
                     {index === headerGroup.headers.length - 1 ? (
                       <div className="flex items-center justify-between gap-2">
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                        <span>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</span>
                         <DataTableColumnToggle table={table} />
                       </div>
                     ) : (

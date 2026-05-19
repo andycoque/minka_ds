@@ -20,10 +20,12 @@ import { DataTableDemo } from "./data-table-demo"
 import { DialogDemo } from "./dialog-demo"
 import { SheetDemo } from "./sheet-demo"
 import { ComboboxDemo } from "./combobox-demo"
+import { SonnerDemo } from "./sonner-demo"
+import { TooltipDemo } from "./tooltip-demo"
 
 export default function DesignSystemPlayground() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground" style={{ background: "var(--gradient-page)" }}>
       <div className="mx-auto max-w-5xl px-6 py-12 space-y-16">
 
         {/* Header */}
@@ -295,6 +297,22 @@ export default function DesignSystemPlayground() {
             <section className="space-y-3">
               <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Data Table</h2>
               <DataTableDemo />
+            </section>
+
+            <Separator />
+
+            {/* Tooltip */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Tooltip</h2>
+              <TooltipDemo />
+            </section>
+
+            <Separator />
+
+            {/* Toast */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Toast</h2>
+              <SonnerDemo />
             </section>
 
             <Separator />

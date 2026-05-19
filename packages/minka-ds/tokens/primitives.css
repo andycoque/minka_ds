@@ -222,7 +222,8 @@
   --primitive-z-raised:    10;
   --primitive-z-dropdown:  20;
   --primitive-z-overlay:   100;
-  --primitive-z-modal:   200;
-  --primitive-z-toast:   300;
+  --primitive-z-modal:    200;
+  --primitive-z-floating: 210;
+  --primitive-z-toast:    300;
   --primitive-z-tooltip: 400;
 }
