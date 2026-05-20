@@ -52,6 +52,7 @@ interface SearchBarProps {
   onRemoveFilter?: (categoryId: string, value: CategoryValue) => void
   onClearFilters?: () => void
   filterValueLabel?: (categoryId: string, value: CategoryValue) => string
+  alwaysShowFilterBar?: boolean
 
   children?: React.ReactNode
   className?: string
@@ -73,11 +74,13 @@ function SearchBar({
   onRemoveFilter,
   onClearFilters,
   filterValueLabel = defaultFilterValueLabel,
+  alwaysShowFilterBar = false,
   children,
   className,
 }: SearchBarProps) {
   const hasActiveFilters    = Object.values(activeFilters).some(v => v.length > 0)
   const hasFilterCategories = filterCategories.length > 0
+  const showFilterBar       = hasActiveFilters || alwaysShowFilterBar
 
   return (
     <div data-search-bar className={cn("relative flex flex-col", className)}>
@@ -86,7 +89,7 @@ function SearchBar({
       <InputGroup
         className={cn(
           "h-12",
-          hasActiveFilters && "[border-bottom-left-radius:0] [border-bottom-right-radius:0]"
+          showFilterBar && "[border-bottom-left-radius:0] [border-bottom-right-radius:0]"
         )}
       >
         <InputGroupAddon align="inline-start">
@@ -101,7 +104,7 @@ function SearchBar({
           onFocus={onFocus}
           autoComplete="off"
         />
-        {(!!value || (hasFilterCategories && !hasActiveFilters) || (!value && !!kbdHint)) && (
+        {(!!value || (hasFilterCategories && !hasActiveFilters && !alwaysShowFilterBar) || (!value && !!kbdHint)) && (
           <InputGroupAddon align="inline-end">
             {value && (
               <InputGroupButton size="sm" variant="ghost" onClick={() => onChange("")} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]">
@@ -109,7 +112,7 @@ function SearchBar({
               </InputGroupButton>
             )}
             {!value && kbdHint && !hasFilterCategories && <Kbd>{kbdHint}</Kbd>}
-            {hasFilterCategories && !hasActiveFilters && (
+            {hasFilterCategories && !hasActiveFilters && !alwaysShowFilterBar && (
               <>
                 {!value && kbdHint && <Kbd>{kbdHint}</Kbd>}
                 <span className="h-4 w-px bg-[var(--color-border-default)]" />
@@ -130,41 +133,94 @@ function SearchBar({
         )}
       </InputGroup>
 
-      {/* Filter bar — visible only when filters are active */}
-      {hasActiveFilters && (
+      {/* Filter bar */}
+      {showFilterBar && (
         <div className="flex flex-wrap items-center gap-3 [border-bottom-left-radius:var(--radius-card)] [border-bottom-right-radius:var(--radius-card)] border border-t-0 border-[var(--color-border-default)] bg-[var(--color-bg-raised)] px-3 py-2.5">
-          {Object.entries(activeFilters)
-            .filter(([, vals]) => vals.length > 0)
-            .map(([categoryId, values]) => {
-              const cat = filterCategories.find(c => c.id === categoryId)
-              return (
+          {alwaysShowFilterBar ? (
+            // Always-open mode: one trigger per category, active ones show chips
+            <>
+              {filterCategories.map(cat => {
+                const activeVals = activeFilters[cat.id] ?? []
+                const hasActive  = activeVals.length > 0
+
+                if (hasActive) {
+                  return (
+                    <FilterChip
+                      key={cat.id}
+                      label={cat.label}
+                      values={activeVals.map(v => ({
+                        label: filterValueLabel(cat.id, v),
+                        onRemove: () => onRemoveFilter?.(cat.id, v),
+                      }))}
+                      onLabelClick={() => {}}
+                    />
+                  )
+                }
+
+                return (
+                  <FilterCombobox
+                    key={cat.id}
+                    categories={[cat]}
+                    onApply={onApplyFilter ?? (() => {})}
+                    activeFilters={activeFilters}
+                    trigger={({ onClick }) => (
+                      <button
+                        type="button"
+                        onClick={onClick}
+                        className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] px-2 py-0.5 text-caption text-[var(--color-text-muted)] hover:text-[var(--color-text-default)] hover:border-[var(--color-border-hover,var(--color-border-default))] transition-colors"
+                      >
+                        {cat.label}
+                        <PlusIcon className="size-3 shrink-0" />
+                      </button>
+                    )}
+                  />
+                )
+              })}
+              {hasActiveFilters && (
                 <FilterChip
-                  key={categoryId}
-                  label={cat?.label ?? categoryId}
-                  values={values.map(v => ({
-                    label: filterValueLabel(categoryId, v),
-                    onRemove: () => onRemoveFilter?.(categoryId, v),
-                  }))}
-                  onLabelClick={() => {}}
+                  variant="clear-all"
+                  className="ml-auto"
+                  onClear={onClearFilters ?? (() => {})}
                 />
-              )
-            })}
-          <FilterCombobox
-            categories={filterCategories}
-            onApply={onApplyFilter ?? (() => {})}
-            activeFilters={activeFilters}
-            trigger={({ onClick }) => (
-              <Button variant="default" size="sm" className="h-7 text-caption gap-1.5 px-2.5" onClick={onClick}>
-                <PlusIcon className="size-3.5" />
-                Add
-              </Button>
-            )}
-          />
-          <FilterChip
-            variant="clear-all"
-            className="ml-auto"
-            onClear={onClearFilters ?? (() => {})}
-          />
+              )}
+            </>
+          ) : (
+            // Legacy mode: active chips + generic Add button
+            <>
+              {Object.entries(activeFilters)
+                .filter(([, vals]) => vals.length > 0)
+                .map(([categoryId, values]) => {
+                  const cat = filterCategories.find(c => c.id === categoryId)
+                  return (
+                    <FilterChip
+                      key={categoryId}
+                      label={cat?.label ?? categoryId}
+                      values={values.map(v => ({
+                        label: filterValueLabel(categoryId, v),
+                        onRemove: () => onRemoveFilter?.(categoryId, v),
+                      }))}
+                      onLabelClick={() => {}}
+                    />
+                  )
+                })}
+              <FilterCombobox
+                categories={filterCategories}
+                onApply={onApplyFilter ?? (() => {})}
+                activeFilters={activeFilters}
+                trigger={({ onClick }) => (
+                  <Button variant="default" size="sm" className="h-7 text-caption gap-1.5 px-2.5" onClick={onClick}>
+                    <PlusIcon className="size-3.5" />
+                    Add
+                  </Button>
+                )}
+              />
+              <FilterChip
+                variant="clear-all"
+                className="ml-auto"
+                onClear={onClearFilters ?? (() => {})}
+              />
+            </>
+          )}
         </div>
       )}
 
