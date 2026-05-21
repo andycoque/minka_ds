@@ -21,13 +21,14 @@ import { Tabs, TabsList, TabsTrigger } from "./tabs"
 interface FilterCategory {
   id: string
   label: string
-  type?: "list" | "date" | "amount"
+  type?: "list" | "date" | "amount" | "hours"
   values?: string[]
   renderValue?: (value: string) => React.ReactNode
 }
 
 type AmountValue   = { exact: number } | { min?: number; max?: number }
-type CategoryValue = string | DateRange | AmountValue
+type HoursValue    = { from: string; to: string }
+type CategoryValue = string | DateRange | AmountValue | HoursValue
 
 
 type Step = 1 | 2 | 3
@@ -58,6 +59,8 @@ function FilterCombobox({
   const [amountExact, setAmountExact]           = React.useState("")
   const [amountMin, setAmountMin]               = React.useState("")
   const [amountMax, setAmountMax]               = React.useState("")
+  const [hoursInput, setHoursInput]             = React.useState("")
+  const [hoursInputTo, setHoursInputTo]         = React.useState("")
   const [search, setSearch]                     = React.useState("")
 
   const containerRef = React.useRef<HTMLDivElement>(null)
@@ -90,6 +93,8 @@ function FilterCombobox({
     setAmountExact("")
     setAmountMin("")
     setAmountMax("")
+    setHoursInput("")
+    setHoursInputTo("")
   }
 
   function handleToggle() {
@@ -114,6 +119,16 @@ function FilterCombobox({
       setSelectedValues(new Set())
       setSearch("")
       setStep(3)
+      return
+    }
+
+    if (cat.type === "hours") {
+      setSelectedCategory(cat)
+      setSelectedValues(new Set())
+      setHoursInput("")
+      setHoursInputTo("")
+      setSearch("")
+      setStep(2)
       return
     }
 
@@ -160,6 +175,12 @@ function FilterCombobox({
     handleClose()
   }
 
+  function applyCustomHours() {
+    if (!selectedCategory || !hoursInput || !hoursInputTo) return
+    onApply(selectedCategory.id, [{ from: hoursInput, to: hoursInputTo }])
+    handleClose()
+  }
+
   function applyCustomAmount() {
     if (!selectedCategory) return
     let value: AmountValue
@@ -190,6 +211,7 @@ function FilterCombobox({
 
   const isDate   = selectedCategory?.type === "date"
   const isAmount = selectedCategory?.type === "amount"
+  const isHours  = selectedCategory?.type === "hours"
 
   const step2AllValues = selectedCategory?.values ?? []
 
@@ -218,7 +240,7 @@ function FilterCombobox({
           dropdownAlign === "right" ? "absolute right-0 top-full mt-1.5 overflow-hidden [border-radius:var(--radius-popover)]" : "absolute left-0 top-full mt-1.5 overflow-hidden [border-radius:var(--radius-popover)]",
           "bg-[var(--color-bg-overlay)] shadow-[var(--shadow-popover)] ring-1 ring-[var(--color-border-subtle)]",
           "[z-index:var(--z-floating)]",
-          step === 3 && isDate ? "w-auto" : "w-56"
+          step === 3 && isDate ? "w-auto" : step === 3 && isHours ? "w-80" : "w-56"
         )}>
 
           {/* Step 1 — category list (multi-category mode only) */}
@@ -251,17 +273,28 @@ function FilterCombobox({
                   ? <EmptyRow />
                   : step2Filtered.map(value => (
                     <li key={value}>
-                      <CheckRow
-                        checked={selectedValues.has(value)}
-                        onToggle={() => toggleValue(value)}
-                      >
-                        {selectedCategory.renderValue?.(value) ?? value}
-                      </CheckRow>
+                      {selectedCategory.type === "hours" ? (
+                        <PickerRow onClick={() => { onApply(selectedCategory.id, [value]); handleClose() }}>
+                          {selectedCategory.renderValue?.(value) ?? value}
+                        </PickerRow>
+                      ) : (
+                        <CheckRow
+                          checked={selectedValues.has(value)}
+                          onToggle={() => toggleValue(value)}
+                        >
+                          {selectedCategory.renderValue?.(value) ?? value}
+                        </CheckRow>
+                      )}
                     </li>
                   ))
                 }
+                {selectedCategory.type === "hours" && (
+                  <li>
+                    <PickerRow onClick={() => setStep(3)}>Custom range</PickerRow>
+                  </li>
+                )}
               </ul>
-              {selectedValues.size > 0 && (
+              {selectedValues.size > 0 && selectedCategory.type !== "hours" && (
                 <div className="p-1">
                   <Button size="sm" className="w-full" onClick={applyValues}>
                     Apply
@@ -290,6 +323,39 @@ function FilterCombobox({
                   </Button>
                 </div>
               )}
+            </>
+          )}
+
+          {/* Step 3 — hours custom range */}
+          {step === 3 && isHours && (
+            <>
+              <StepHeader
+                title="Custom range"
+                onBack={() => setStep(2)}
+              />
+              <div className="p-2 flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="time"
+                    value={hoursInput}
+                    onChange={e => setHoursInput(e.target.value)}
+                    className="flex-1"
+                  />
+                  <span className="text-body-sm text-[var(--color-text-muted)] shrink-0">–</span>
+                  <Input
+                    type="time"
+                    value={hoursInputTo}
+                    onChange={e => setHoursInputTo(e.target.value)}
+                    className="flex-1"
+                  />
+                </div>
+                {hoursInput !== "" && hoursInputTo !== "" &&
+                  !isNaN(parseFloat(hoursInput)) && !isNaN(parseFloat(hoursInputTo)) && (
+                  <Button size="sm" className="w-full" onClick={applyCustomHours}>
+                    Apply
+                  </Button>
+                )}
+              </div>
             </>
           )}
 
@@ -446,4 +512,4 @@ function EmptyRow() {
 // ── Exports ────────────────────────────────────────────────────────────────────
 
 export { FilterCombobox }
-export type { FilterCategory, CategoryValue, AmountValue }
+export type { FilterCategory, CategoryValue, AmountValue, HoursValue }
