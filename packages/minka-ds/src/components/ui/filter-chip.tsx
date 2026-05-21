@@ -52,7 +52,7 @@ function FilterChip(props: FilterChipProps) {
       {values.map((value, i) => (
         <span
           key={i}
-          className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] px-2 py-0.5 text-caption text-[var(--color-text-default)]"
+          className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-base)] px-2 py-0.5 text-caption text-[var(--color-text-default)]"
         >
           {value.label}
           <button

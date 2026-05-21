@@ -62,6 +62,7 @@ function FilterCombobox({
 
   const containerRef = React.useRef<HTMLDivElement>(null)
   const searchRef    = React.useRef<HTMLInputElement>(null)
+  const isSingle     = categories.length === 1
 
   // Close on outside click
   React.useEffect(() => {
@@ -89,6 +90,18 @@ function FilterCombobox({
     setAmountExact("")
     setAmountMin("")
     setAmountMax("")
+  }
+
+  function handleToggle() {
+    if (open) {
+      handleClose()
+      return
+    }
+    // Single-category: skip step 1 and jump straight to options
+    if (isSingle) {
+      openCategory(categories[0])
+    }
+    setOpen(true)
   }
 
   function openCategory(cat: FilterCategory) {
@@ -193,8 +206,8 @@ function FilterCombobox({
 
   return (
     <div ref={containerRef} className={cn("relative inline-block", className)}>
-      {trigger ? trigger({ open, onClick: () => setOpen(v => !v) }) : (
-        <Button variant="default" size="sm" className="h-7 text-caption gap-1.5 px-2.5" onClick={() => setOpen(v => !v)}>
+      {trigger ? trigger({ open, onClick: handleToggle }) : (
+        <Button variant="default" size="sm" className="h-7 text-caption gap-1.5 px-2.5" onClick={handleToggle}>
           <PlusIcon className="size-3.5" />
           Add filter
         </Button>
@@ -204,11 +217,11 @@ function FilterCombobox({
         <div className={cn(
           dropdownAlign === "right" ? "absolute right-0 top-full mt-1.5 overflow-hidden [border-radius:var(--radius-popover)]" : "absolute left-0 top-full mt-1.5 overflow-hidden [border-radius:var(--radius-popover)]",
           "bg-[var(--color-bg-overlay)] shadow-[var(--shadow-popover)] ring-1 ring-[var(--color-border-subtle)]",
-          "[z-index:var(--z-dropdown)]",
+          "[z-index:var(--z-floating)]",
           step === 3 && isDate ? "w-auto" : "w-56"
         )}>
 
-          {/* Step 1 — category list */}
+          {/* Step 1 — category list (multi-category mode only) */}
           {step === 1 && (
             <ul className="p-1">
               {categories.map(cat => (
@@ -222,10 +235,12 @@ function FilterCombobox({
           {/* Step 2 — value list */}
           {step === 2 && selectedCategory && (
             <>
-              <StepHeader
-                title={selectedCategory.label}
-                onBack={() => { setStep(1); setSearch("") }}
-              />
+              {!isSingle && (
+                <StepHeader
+                  title={selectedCategory.label}
+                  onBack={() => { setStep(1); setSearch("") }}
+                />
+              )}
               {showSearch && (
                 <div className="px-1 pt-1">
                   <SearchInput ref={searchRef} value={search} onChange={setSearch} />
@@ -259,10 +274,12 @@ function FilterCombobox({
           {/* Step 3 — custom date range */}
           {step === 3 && isDate && (
             <>
-              <StepHeader
-                title={selectedCategory?.label ?? "Date"}
-                onBack={() => setStep(1)}
-              />
+              {!isSingle && (
+                <StepHeader
+                  title={selectedCategory?.label ?? "Date"}
+                  onBack={() => setStep(1)}
+                />
+              )}
               <div className="p-1">
                 <Calendar mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={1} />
               </div>
@@ -276,14 +293,16 @@ function FilterCombobox({
             </>
           )}
 
-          {/* Step 3 — custom amount (no step 2 for amount — opens here directly) */}
+          {/* Step 3 — custom amount */}
           {step === 3 && isAmount && (
             <>
-              <StepHeader
-                title="Amount"
-                onBack={() => { setStep(1) }}
-              />
-              <div className="px-2 pb-2 flex flex-col gap-2">
+              {!isSingle && (
+                <StepHeader
+                  title="Amount"
+                  onBack={() => setStep(1)}
+                />
+              )}
+              <div className="p-2 flex flex-col gap-2">
                 <Tabs
                   value={amountMode}
                   onValueChange={v => setAmountMode(v as "exact" | "range")}

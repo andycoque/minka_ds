@@ -22,6 +22,18 @@
 
   /* --- Color scales --- */
 
+  --primitive-beige-50:  oklch(0.990 0.008 98);
+  --primitive-beige-100: oklch(0.982 0.030 98);
+  --primitive-beige-200: oklch(0.968 0.052 98);
+  --primitive-beige-300: oklch(0.948 0.072 98);
+  --primitive-beige-400: oklch(0.918 0.083 98);
+  --primitive-beige-500: oklch(0.876 0.085 98);
+  --primitive-beige-600: oklch(0.792 0.076 98);
+  --primitive-beige-700: oklch(0.680 0.062 98);
+  --primitive-beige-800: oklch(0.480 0.044 98);
+  --primitive-beige-900: oklch(0.310 0.028 98);
+  --primitive-beige-950: oklch(0.230 0.020 98);
+
   --primitive-red-50:  oklch(0.95 0.03 28);
   --primitive-red-100: oklch(0.93 0.05 28);
   --primitive-red-200: oklch(0.89 0.07 28);
@@ -58,9 +70,9 @@
   --primitive-yellow-900: oklch(0.3 0.07 98);
   --primitive-yellow-950: oklch(0.25 0.06 98);
 
-  --primitive-lulo-50:  oklch(0.94 0.24 112);
-  --primitive-lulo-100: oklch(0.92 0.23 112);
-  --primitive-lulo-200: oklch(0.87 0.22 112);
+  --primitive-lulo-50:  oklch(0.967 0.099 118);
+  --primitive-lulo-100: oklch(0.918 0.136 116);
+  --primitive-lulo-200: oklch(0.869 0.173 114);
   --primitive-lulo-300: oklch(0.82 0.21 112);
   --primitive-lulo-400: oklch(0.76 0.2 112);
   --primitive-lulo-500: oklch(0.7 0.18 112);
@@ -105,6 +117,18 @@
   --primitive-sea-800: oklch(0.4 0.1 220);
   --primitive-sea-900: oklch(0.29 0.07 220);
   --primitive-sea-950: oklch(0.24 0.06 220);
+
+  --primitive-slate-50:  oklch(0.950 0.012 218);
+  --primitive-slate-100: oklch(0.932 0.020 218);
+  --primitive-slate-200: oklch(0.898 0.032 218);
+  --primitive-slate-300: oklch(0.848 0.042 218);
+  --primitive-slate-400: oklch(0.762 0.054 218);
+  --primitive-slate-500: oklch(0.656 0.063 218);
+  --primitive-slate-600: oklch(0.560 0.054 218);
+  --primitive-slate-700: oklch(0.472 0.046 218);
+  --primitive-slate-800: oklch(0.352 0.034 218);
+  --primitive-slate-900: oklch(0.248 0.023 218);
+  --primitive-slate-950: oklch(0.198 0.017 218);
 
   --primitive-blue-50:  oklch(0.95 0.03 257);
   --primitive-blue-100: oklch(0.93 0.04 257);

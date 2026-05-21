@@ -134,7 +134,7 @@
   --color-bg-success:         var(--primitive-green-50);
   --color-bg-error:           var(--primitive-red-50);
   --color-bg-warning:         var(--primitive-yellow-50);
-  --color-bg-info:            var(--primitive-blue-50);
+  --color-bg-info:            var(--primitive-slate-50);
   --color-bg-backdrop:        oklch(0 0 0 / 50%);
   --color-bg-backdrop-heavy:  oklch(0 0 0 / 70%);
   --color-bg-glass:           oklch(1 0 0 / 80%);
@@ -154,7 +154,7 @@
   --color-text-success:       var(--primitive-green-700);
   --color-text-error:         var(--primitive-red-600);
   --color-text-warning:       var(--primitive-yellow-700);
-  --color-text-info:          var(--primitive-blue-600);
+  --color-text-info:          var(--primitive-slate-600);
 
   /* product borders */
   --color-border-subtle:   var(--primitive-neutral-100);
@@ -166,12 +166,12 @@
   --color-border-success:  var(--primitive-green-500);
   --color-border-error:    var(--primitive-red-500);
   --color-border-warning:  var(--primitive-yellow-500);
-  --color-border-info:     var(--primitive-blue-500);
+  --color-border-info:     var(--primitive-slate-500);
 
   /* product actions */
-  --color-action-primary-default:    var(--primitive-neutral-900);
-  --color-action-primary-hover:      var(--primitive-neutral-950);
-  --color-action-primary-pressed:    var(--primitive-neutral-1000);
+  --color-action-primary-default:    var(--primitive-slate-700);
+  --color-action-primary-hover:      var(--primitive-slate-800);
+  --color-action-primary-pressed:    var(--primitive-slate-900);
   --color-action-primary-disabled:   var(--primitive-neutral-200);
   --color-action-primary-foreground: var(--primitive-neutral-0);
 
@@ -197,7 +197,14 @@
   --color-feedback-success: var(--primitive-green-700);
   --color-feedback-error:   var(--primitive-red-600);
   --color-feedback-warning: var(--primitive-yellow-400);
-  --color-feedback-info:    var(--primitive-blue-600);
+  --color-feedback-info:    var(--primitive-slate-600);
+
+  /* brand colors */
+  --color-brand-beige:  var(--primitive-beige-100);
+  --color-brand-yellow: var(--primitive-lulo-50);
+  --color-brand-rose:   var(--primitive-red-100);
+  --color-brand-red:    var(--primitive-red-500);
+  --color-brand-blue:   var(--primitive-slate-500);
 
   /* component z-index aliases */
   --z-sticky:   var(--primitive-z-raised);
@@ -273,7 +280,7 @@
   --color-bg-success:         var(--primitive-green-900);
   --color-bg-error:           var(--primitive-red-900);
   --color-bg-warning:         var(--primitive-yellow-900);
-  --color-bg-info:            var(--primitive-blue-900);
+  --color-bg-info:            var(--primitive-slate-900);
   --color-bg-backdrop:        oklch(0 0 0 / 50%);
   --color-bg-backdrop-heavy:  oklch(0 0 0 / 70%);
   --color-bg-glass:           oklch(0 0 0 / 80%);
@@ -293,7 +300,7 @@
   --color-text-success:       var(--primitive-green-400);
   --color-text-error:         var(--primitive-red-400);
   --color-text-warning:       var(--primitive-yellow-400);
-  --color-text-info:          var(--primitive-blue-400);
+  --color-text-info:          var(--primitive-slate-400);
 
   /* product borders */
   --color-border-subtle:   var(--primitive-neutral-800);
@@ -305,14 +312,14 @@
   --color-border-success:  var(--primitive-green-500);
   --color-border-error:    var(--primitive-red-500);
   --color-border-warning:  var(--primitive-yellow-500);
-  --color-border-info:     var(--primitive-blue-400);
+  --color-border-info:     var(--primitive-slate-400);
 
   /* product actions */
-  --color-action-primary-default:    var(--primitive-neutral-100);
-  --color-action-primary-hover:      var(--primitive-neutral-50);
-  --color-action-primary-pressed:    var(--primitive-neutral-200);
+  --color-action-primary-default:    var(--primitive-slate-100);
+  --color-action-primary-hover:      var(--primitive-slate-50);
+  --color-action-primary-pressed:    var(--primitive-slate-200);
   --color-action-primary-disabled:   var(--primitive-neutral-700);
-  --color-action-primary-foreground: var(--primitive-neutral-950);
+  --color-action-primary-foreground: var(--primitive-slate-900);
 
   --color-action-secondary-default:    var(--primitive-neutral-800);
   --color-action-secondary-hover:      var(--primitive-neutral-700);
@@ -336,7 +343,7 @@
   --color-feedback-success: var(--primitive-green-400);
   --color-feedback-error:   var(--primitive-red-400);
   --color-feedback-warning: var(--primitive-yellow-300);
-  --color-feedback-info:    var(--primitive-blue-400);
+  --color-feedback-info:    var(--primitive-slate-400);
 
   /* shadows */
   --shadow-card:    none;

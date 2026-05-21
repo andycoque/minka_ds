@@ -111,7 +111,7 @@ function SearchBar({
                 <XIcon className="size-4" />
               </InputGroupButton>
             )}
-            {!value && kbdHint && !hasFilterCategories && <Kbd>{kbdHint}</Kbd>}
+            {!value && kbdHint && (!hasFilterCategories || alwaysShowFilterBar) && <Kbd>{kbdHint}</Kbd>}
             {hasFilterCategories && !hasActiveFilters && !alwaysShowFilterBar && (
               <>
                 {!value && kbdHint && <Kbd>{kbdHint}</Kbd>}
@@ -139,20 +139,28 @@ function SearchBar({
           {alwaysShowFilterBar ? (
             // Always-open mode: one trigger per category, active ones show chips
             <>
+              <span className="text-caption text-[var(--color-text-default)] shrink-0">Filters:</span>
               {filterCategories.map(cat => {
                 const activeVals = activeFilters[cat.id] ?? []
                 const hasActive  = activeVals.length > 0
 
                 if (hasActive) {
                   return (
-                    <FilterChip
+                    <FilterCombobox
                       key={cat.id}
-                      label={cat.label}
-                      values={activeVals.map(v => ({
-                        label: filterValueLabel(cat.id, v),
-                        onRemove: () => onRemoveFilter?.(cat.id, v),
-                      }))}
-                      onLabelClick={() => {}}
+                      categories={[cat]}
+                      onApply={onApplyFilter ?? (() => {})}
+                      activeFilters={activeFilters}
+                      trigger={({ onClick }) => (
+                        <FilterChip
+                          label={cat.label}
+                          values={activeVals.map(v => ({
+                            label: filterValueLabel(cat.id, v),
+                            onRemove: () => onRemoveFilter?.(cat.id, v),
+                          }))}
+                          onLabelClick={onClick}
+                        />
+                      )}
                     />
                   )
                 }

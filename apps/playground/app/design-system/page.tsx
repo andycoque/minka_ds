@@ -348,6 +348,7 @@ export default function DesignSystemPlayground() {
               <h2 className="text-xl font-semibold">Color primitives</h2>
               {[
                 { name: "neutral",    steps: ["0", "50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950", "1000"] },
+                { name: "beige",      steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
                 { name: "red",        steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
                 { name: "bronze",     steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
                 { name: "yellow",     steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
@@ -355,6 +356,7 @@ export default function DesignSystemPlayground() {
                 { name: "green",      steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
                 { name: "aquamarine", steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
                 { name: "sea",        steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
+                { name: "slate",      steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
                 { name: "blue",       steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
                 { name: "purple",     steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
                 { name: "fuchsia",    steps: ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] },
@@ -444,6 +446,26 @@ export default function DesignSystemPlayground() {
                   <div key={token} className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded shrink-0" style={{ border: `2px solid var(${token})` }} />
                     <code className="text-caption text-[var(--color-text-muted)] truncate">{label}</code>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <Separator />
+
+            <section className="space-y-4">
+              <h2 className="text-xl font-semibold">Brand colors</h2>
+              <div className="flex gap-3 flex-wrap">
+                {[
+                  ["beige",  "--color-brand-beige"],
+                  ["yellow", "--color-brand-yellow"],
+                  ["rose",   "--color-brand-rose"],
+                  ["red",    "--color-brand-red"],
+                  ["blue",   "--color-brand-blue"],
+                ].map(([label, token]) => (
+                  <div key={token} className="flex flex-col items-center gap-1.5">
+                    <div className="w-16 h-12 rounded-md border border-[var(--color-border-default)]" style={{ backgroundColor: `var(${token})` }} />
+                    <code className="text-caption text-[var(--color-text-muted)]">{label}</code>
                   </div>
                 ))}
               </div>
