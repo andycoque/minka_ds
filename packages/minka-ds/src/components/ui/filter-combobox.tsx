@@ -215,7 +215,7 @@ function FilterCombobox({
 
   const step2AllValues = selectedCategory?.values ?? []
 
-  const showSearch    = step2AllValues.length > 4
+  const showSearch    = step2AllValues.length > 4 && selectedCategory?.type !== "hours"
   const step2Filtered = showSearch
     ? step2AllValues.filter(v => v.toLowerCase().includes(search.toLowerCase()))
     : step2AllValues
