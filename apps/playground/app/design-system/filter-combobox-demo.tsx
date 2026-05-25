@@ -40,9 +40,9 @@ const CATEGORIES = [
 ]
 
 function labelForValue(categoryId: string, value: CategoryValue): string {
-  if (categoryId === "date" && typeof value === "object" && "from" in value && value.from) {
+  if (categoryId === "date" && typeof value === "object" && "from" in value && value.from instanceof Date) {
     const from = value.from.toLocaleDateString("default", { month: "short", day: "numeric" })
-    const to   = value.to?.toLocaleDateString("default", { month: "short", day: "numeric" })
+    const to   = value.to instanceof Date ? value.to.toLocaleDateString("default", { month: "short", day: "numeric" }) : undefined
     return to ? `${from} – ${to}` : `From ${from}`
   }
   if (categoryId === "amount" && typeof value === "object") {
