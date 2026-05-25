@@ -53,6 +53,7 @@ interface SearchBarProps {
   onClearFilters?: () => void
   filterValueLabel?: (categoryId: string, value: CategoryValue) => string
   alwaysShowFilterBar?: boolean
+  size?: "default" | "sm"
 
   children?: React.ReactNode
   className?: string
@@ -75,6 +76,7 @@ function SearchBar({
   onClearFilters,
   filterValueLabel = defaultFilterValueLabel,
   alwaysShowFilterBar = false,
+  size = "default",
   children,
   className,
 }: SearchBarProps) {
@@ -88,7 +90,7 @@ function SearchBar({
       {/* Search input row */}
       <InputGroup
         className={cn(
-          "h-12",
+          size === "sm" ? "h-9" : "h-12",
           showFilterBar && "[border-bottom-left-radius:0] [border-bottom-right-radius:0]"
         )}
       >
