@@ -109,6 +109,7 @@ interface DataTableProps<TData, TValue> {
   batchSize?: number
   onRowClick?: (row: TData) => void
   variant?: "default" | "compact"
+  initialColumnVisibility?: VisibilityState
   className?: string
 }
 
@@ -118,11 +119,12 @@ function DataTable<TData, TValue>({
   batchSize = 40,
   onRowClick,
   variant = "default",
+  initialColumnVisibility,
   className,
 }: DataTableProps<TData, TValue>) {
   const compact = variant === "compact"
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(initialColumnVisibility ?? {})
   const [displayCount, setDisplayCount] = React.useState(batchSize)
   const [hasMore, setHasMore] = React.useState(data.length > batchSize)
 
