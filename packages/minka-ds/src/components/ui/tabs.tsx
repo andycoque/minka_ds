@@ -31,6 +31,7 @@ const tabsListVariants = cva(
     variants: {
       variant: {
         default: "[border-radius:var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] shadow-xs",
+        subtle:  "[border-radius:var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-base)]",
         line:    "gap-1 rounded-none bg-transparent",
       },
     },
@@ -72,6 +73,8 @@ function TabsTrigger({
         "disabled:pointer-events-none disabled:text-[var(--color-text-disabled)]",
         // default variant — active tab gets raised surface
         "group-data-[variant=default]/tabs-list:data-[state=active]:bg-[var(--color-bg-inverted)] group-data-[variant=default]/tabs-list:data-[state=active]:text-[var(--color-bg-raised)] group-data-[variant=default]/tabs-list:data-[state=active]:shadow-[var(--shadow-card)]",
+        // subtle variant — active tab gets raised bg with default text, no inversion
+        "group-data-[variant=subtle]/tabs-list:data-[state=active]:bg-[var(--color-bg-raised)] group-data-[variant=subtle]/tabs-list:data-[state=active]:text-[var(--color-text-default)] group-data-[variant=subtle]/tabs-list:data-[state=active]:shadow-xs",
         // line variant — active tab is transparent, underline indicator
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:text-[var(--color-text-default)] group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
         // underline indicator for line variant

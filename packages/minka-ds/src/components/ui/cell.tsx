@@ -95,11 +95,47 @@ function ActionCell({ children, className }: ActionCellProps) {
   )
 }
 
-export { TextStack, DataCell, AmountCell, BadgeCell, ActionCell }
+// ── StatusCell ────────────────────────────────────────────────────────────────
+// Dot + label status indicator. Use instead of badges for table status columns.
+
+type StatusCellVariant = "success" | "warning" | "error" | "neutral"
+
+interface StatusCellProps {
+  variant: StatusCellVariant
+  children: React.ReactNode
+  className?: string
+}
+
+const STATUS_DOT: Record<StatusCellVariant, string> = {
+  success: "bg-[var(--primitive-green-500)]",
+  warning: "bg-[var(--primitive-yellow-300)]",
+  error:   "bg-[var(--primitive-red-500)]",
+  neutral: "bg-[var(--color-text-disabled)]",
+}
+
+const STATUS_TEXT: Record<StatusCellVariant, string> = {
+  success: "text-[var(--primitive-green-700)]",
+  warning: "text-[var(--color-text-default)]",
+  error:   "text-[var(--color-text-default)]",
+  neutral: "text-[var(--color-text-disabled)]",
+}
+
+function StatusCell({ variant, children, className }: StatusCellProps) {
+  return (
+    <span className={cn("inline-flex items-center gap-1.5 text-body-sm", STATUS_TEXT[variant], className)}>
+      <span className={cn("size-1.5 rounded-full shrink-0", STATUS_DOT[variant])} />
+      {children}
+    </span>
+  )
+}
+
+export { TextStack, DataCell, AmountCell, BadgeCell, ActionCell, StatusCell }
 export type {
   TextStackProps,
   DataCellProps,
   AmountCellProps,
   BadgeCellProps,
   ActionCellProps,
+  StatusCellProps,
+  StatusCellVariant,
 }
