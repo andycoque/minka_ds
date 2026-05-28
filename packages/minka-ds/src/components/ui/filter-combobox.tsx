@@ -41,6 +41,7 @@ function FilterCombobox({
   activeFilters = {},
   trigger,
   dropdownAlign = "left",
+  singleSelect = false,
   className,
 }: {
   categories: FilterCategory[]
@@ -48,6 +49,7 @@ function FilterCombobox({
   activeFilters?: Record<string, CategoryValue[]>
   trigger?: (props: { open: boolean; onClick: () => void }) => React.ReactNode
   dropdownAlign?: "left" | "right"
+  singleSelect?: boolean
   className?: string
 }) {
   const [open, setOpen]                         = React.useState(false)
@@ -273,8 +275,12 @@ function FilterCombobox({
                   ? <EmptyRow />
                   : step2Filtered.map(value => (
                     <li key={value}>
-                      {selectedCategory.type === "hours" ? (
-                        <PickerRow onClick={() => { onApply(selectedCategory.id, [value]); handleClose() }}>
+                      {selectedCategory.type === "hours" || singleSelect ? (
+                        <PickerRow
+                          onClick={() => { onApply(selectedCategory.id, [value]); handleClose() }}
+                          selected={singleSelect && selectedValues.has(value)}
+                          hideChevron={singleSelect}
+                        >
                           {selectedCategory.renderValue?.(value) ?? value}
                         </PickerRow>
                       ) : (
@@ -294,7 +300,7 @@ function FilterCombobox({
                   </li>
                 )}
               </ul>
-              {selectedValues.size > 0 && selectedCategory.type !== "hours" && (
+              {selectedValues.size > 0 && selectedCategory.type !== "hours" && !singleSelect && (
                 <div className="p-1">
                   <Button size="sm" className="w-full" onClick={applyValues}>
                     Apply
@@ -469,7 +475,7 @@ function StepHeader({ title, onBack }: { title: string; onBack: () => void }) {
   )
 }
 
-function PickerRow({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+function PickerRow({ children, onClick, selected = false, hideChevron = false }: { children: React.ReactNode; onClick: () => void; selected?: boolean; hideChevron?: boolean }) {
   return (
     <button
       type="button"
@@ -477,7 +483,8 @@ function PickerRow({ children, onClick }: { children: React.ReactNode; onClick: 
       className="relative flex w-full items-center gap-2 [border-radius:var(--radius-tag)] py-1.5 pl-2 pr-8 text-body-sm text-[var(--color-text-default)] hover:bg-[var(--color-action-ghost-hover)] transition-colors"
     >
       {children}
-      <ChevronRightIcon className="pointer-events-none absolute right-2 size-3.5 text-[var(--color-text-muted)]" />
+      {!hideChevron && <ChevronRightIcon className="pointer-events-none absolute right-2 size-3.5 text-[var(--color-text-muted)]" />}
+      {selected && <CheckIcon className="pointer-events-none absolute right-2 size-3.5 text-[var(--color-text-default)]" />}
     </button>
   )
 }
