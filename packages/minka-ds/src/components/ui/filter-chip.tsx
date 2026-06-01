@@ -8,7 +8,7 @@ type FilterChipProps =
   | {
       variant?: "filter"
       label: string
-      values: { label: string; onRemove: () => void }[]
+      values: { label: string; onRemove?: () => void }[]
       onLabelClick?: () => void
       className?: string
     }
@@ -49,22 +49,33 @@ function FilterChip(props: FilterChipProps) {
       >
         {label}:
       </button>
-      {values.map((value, i) => (
-        <span
-          key={i}
-          className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-base)] px-2 py-0.5 text-caption text-[var(--color-text-default)]"
-        >
-          {value.label}
-          <button
-            type="button"
-            onClick={value.onRemove}
-            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-default)] transition-colors"
-            aria-label={`Remove ${value.label}`}
+      {values.map((value, i) =>
+        value.onRemove ? (
+          <span
+            key={i}
+            className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-base)] px-2 py-0.5 text-caption text-[var(--color-text-default)]"
           >
-            <XIcon className="size-3" />
+            {value.label}
+            <button
+              type="button"
+              onClick={value.onRemove}
+              className="text-[var(--color-text-muted)] hover:text-[var(--color-text-default)] transition-colors"
+              aria-label={`Remove ${value.label}`}
+            >
+              <XIcon className="size-3" />
+            </button>
+          </span>
+        ) : (
+          <button
+            key={i}
+            type="button"
+            onClick={onLabelClick}
+            className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-base)] px-2 py-0.5 text-caption text-[var(--color-text-default)] hover:border-[var(--color-border-strong)] transition-colors"
+          >
+            {value.label}
           </button>
-        </span>
-      ))}
+        )
+      )}
     </div>
   )
 }

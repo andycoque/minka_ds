@@ -5,6 +5,7 @@ import { PlusIcon, SearchIcon, XIcon } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 
 import { cn } from "../../lib/utils"
+import type { DateTimeRange } from "./date-time-range-picker"
 import { Button } from "./button"
 import { FilterChip } from "./filter-chip"
 import { FilterCombobox } from "./filter-combobox"
@@ -14,8 +15,17 @@ import { Kbd } from "./kbd"
 
 // ── Default label formatter ────────────────────────────────────────────────────
 
+function formatTime(t: string): string {
+  return t || "00:00"
+}
+
 function defaultFilterValueLabel(_categoryId: string, value: CategoryValue): string {
   if (typeof value === "string") return value
+  if (typeof value === "object" && "startTime" in value) {
+    const v = value as DateTimeRange
+    const fmtDate = (d: Date) => d.toLocaleDateString("default", { month: "short", day: "numeric" })
+    return `${fmtDate(v.from)} ${formatTime(v.startTime)} – ${fmtDate(v.to)} ${formatTime(v.endTime)}`
+  }
   if (typeof value === "object" && "from" in value) {
     const v = value as DateRange
     if (!v.from) return ""
@@ -158,7 +168,7 @@ function SearchBar({
                           label={cat.label}
                           values={activeVals.map(v => ({
                             label: filterValueLabel(cat.id, v),
-                            onRemove: () => onRemoveFilter?.(cat.id, v),
+                            onRemove: cat.type === "datetime" ? undefined : () => onRemoveFilter?.(cat.id, v),
                           }))}
                           onLabelClick={onClick}
                         />

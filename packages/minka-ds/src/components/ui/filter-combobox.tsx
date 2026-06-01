@@ -15,20 +15,22 @@ import { Button } from "./button"
 import { Calendar } from "./calendar"
 import { Input } from "./input"
 import { Tabs, TabsList, TabsTrigger } from "./tabs"
+import { DateTimeRangePicker, type DateTimeRange } from "./date-time-range-picker"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface FilterCategory {
   id: string
   label: string
-  type?: "list" | "date" | "amount" | "hours"
+  type?: "list" | "date" | "amount" | "hours" | "datetime"
   values?: string[]
+  maxRangeDays?: number
   renderValue?: (value: string) => React.ReactNode
 }
 
 type AmountValue   = { exact: number } | { min?: number; max?: number }
 type HoursValue    = { from: string; to: string }
-type CategoryValue = string | DateRange | AmountValue | HoursValue
+type CategoryValue = string | DateRange | AmountValue | HoursValue | DateTimeRange
 
 
 type Step = 1 | 2 | 3
@@ -63,6 +65,7 @@ function FilterCombobox({
   const [amountMax, setAmountMax]               = React.useState("")
   const [hoursInput, setHoursInput]             = React.useState("")
   const [hoursInputTo, setHoursInputTo]         = React.useState("")
+  const [datetimeValue, setDatetimeValue]       = React.useState<DateTimeRange | null>(null)
   const [search, setSearch]                     = React.useState("")
 
   const containerRef = React.useRef<HTMLDivElement>(null)
@@ -97,6 +100,7 @@ function FilterCombobox({
     setAmountMax("")
     setHoursInput("")
     setHoursInputTo("")
+    setDatetimeValue(null)
   }
 
   function handleToggle() {
@@ -131,6 +135,18 @@ function FilterCombobox({
       setHoursInputTo("")
       setSearch("")
       setStep(2)
+      return
+    }
+
+    if (cat.type === "datetime") {
+      const custom = existing.find((v): v is DateTimeRange =>
+        typeof v === "object" && "startTime" in v
+      ) ?? null
+      setSelectedCategory(cat)
+      setDatetimeValue(custom)
+      setSelectedValues(new Set())
+      setSearch("")
+      setStep(3)
       return
     }
 
@@ -177,6 +193,12 @@ function FilterCombobox({
     handleClose()
   }
 
+  function applyDatetime() {
+    if (!selectedCategory || !datetimeValue?.from || !datetimeValue?.to) return
+    onApply(selectedCategory.id, [datetimeValue])
+    handleClose()
+  }
+
   function applyCustomHours() {
     if (!selectedCategory || !hoursInput || !hoursInputTo) return
     onApply(selectedCategory.id, [{ from: hoursInput, to: hoursInputTo }])
@@ -211,9 +233,10 @@ function FilterCombobox({
 
   // ── Derived values ───────────────────────────────────────────────────────────
 
-  const isDate   = selectedCategory?.type === "date"
-  const isAmount = selectedCategory?.type === "amount"
-  const isHours  = selectedCategory?.type === "hours"
+  const isDate     = selectedCategory?.type === "date"
+  const isAmount   = selectedCategory?.type === "amount"
+  const isHours    = selectedCategory?.type === "hours"
+  const isDatetime = selectedCategory?.type === "datetime"
 
   const step2AllValues = selectedCategory?.values ?? []
 
@@ -242,7 +265,7 @@ function FilterCombobox({
           dropdownAlign === "right" ? "absolute right-0 top-full mt-1.5 overflow-hidden [border-radius:var(--radius-popover)]" : "absolute left-0 top-full mt-1.5 overflow-hidden [border-radius:var(--radius-popover)]",
           "bg-[var(--color-bg-overlay)] shadow-[var(--shadow-popover)] ring-1 ring-[var(--color-border-subtle)]",
           "[z-index:var(--z-floating)]",
-          step === 3 && isDate ? "w-auto" : step === 3 && isHours ? "w-80" : "w-56"
+          step === 3 && (isDate || isDatetime) ? "w-auto" : step === 3 && isHours ? "w-80" : "w-56"
         )}>
 
           {/* Step 1 — category list (multi-category mode only) */}
@@ -361,6 +384,35 @@ function FilterCombobox({
                     Apply
                   </Button>
                 )}
+              </div>
+            </>
+          )}
+
+          {/* Step 3 — datetime range */}
+          {step === 3 && isDatetime && (
+            <>
+              {!isSingle && (
+                <StepHeader
+                  title={selectedCategory?.label ?? "Date range"}
+                  onBack={() => setStep(1)}
+                />
+              )}
+              <div className="p-1">
+                <DateTimeRangePicker
+                  value={datetimeValue}
+                  onChange={setDatetimeValue}
+                  maxRangeDays={selectedCategory?.maxRangeDays}
+                />
+              </div>
+              <div className="p-1">
+                <Button
+                  size="sm"
+                  className="w-full"
+                  disabled={!datetimeValue?.from || !datetimeValue?.to}
+                  onClick={applyDatetime}
+                >
+                  Apply
+                </Button>
               </div>
             </>
           )}
@@ -520,3 +572,4 @@ function EmptyRow() {
 
 export { FilterCombobox }
 export type { FilterCategory, CategoryValue, AmountValue, HoursValue }
+export type { DateTimeRange } from "./date-time-range-picker"

@@ -1,6 +1,6 @@
 {
   "name": "minka-ds",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Minka product design system — tokenized component library",
   "license": "MIT",
   "files": [
@@ -26,5 +26,8 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tw-animate-css": "^1.4.0"
+  },
+  "devDependencies": {
+    "culori": "^4.0.2"
   }
 }
