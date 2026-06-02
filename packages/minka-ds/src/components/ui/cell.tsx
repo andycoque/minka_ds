@@ -55,16 +55,20 @@ interface AmountCellProps {
 }
 
 function AmountCell({ children, className }: AmountCellProps) {
-  return (
-    <span
-      className={cn(
-        "text-body-sm text-[var(--color-text-default)] tabular-nums tracking-tight",
-        className
-      )}
-    >
-      {children}
-    </span>
-  )
+  const base = cn("text-body-sm text-[var(--color-text-default)]", className)
+
+  // PP Neue Montreal's $ glyph has a wide right sidebearing that creates a
+  // visible gap before digits. Split it into its own box with a negative
+  // margin so we can close just that gap without touching digit spacing.
+  if (typeof children === "string" && children.startsWith("$")) {
+    return (
+      <span className={base}>
+        <span className="inline-block -mr-[0.05em]">$</span>{children.slice(1)}
+      </span>
+    )
+  }
+
+  return <span className={base}>{children}</span>
 }
 
 // ── BadgeCell ─────────────────────────────────────────────────────────────────
