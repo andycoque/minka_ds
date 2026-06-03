@@ -127,6 +127,8 @@
   /* product backgrounds */
   --color-bg-canvas:          var(--primitive-neutral-100);
   --color-bg-base:            var(--primitive-neutral-50);
+  --color-bg-table-hover:     color-mix(in srgb, var(--primitive-neutral-50) 50%, transparent);
+  --color-bg-table-selected:  var(--primitive-slate-50);
   --color-bg-raised:          var(--primitive-neutral-0);
   --color-bg-overlay:         var(--primitive-neutral-0);
   --color-bg-inverted:        var(--primitive-neutral-900);
@@ -161,7 +163,7 @@
   --color-border-default:  var(--primitive-neutral-200);
   --color-border-strong:   var(--primitive-neutral-300);
   --color-border-inverse:  var(--primitive-neutral-900);
-  --color-border-focus:    var(--primitive-blue-500);
+  --color-border-focus:    var(--primitive-slate-500);
   --color-border-disabled: var(--primitive-neutral-200);
   --color-border-success:  var(--primitive-green-500);
   --color-border-error:    var(--primitive-red-500);
@@ -307,7 +309,7 @@
   --color-border-default:  var(--primitive-neutral-700);
   --color-border-strong:   var(--primitive-neutral-500);
   --color-border-inverse:  var(--primitive-neutral-100);
-  --color-border-focus:    var(--primitive-blue-400);
+  --color-border-focus:    var(--primitive-slate-400);
   --color-border-disabled: var(--primitive-neutral-700);
   --color-border-success:  var(--primitive-green-500);
   --color-border-error:    var(--primitive-red-500);
@@ -527,4 +529,28 @@
   html {
     @apply font-sans;
   }
+}
+
+/* ── Serif variants ──────────────────────────────────────────────── */
+@layer utilities {
+  .text-heading-1-serif    { font-size: var(--primitive-font-size-4xl);  font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-tight); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-heading-2-serif    { font-size: var(--primitive-font-size-3xl);  font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-snug);  letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-heading-3-serif    { font-size: var(--primitive-font-size-2xl);  font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-snug);  letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-heading-4-serif    { font-size: var(--primitive-font-size-xl);   font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-snug);  letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+
+  .text-heading-1-lg-serif { font-size: var(--primitive-font-size-5xl);  font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-tight); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-heading-2-lg-serif { font-size: var(--primitive-font-size-4xl);  font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-snug);  letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-heading-3-lg-serif { font-size: var(--primitive-font-size-3xl);  font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-snug);  letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-heading-4-lg-serif { font-size: var(--primitive-font-size-2xl);  font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-snug);  letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+
+  .text-body-xl-serif      { font-size: var(--primitive-font-size-xl);   font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-body-lg-serif      { font-size: var(--primitive-font-size-lg);   font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-body-serif         { font-size: var(--primitive-font-size-base); font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-body-sm-serif      { font-size: var(--primitive-font-size-sm);   font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-body-sm-lg-serif   { font-size: var(--primitive-font-size-base); font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+
+  .text-caption-lg-serif   { font-size: var(--primitive-font-size-sm);   font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-caption-serif      { font-size: var(--primitive-font-size-xs);   font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-caption-sm-lg-serif{ font-size: var(--primitive-font-size-xs);   font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
+  .text-caption-sm-serif   { font-size: var(--primitive-font-size-2xs);  font-weight: var(--primitive-font-weight-400); line-height: var(--primitive-line-height-normal); letter-spacing: var(--primitive-letter-spacing-normal); font-family: var(--font-serif); }
 }

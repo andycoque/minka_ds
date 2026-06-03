@@ -7,7 +7,7 @@ import { FilterComboboxDemo } from "./filter-combobox-demo"
 import { CodeBlock } from "./code-block"
 import { SearchBarDemo } from "./search-bar-demo"
 import { AlertDemo } from "./alert-demo"
-import { CornerDownLeft, Command, ArrowBigUp, Option } from "lucide-react"
+import { CornerDownLeft, Command, ArrowBigUp, Option, ChevronDown, Plus } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -72,21 +72,41 @@ export default function DesignSystemPlayground() {
                 {/* Sizes */}
                 <div className="flex items-center gap-2 px-4 py-3">
                   <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Size</span>
-                  <div className="flex flex-wrap gap-2 items-center">
+                  <div className="flex flex-wrap gap-2 items-end">
+                    <Button size="xs">XSmall</Button>
                     <Button size="sm">Small</Button>
                     <Button size="default">Default</Button>
                     <Button size="lg">Large</Button>
-                    <Button size="icon" aria-label="icon">+</Button>
-                    <Button size="icon-sm" aria-label="icon-sm">+</Button>
+                  </div>
+                </div>
+                {/* Icon only */}
+                <div className="flex items-center gap-2 px-4 py-3">
+                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Icon only</span>
+                  <div className="flex flex-wrap gap-2 items-end">
+                    <Button size="icon-xs" aria-label="icon-xs"><Plus /></Button>
+                    <Button size="icon-sm" aria-label="icon-sm"><Plus /></Button>
+                    <Button size="icon" aria-label="icon"><Plus /></Button>
+                    <Button size="icon-lg" aria-label="icon-lg"><Plus /></Button>
+                  </div>
+                </div>
+                {/* Icon + label */}
+                <div className="flex items-center gap-2 px-4 py-3">
+                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">With icon</span>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <Button><Plus /> Create</Button>
+                    <Button>Export <ChevronDown /></Button>
+                    <Button variant="secondary"><Plus /> Create</Button>
+                    <Button variant="outline">Export <ChevronDown /></Button>
                   </div>
                 </div>
                 {/* States */}
                 <div className="flex items-center gap-2 px-4 py-3">
-                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">State</span>
+                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Disabled</span>
                   <div className="flex flex-wrap gap-2 items-center">
-                    <Button disabled>Disabled</Button>
-                    <Button variant="secondary" disabled>Disabled</Button>
-                    <Button variant="outline" disabled>Disabled</Button>
+                    <Button disabled>Default</Button>
+                    <Button variant="secondary" disabled>Secondary</Button>
+                    <Button variant="outline" disabled>Outline</Button>
+                    <Button variant="ghost" disabled>Ghost</Button>
                   </div>
                 </div>
               </div>
@@ -571,6 +591,31 @@ export default function DesignSystemPlayground() {
                   { cls: "text-caption-sm",      label: "caption-sm",     meta: "2xs · 500 · normal" },
                   { cls: "text-caption-sm-light",label: "caption-sm-light",meta: "2xs · 400 · normal" },
                   { cls: "text-overline",        label: "overline",       meta: "2xs · 600 · wide · uppercase" },
+
+                  // ── Serif — headings (base) ──────────────────────────
+                  { cls: "text-heading-1-serif",    label: "heading-1-serif",    meta: "4xl · 400 · tight · serif" },
+                  { cls: "text-heading-2-serif",    label: "heading-2-serif",    meta: "3xl · 400 · snug · serif" },
+                  { cls: "text-heading-3-serif",    label: "heading-3-serif",    meta: "2xl · 400 · snug · serif" },
+                  { cls: "text-heading-4-serif",    label: "heading-4-serif",    meta: "xl · 400 · snug · serif" },
+
+                  // ── Serif — headings (lg — optically compensated) ────
+                  { cls: "text-heading-1-lg-serif", label: "heading-1-lg-serif", meta: "5xl · 400 · tight · serif" },
+                  { cls: "text-heading-2-lg-serif", label: "heading-2-lg-serif", meta: "4xl · 400 · snug · serif" },
+                  { cls: "text-heading-3-lg-serif", label: "heading-3-lg-serif", meta: "3xl · 400 · snug · serif" },
+                  { cls: "text-heading-4-lg-serif", label: "heading-4-lg-serif", meta: "2xl · 400 · snug · serif" },
+
+                  // ── Serif — body (base) ──────────────────────────────
+                  { cls: "text-body-xl-serif",   label: "body-xl-serif",   meta: "xl · 400 · normal · serif" },
+                  { cls: "text-body-lg-serif",   label: "body-lg-serif",   meta: "lg · 400 · normal · serif" },
+                  { cls: "text-body-serif",      label: "body-serif",      meta: "base · 400 · normal · serif" },
+                  { cls: "text-body-sm-serif",   label: "body-sm-serif",   meta: "sm · 400 · normal · serif" },
+                  { cls: "text-body-sm-lg-serif",label: "body-sm-lg-serif",meta: "base · 400 · normal · serif" },
+
+                  // ── Serif — caption ──────────────────────────────────
+                  { cls: "text-caption-lg-serif",   label: "caption-lg-serif",    meta: "sm · 400 · normal · serif" },
+                  { cls: "text-caption-serif",      label: "caption-serif",       meta: "xs · 400 · normal · serif" },
+                  { cls: "text-caption-sm-lg-serif",label: "caption-sm-lg-serif", meta: "xs · 400 · normal · serif" },
+                  { cls: "text-caption-sm-serif",   label: "caption-sm-serif",    meta: "2xs · 400 · normal · serif" },
                 ].map(({ cls, label, meta }) => (
                   <div key={cls} className="flex items-baseline gap-4">
                     <div className="w-48 shrink-0 space-y-0.5">
