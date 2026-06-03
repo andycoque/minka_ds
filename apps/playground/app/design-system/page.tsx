@@ -18,7 +18,8 @@ import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectVa
 import { SidebarDemo } from "./sidebar-demo"
 import { DataTableDemo } from "./data-table-demo"
 import { DialogDemo } from "./dialog-demo"
-import { SheetDemo } from "./sheet-demo"
+import { StatCardActionsDemo } from "./stat-card-demo"
+import { PasswordInputDemo } from "./password-input-demo"
 import { ComboboxDemo } from "./combobox-demo"
 import { SonnerDemo } from "./sonner-demo"
 import { TooltipDemo } from "./tooltip-demo"
@@ -215,36 +216,76 @@ export default function DesignSystemPlayground() {
             <Separator />
 
             {/* Form */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Form</h2>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <section className="space-y-4">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Form — Input</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="example-input">Input</Label>
-                  <Input id="example-input" placeholder="Enter text…" />
+                  <Label htmlFor="f-default">Default</Label>
+                  <Input id="f-default" placeholder="Enter text…" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="example-input-disabled">Disabled</Label>
-                  <Input id="example-input-disabled" placeholder="Disabled" disabled />
+                  <Label htmlFor="f-filled">Filled</Label>
+                  <Input id="f-filled" defaultValue="Andy Corredor" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="example-select">Select</Label>
+                  <Label htmlFor="f-disabled">Disabled</Label>
+                  <Input id="f-disabled" placeholder="Disabled" disabled />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="f-disabled-filled">Disabled filled</Label>
+                  <Input id="f-disabled-filled" defaultValue="Read-only value" disabled />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="f-error">Error</Label>
+                  <Input id="f-error" defaultValue="invalid@" aria-invalid="true" />
+                  <p className="text-caption text-[var(--color-feedback-error)]">Invalid email address</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="f-error-empty">Error empty</Label>
+                  <Input id="f-error-empty" placeholder="Required field" aria-invalid="true" />
+                  <p className="text-caption text-[var(--color-feedback-error)]">This field is required</p>
+                </div>
+              </div>
+
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest pt-2">Form — Select</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="s-default">Default</Label>
                   <Select>
-                    <SelectTrigger id="example-select">
-                      <SelectValue placeholder="Select an option" />
-                    </SelectTrigger>
+                    <SelectTrigger id="s-default"><SelectValue placeholder="Select an option" /></SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Fruits</SelectLabel>
-                        <SelectItem value="apple">Apple</SelectItem>
-                        <SelectItem value="banana">Banana</SelectItem>
-                        <SelectItem value="mango">Mango</SelectItem>
+                        <SelectLabel>Type</SelectLabel>
+                        <SelectItem value="p2p">P2P</SelectItem>
+                        <SelectItem value="p2m">P2M</SelectItem>
+                        <SelectItem value="b2p">B2P</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="s-disabled">Disabled</Label>
+                  <Select disabled>
+                    <SelectTrigger id="s-disabled"><SelectValue placeholder="Disabled" /></SelectTrigger>
+                    <SelectContent />
+                  </Select>
+                </div>
+              </div>
+
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest pt-2">Form — Textarea</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="ta-default">Default</Label>
+                  <Textarea id="ta-default" placeholder="Enter description…" rows={3} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="ta-disabled">Disabled</Label>
+                  <Textarea id="ta-disabled" placeholder="Disabled" rows={3} disabled />
+                </div>
                 <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="example-textarea">Textarea</Label>
-                  <Textarea id="example-textarea" placeholder="Enter longer text…" rows={3} />
+                  <Label htmlFor="ta-error">Error</Label>
+                  <Textarea id="ta-error" defaultValue="Too short" rows={3} aria-invalid="true" />
+                  <p className="text-caption text-[var(--color-feedback-error)]">Minimum 20 characters required</p>
                 </div>
               </div>
             </section>
@@ -355,14 +396,6 @@ export default function DesignSystemPlayground() {
 
             <Separator />
 
-            {/* Sheet */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Sheet</h2>
-              <SheetDemo />
-            </section>
-
-            <Separator />
-
             {/* Sidebar */}
             <section className="space-y-3">
               <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Sidebar</h2>
@@ -395,6 +428,8 @@ export default function DesignSystemPlayground() {
                   <StatCard type="status" label="Settlement" status="Balance alert" color="error"   />
                   <StatCard type="status" label="Settlement" status="Inactive"      color="muted"   />
                 </div>
+                <p className="text-caption text-[var(--color-text-muted)]">With actions</p>
+                <StatCardActionsDemo />
               </div>
             </section>
 
@@ -474,11 +509,8 @@ export default function DesignSystemPlayground() {
                   </InputGroup>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-caption text-[var(--color-text-muted)]">Password</p>
-                  <InputGroup>
-                    <InputGroupAddon><Lock className="size-4 text-[var(--color-text-hint)]" /></InputGroupAddon>
-                    <InputGroupInput type="password" placeholder="Password" />
-                  </InputGroup>
+                  <p className="text-caption text-[var(--color-text-muted)]">Password with toggle</p>
+                  <PasswordInputDemo />
                 </div>
               </div>
             </section>

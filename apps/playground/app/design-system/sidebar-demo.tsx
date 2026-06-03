@@ -54,7 +54,7 @@ export function SidebarDemo() {
 
   return (
     <div className="h-[420px] overflow-hidden rounded-lg border border-[var(--color-border-default)] [transform:translateZ(0)]">
-      <SidebarProvider className="!min-h-0 h-full">
+      <SidebarProvider className="!min-h-0 h-full" defaultOpen>
         <Sidebar className="!h-full">
 
           <SidebarHeader>

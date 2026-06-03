@@ -135,16 +135,5 @@ const linearColumns: ColumnDef<Client>[] = [
 ]
 
 export function DataTableDemo() {
-  return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <p className="text-label-sm text-[var(--color-text-muted)]">Default</p>
-        <DataTable columns={columns} data={data} />
-      </div>
-      <div className="space-y-2">
-        <p className="text-label-sm text-[var(--color-text-muted)]">Compact</p>
-        <DataTable columns={linearColumns} data={data} variant="compact" />
-      </div>
-    </div>
-  )
+  return <DataTable columns={linearColumns} data={data} variant="compact" />
 }

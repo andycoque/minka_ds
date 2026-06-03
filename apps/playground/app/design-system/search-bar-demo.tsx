@@ -50,16 +50,30 @@ export function SearchBarDemo() {
   }
 
   return (
-    <SearchBar
-      placeholder="Search by ID, name, or description"
-      value={query}
-      onChange={setQuery}
-      kbdHint={<><Command className="size-3" /> K</>}
-      filterCategories={CATEGORIES}
-      activeFilters={filters}
-      onApplyFilter={handleApply}
-      onRemoveFilter={handleRemove}
-      onClearFilters={() => setFilters({})}
-    />
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <p className="text-caption text-[var(--color-text-muted)]">With filters</p>
+        <SearchBar
+          placeholder="Search by ID, name, or description"
+          value={query}
+          onChange={setQuery}
+          kbdHint={<><Command className="size-3" /> K</>}
+          filterCategories={CATEGORIES}
+          activeFilters={filters}
+          onApplyFilter={handleApply}
+          onRemoveFilter={handleRemove}
+          onClearFilters={() => setFilters({})}
+        />
+      </div>
+      <div className="space-y-2">
+        <p className="text-caption text-[var(--color-text-muted)]">Without filters</p>
+        <SearchBar
+          placeholder="Search transactions…"
+          value={query}
+          onChange={setQuery}
+          kbdHint={<><Command className="size-3" /> K</>}
+        />
+      </div>
+    </div>
   )
 }
