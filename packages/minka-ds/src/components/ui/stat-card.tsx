@@ -36,6 +36,7 @@ export interface StatCardAmountProps extends StatCardBase {
   percent?: number
   color?: StatCardColor
   secondary?: string
+  subvalue?: string
   badge?: string
   actions?: StatCardAction[]
   onClick?: () => void
@@ -112,7 +113,7 @@ function StatCard(props: StatCardProps) {
 
   // Amount
   if (props.type === "amount") {
-    const { label, value, unit, percent, color = "default", secondary, badge, actions, onClick, className } = props
+    const { label, value, unit, percent, color = "default", secondary, subvalue, badge, actions, onClick, className } = props
     const Comp = onClick ? "button" : "div"
     return (
       <Comp
@@ -138,7 +139,7 @@ function StatCard(props: StatCardProps) {
               <span className="text-heading-1-serif text-[var(--color-text-disabled)]">—</span>
             ) : (
               <>
-                <span className={cn("text-heading-2-serif tabular-nums tracking-tight", VALUE_COLOR[color])}>
+                <span className={cn("text-heading-2-serif tracking-tight", VALUE_COLOR[color])}>
                   {value}
                 </span>
                 {unit && <span className="text-caption text-[var(--color-text-muted)]">{unit}</span>}
@@ -155,6 +156,7 @@ function StatCard(props: StatCardProps) {
             </div>
           )}
         </div>
+        {subvalue && <span className="text-caption text-[var(--color-text-muted)]">{subvalue}</span>}
       </Comp>
     )
   }
