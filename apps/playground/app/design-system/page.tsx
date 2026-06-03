@@ -7,7 +7,7 @@ import { FilterComboboxDemo } from "./filter-combobox-demo"
 import { CodeBlock } from "./code-block"
 import { SearchBarDemo } from "./search-bar-demo"
 import { AlertDemo } from "./alert-demo"
-import { CornerDownLeft, Command, ArrowBigUp, Option, ChevronDown, Plus } from "lucide-react"
+import { CornerDownLeft, Command, ArrowBigUp, Option, ChevronDown, Plus, Search, Mail, Lock } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -22,6 +22,16 @@ import { SheetDemo } from "./sheet-demo"
 import { ComboboxDemo } from "./combobox-demo"
 import { SonnerDemo } from "./sonner-demo"
 import { TooltipDemo } from "./tooltip-demo"
+import { StatCard, TabCount } from "minka-ds"
+import { SwitchDemo } from "./switch-demo"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination"
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { ButtonGroup, ButtonGroupText, ButtonGroupSeparator } from "@/components/ui/button-group"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { AmountCell } from "@/components/ui/cell"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 export default function DesignSystemPlayground() {
   return (
@@ -359,6 +369,225 @@ export default function DesignSystemPlayground() {
               <SidebarDemo />
             </section>
 
+            <Separator />
+
+            {/* StatCard */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Stat Card</h2>
+              <div className="space-y-4">
+                <p className="text-caption text-[var(--color-text-muted)]">Count</p>
+                <div className="grid grid-cols-4 gap-3">
+                  <StatCard label="Completed" value={205} percent={68} color="success" dot="var(--color-feedback-success)" />
+                  <StatCard label="Pending"   value={58}  percent={19} color="default" dot="var(--color-feedback-warning)" />
+                  <StatCard label="Rejected"  value={14}  percent={5}  color="default" dot="rgb(71 85 105)" />
+                  <StatCard label="Failed"    value={23}  percent={8}  color="error"   dot="var(--color-feedback-error)" />
+                </div>
+                <p className="text-caption text-[var(--color-text-muted)]">Amount</p>
+                <div className="grid grid-cols-4 gap-3">
+                  <StatCard type="amount" label="Total moved" value="$254.7M" subvalue="$848K avg / trx" />
+                  <StatCard type="amount" label="P2P" value="$72.0M" percent={28} subvalue="$910K avg / trx" />
+                  <StatCard type="amount" label="P2M" value="$89.4M" percent={35} subvalue="$780K avg / trx" color="success" />
+                  <StatCard type="amount" label="Alert threshold" value={null} unit="COP" />
+                </div>
+                <p className="text-caption text-[var(--color-text-muted)]">Status</p>
+                <div className="grid grid-cols-3 gap-3">
+                  <StatCard type="status" label="Settlement" status="Active"        color="success" />
+                  <StatCard type="status" label="Settlement" status="Balance alert" color="error"   />
+                  <StatCard type="status" label="Settlement" status="Inactive"      color="muted"   />
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Switch */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Switch</h2>
+              <SwitchDemo />
+            </section>
+
+            <Separator />
+
+            {/* Skeleton */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Skeleton</h2>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Skeleton className="size-10 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <Skeleton className="h-24 rounded-lg" />
+                  <Skeleton className="h-24 rounded-lg" />
+                  <Skeleton className="h-24 rounded-lg" />
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Pagination */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Pagination</h2>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+                  <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
+                  <PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem>
+                  <PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem>
+                  <PaginationItem><PaginationEllipsis /></PaginationItem>
+                  <PaginationItem><PaginationLink href="#">8</PaginationLink></PaginationItem>
+                  <PaginationItem><PaginationNext href="#" /></PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </section>
+
+            <Separator />
+
+            {/* Input Group */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Input Group</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <p className="text-caption text-[var(--color-text-muted)]">With icon addon</p>
+                  <InputGroup>
+                    <InputGroupAddon><Search className="size-4 text-[var(--color-text-hint)]" /></InputGroupAddon>
+                    <InputGroupInput placeholder="Search…" />
+                  </InputGroup>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-caption text-[var(--color-text-muted)]">With text addon</p>
+                  <InputGroup>
+                    <InputGroupText>$</InputGroupText>
+                    <InputGroupInput placeholder="0.00" />
+                    <InputGroupText>COP</InputGroupText>
+                  </InputGroup>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-caption text-[var(--color-text-muted)]">With trailing icon</p>
+                  <InputGroup>
+                    <InputGroupAddon><Mail className="size-4 text-[var(--color-text-hint)]" /></InputGroupAddon>
+                    <InputGroupInput placeholder="you@company.com" />
+                  </InputGroup>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-caption text-[var(--color-text-muted)]">Password</p>
+                  <InputGroup>
+                    <InputGroupAddon><Lock className="size-4 text-[var(--color-text-hint)]" /></InputGroupAddon>
+                    <InputGroupInput type="password" placeholder="Password" />
+                  </InputGroup>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Dropdown Menu */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Dropdown Menu</h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">Open menu <ChevronDown className="size-4" /></Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-48">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>View details</DropdownMenuItem>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-[var(--color-feedback-error)]">Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </section>
+
+            <Separator />
+
+            {/* Button Group */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Button Group</h2>
+              <div className="flex flex-wrap gap-4">
+                <ButtonGroup>
+                  <ButtonGroupText>Sort by</ButtonGroupText>
+                  <ButtonGroupSeparator />
+                  <ButtonGroupText>Date</ButtonGroupText>
+                </ButtonGroup>
+                <ButtonGroup>
+                  <ButtonGroupText>Filter</ButtonGroupText>
+                  <ButtonGroupSeparator />
+                  <ButtonGroupText>All statuses</ButtonGroupText>
+                  <ButtonGroupSeparator />
+                  <ButtonGroupText><Plus className="size-3.5" /></ButtonGroupText>
+                </ButtonGroup>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Breadcrumb */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Breadcrumb</h2>
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem><BreadcrumbLink href="#">Transactions</BreadcrumbLink></BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem><BreadcrumbLink href="#">List</BreadcrumbLink></BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem><BreadcrumbPage>MOL-9282-542F-F3C2</BreadcrumbPage></BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </section>
+
+            <Separator />
+
+            {/* Amount Cell */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Amount Cell</h2>
+              <div className="flex flex-wrap gap-6 items-baseline">
+                <AmountCell>$1,875,000.00</AmountCell>
+                <AmountCell>$156,000.00</AmountCell>
+                <AmountCell>$3,200,000.00</AmountCell>
+                <AmountCell>$623,750.00</AmountCell>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Tab Count */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Tab Count</h2>
+              <Tabs defaultValue="all">
+                <TabsList variant="line">
+                  <TabsTrigger value="all">All <TabCount count={300} /></TabsTrigger>
+                  <TabsTrigger value="completed">Completed <TabCount count={205} /></TabsTrigger>
+                  <TabsTrigger value="pending">Pending <TabCount count={58} /></TabsTrigger>
+                  <TabsTrigger value="failed">Failed <TabCount count={23} /></TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </section>
+
+            <Separator />
+
+            {/* Collapsible */}
+            <section className="space-y-3">
+              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Collapsible</h2>
+              <Collapsible className="w-80 space-y-2">
+                <CollapsibleTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    Advanced filters <ChevronDown className="size-4" />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-2 px-1">
+                  <p className="text-body-sm text-[var(--color-text-muted)]">Filter by date range</p>
+                  <p className="text-body-sm text-[var(--color-text-muted)]">Filter by participant</p>
+                  <p className="text-body-sm text-[var(--color-text-muted)]">Filter by amount</p>
+                </CollapsibleContent>
+              </Collapsible>
+            </section>
+
           </TabsContent>
 
           {/* ── Tokens tab ─────────────────────────────────────── */}
@@ -558,7 +787,7 @@ export default function DesignSystemPlayground() {
                 ].map(({ token, cls, sample }) => (
                   <div key={token} className="flex items-baseline gap-4">
                     <code className="text-caption text-[var(--color-text-muted)] w-32 shrink-0">{token}</code>
-                    <p className={`text-body ${cls}`}>{sample}</p>
+                    <p className={`text-base leading-normal ${cls}`}>{sample}</p>
                   </div>
                 ))}
               </div>
@@ -568,61 +797,85 @@ export default function DesignSystemPlayground() {
 
             <section className="space-y-4">
               <h2 className="text-xl font-semibold">Text styles</h2>
-              <div className="space-y-6">
-                {[
-                  { cls: "text-display",        label: "display",        meta: "7xl · 600 · tight" },
-                  { cls: "text-heading-1",       label: "heading-1",      meta: "4xl · 600 · tight" },
-                  { cls: "text-heading-2",       label: "heading-2",      meta: "3xl · 600 · snug" },
-                  { cls: "text-heading-3",       label: "heading-3",      meta: "2xl · 600 · snug" },
-                  { cls: "text-heading-4",       label: "heading-4",      meta: "xl · 600 · snug" },
-                  { cls: "text-paragraph-lg",    label: "paragraph-lg",   meta: "lg · 500 · loose" },
-                  { cls: "text-paragraph",       label: "paragraph",      meta: "base · 500 · relaxed" },
-                  { cls: "text-paragraph-sm",    label: "paragraph-sm",   meta: "sm · 500 · relaxed" },
-                  { cls: "text-body-lg",         label: "body-lg",        meta: "lg · 500 · normal" },
-                  { cls: "text-body-lg-light",   label: "body-lg-light",  meta: "lg · 400 · normal" },
-                  { cls: "text-body",            label: "body",           meta: "base · 500 · normal" },
-                  { cls: "text-body-light",      label: "body-light",     meta: "base · 400 · normal" },
-                  { cls: "text-body-sm",         label: "body-sm",        meta: "sm · 500 · normal" },
-                  { cls: "text-body-sm-light",   label: "body-sm-light",  meta: "sm · 400 · normal" },
-                  { cls: "text-label",           label: "label",          meta: "sm · 600 · none" },
-                  { cls: "text-label-sm",        label: "label-sm",       meta: "xs · 600 · none" },
-                  { cls: "text-caption",         label: "caption",        meta: "xs · 500 · normal" },
-                  { cls: "text-caption-light",   label: "caption-light",  meta: "xs · 400 · normal" },
-                  { cls: "text-caption-sm",      label: "caption-sm",     meta: "2xs · 500 · normal" },
-                  { cls: "text-caption-sm-light",label: "caption-sm-light",meta: "2xs · 400 · normal" },
-                  { cls: "text-overline",        label: "overline",       meta: "2xs · 600 · wide · uppercase" },
-
-                  // ── Serif — headings (base) ──────────────────────────
-                  { cls: "text-heading-1-serif",    label: "heading-1-serif",    meta: "4xl · 400 · tight · serif" },
-                  { cls: "text-heading-2-serif",    label: "heading-2-serif",    meta: "3xl · 400 · snug · serif" },
-                  { cls: "text-heading-3-serif",    label: "heading-3-serif",    meta: "2xl · 400 · snug · serif" },
-                  { cls: "text-heading-4-serif",    label: "heading-4-serif",    meta: "xl · 400 · snug · serif" },
-
-                  // ── Serif — headings (lg — optically compensated) ────
-                  { cls: "text-heading-1-lg-serif", label: "heading-1-lg-serif", meta: "5xl · 400 · tight · serif" },
-                  { cls: "text-heading-2-lg-serif", label: "heading-2-lg-serif", meta: "4xl · 400 · snug · serif" },
-                  { cls: "text-heading-3-lg-serif", label: "heading-3-lg-serif", meta: "3xl · 400 · snug · serif" },
-                  { cls: "text-heading-4-lg-serif", label: "heading-4-lg-serif", meta: "2xl · 400 · snug · serif" },
-
-                  // ── Serif — body (base) ──────────────────────────────
-                  { cls: "text-body-xl-serif",   label: "body-xl-serif",   meta: "xl · 400 · normal · serif" },
-                  { cls: "text-body-lg-serif",   label: "body-lg-serif",   meta: "lg · 400 · normal · serif" },
-                  { cls: "text-body-serif",      label: "body-serif",      meta: "base · 400 · normal · serif" },
-                  { cls: "text-body-sm-serif",   label: "body-sm-serif",   meta: "sm · 400 · normal · serif" },
-                  { cls: "text-body-sm-lg-serif",label: "body-sm-lg-serif",meta: "base · 400 · normal · serif" },
-
-                  // ── Serif — caption ──────────────────────────────────
-                  { cls: "text-caption-lg-serif",   label: "caption-lg-serif",    meta: "sm · 400 · normal · serif" },
-                  { cls: "text-caption-serif",      label: "caption-serif",       meta: "xs · 400 · normal · serif" },
-                  { cls: "text-caption-sm-lg-serif",label: "caption-sm-lg-serif", meta: "xs · 400 · normal · serif" },
-                  { cls: "text-caption-sm-serif",   label: "caption-sm-serif",    meta: "2xs · 400 · normal · serif" },
-                ].map(({ cls, label, meta }) => (
-                  <div key={cls} className="flex items-baseline gap-4">
-                    <div className="w-48 shrink-0 space-y-0.5">
-                      <code className="text-caption text-[var(--color-text-muted)] block">.{label}</code>
-                      <span className="text-caption-sm text-[var(--color-text-hint)]">{meta}</span>
+              <div className="space-y-10">
+                {([
+                  { category: "Display", styles: [
+                    { cls: "text-display", label: "display", meta: "7xl · 600 · tight", sample: "The quick brown fox" },
+                  ]},
+                  { category: "Heading — sans", styles: [
+                    { cls: "text-heading-1", label: "heading-1", meta: "4xl · 600 · tight", sample: "The quick brown fox" },
+                    { cls: "text-heading-2", label: "heading-2", meta: "3xl · 600 · snug",  sample: "The quick brown fox" },
+                    { cls: "text-heading-3", label: "heading-3", meta: "2xl · 600 · snug",  sample: "The quick brown fox" },
+                    { cls: "text-heading-4", label: "heading-4", meta: "xl · 600 · snug",   sample: "The quick brown fox" },
+                  ]},
+                  { category: "Heading — serif", styles: [
+                    { cls: "text-heading-1-serif",    label: "heading-1-serif",    meta: "4xl · 400 · tight", sample: "The quick brown fox" },
+                    { cls: "text-heading-2-serif",    label: "heading-2-serif",    meta: "3xl · 400 · snug",  sample: "The quick brown fox" },
+                    { cls: "text-heading-3-serif",    label: "heading-3-serif",    meta: "2xl · 400 · snug",  sample: "The quick brown fox" },
+                    { cls: "text-heading-4-serif",    label: "heading-4-serif",    meta: "xl · 400 · snug",   sample: "The quick brown fox" },
+                  ]},
+                  { category: "Heading — serif lg", styles: [
+                    { cls: "text-heading-1-lg-serif", label: "heading-1-lg-serif", meta: "5xl · 400 · tight", sample: "The quick brown fox" },
+                    { cls: "text-heading-2-lg-serif", label: "heading-2-lg-serif", meta: "4xl · 400 · snug",  sample: "The quick brown fox" },
+                    { cls: "text-heading-3-lg-serif", label: "heading-3-lg-serif", meta: "3xl · 400 · snug",  sample: "The quick brown fox" },
+                    { cls: "text-heading-4-lg-serif", label: "heading-4-lg-serif", meta: "2xl · 400 · snug",  sample: "The quick brown fox" },
+                  ]},
+                  { category: "Paragraph", styles: [
+                    { cls: "text-paragraph-lg", label: "paragraph-lg", meta: "lg · 500 · loose",   sample: "The quick brown fox jumps over the lazy dog" },
+                    { cls: "text-paragraph",    label: "paragraph",    meta: "base · 500 · relaxed",sample: "The quick brown fox jumps over the lazy dog" },
+                    { cls: "text-paragraph-sm", label: "paragraph-sm", meta: "sm · 500 · relaxed", sample: "The quick brown fox jumps over the lazy dog" },
+                  ]},
+                  { category: "Body — sans", styles: [
+                    { cls: "text-body-lg",       label: "body-lg",       meta: "lg · 500 · normal",  sample: "The quick brown fox" },
+                    { cls: "text-body-lg-light", label: "body-lg-light", meta: "lg · 400 · normal",  sample: "The quick brown fox" },
+                    { cls: "text-body",          label: "body",          meta: "base · 500 · normal",sample: "The quick brown fox" },
+                    { cls: "text-body-light",    label: "body-light",    meta: "base · 400 · normal",sample: "The quick brown fox" },
+                    { cls: "text-body-sm",       label: "body-sm",       meta: "sm · 500 · normal",  sample: "The quick brown fox" },
+                    { cls: "text-body-sm-light", label: "body-sm-light", meta: "sm · 400 · normal",  sample: "The quick brown fox" },
+                  ]},
+                  { category: "Body — serif", styles: [
+                    { cls: "text-body-xl-serif",    label: "body-xl-serif",    meta: "xl · 400 · normal",   sample: "The quick brown fox" },
+                    { cls: "text-body-lg-serif",    label: "body-lg-serif",    meta: "lg · 400 · normal",   sample: "The quick brown fox" },
+                    { cls: "text-body-serif",       label: "body-serif",       meta: "base · 400 · normal", sample: "The quick brown fox" },
+                    { cls: "text-body-sm-lg-serif", label: "body-sm-lg-serif", meta: "base · 400 · normal", sample: "The quick brown fox" },
+                    { cls: "text-body-sm-serif",    label: "body-sm-serif",    meta: "sm · 400 · normal",   sample: "The quick brown fox" },
+                  ]},
+                  { category: "Label", styles: [
+                    { cls: "text-label",    label: "label",    meta: "sm · 600 · none", sample: "Status label" },
+                    { cls: "text-label-sm", label: "label-sm", meta: "xs · 600 · none", sample: "Status label" },
+                  ]},
+                  { category: "Caption — sans", styles: [
+                    { cls: "text-caption",         label: "caption",          meta: "xs · 500 · normal",  sample: "Helper text and metadata" },
+                    { cls: "text-caption-light",   label: "caption-light",    meta: "xs · 400 · normal",  sample: "Helper text and metadata" },
+                    { cls: "text-caption-sm",      label: "caption-sm",       meta: "2xs · 500 · normal", sample: "Helper text and metadata" },
+                    { cls: "text-caption-sm-light",label: "caption-sm-light", meta: "2xs · 400 · normal", sample: "Helper text and metadata" },
+                  ]},
+                  { category: "Caption — serif", styles: [
+                    { cls: "text-caption-lg-serif",   label: "caption-lg-serif",    meta: "sm · 400 · normal",  sample: "Helper text and metadata" },
+                    { cls: "text-caption-serif",      label: "caption-serif",       meta: "xs · 400 · normal",  sample: "Helper text and metadata" },
+                    { cls: "text-caption-sm-lg-serif",label: "caption-sm-lg-serif", meta: "xs · 400 · normal",  sample: "Helper text and metadata" },
+                    { cls: "text-caption-sm-serif",   label: "caption-sm-serif",    meta: "2xs · 400 · normal", sample: "Helper text and metadata" },
+                  ]},
+                  { category: "Overline", styles: [
+                    { cls: "text-overline", label: "overline", meta: "2xs · 600 · wide · uppercase", sample: "Section header" },
+                  ]},
+                  { category: "Code", styles: [
+                    { cls: "text-code", label: "code", meta: "mono · 400 · bg", sample: "tokens.primitive['font-mono']" },
+                  ]},
+                ] as { category: string; styles: { cls: string; label: string; meta: string; sample: string }[] }[]).map(({ category, styles }) => (
+                  <div key={category} className="space-y-3">
+                    <p className="text-caption-sm text-[var(--color-text-hint)] uppercase tracking-wide">{category}</p>
+                    <div className="space-y-4">
+                      {styles.map(({ cls, label, meta, sample }) => (
+                        <div key={cls} className="flex items-baseline gap-4">
+                          <div className="w-52 shrink-0 space-y-0.5">
+                            <code className="text-caption text-[var(--color-text-muted)] block">.{label}</code>
+                            <span className="text-caption-sm text-[var(--color-text-hint)]">{meta}</span>
+                          </div>
+                          <p className={cls}>{sample}</p>
+                        </div>
+                      ))}
                     </div>
-                    <p className={cls}>The quick brown fox</p>
                   </div>
                 ))}
               </div>
