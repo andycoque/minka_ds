@@ -63,6 +63,7 @@ export function SearchBarDemo() {
           onApplyFilter={handleApply}
           onRemoveFilter={handleRemove}
           onClearFilters={() => setFilters({})}
+          alwaysShowFilterBar
         />
       </div>
       <div className="space-y-2">

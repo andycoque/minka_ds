@@ -154,8 +154,11 @@
   --color-brand-beige:  var(--primitive-beige-100);
   --color-brand-yellow: var(--primitive-lulo-50);
   --color-brand-rose:   var(--primitive-red-100);
-  --color-brand-red:    var(--primitive-red-500);
+  --color-brand-coral:  var(--primitive-red-500);
   --color-brand-blue:   var(--primitive-slate-500);
+  --color-brand-darkforest: var(--primitive-aquamarine-800);
+  --color-brand-navy:   var(--primitive-slate-800);
+  --color-brand-bronze: var(--primitive-bronze-900);
 
   /* z-index aliases */
   --z-sticky:   var(--primitive-z-raised);

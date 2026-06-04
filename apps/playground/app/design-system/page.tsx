@@ -7,7 +7,7 @@ import { FilterComboboxDemo } from "./filter-combobox-demo"
 import { CodeBlock } from "./code-block"
 import { SearchBarDemo } from "./search-bar-demo"
 import { AlertDemo } from "./alert-demo"
-import { CornerDownLeft, Command, ArrowBigUp, Option, ChevronDown, Plus, Search, Mail, Lock } from "lucide-react"
+import { CornerDownLeft, Command, ArrowBigUp, Option, ChevronDown, Plus, Search, Mail } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -31,8 +31,12 @@ import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ButtonGroup, ButtonGroupText, ButtonGroupSeparator } from "@/components/ui/button-group"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { AmountCell } from "@/components/ui/cell"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { CellsDemo, TablePartsDemo } from "./depending-atoms-demo"
+
+function CatIntro({ children }: { children: React.ReactNode }) {
+  return <p className="text-body-sm text-[var(--color-text-muted)] max-w-2xl">{children}</p>
+}
 
 export default function DesignSystemPlayground() {
   return (
@@ -62,564 +66,649 @@ export default function DesignSystemPlayground() {
           </TabsList>
 
           {/* ── Components tab ─────────────────────────────────── */}
-          <TabsContent value="components" className="space-y-12 pt-8">
+          <TabsContent value="components" className="pt-8">
+            <Tabs defaultValue="atoms">
+              <TabsList variant="line">
+                <TabsTrigger value="atoms">Standalone atoms</TabsTrigger>
+                <TabsTrigger value="depending">Depending atoms</TabsTrigger>
+                <TabsTrigger value="molecules">Molecules</TabsTrigger>
+                <TabsTrigger value="cellular">Cellular beings</TabsTrigger>
+                <TabsTrigger value="thoughtful">Thoughtful beings</TabsTrigger>
+              </TabsList>
 
-            {/* Buttons */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Button</h2>
-              <div className="rounded-lg border border-[var(--color-border-default)] divide-y divide-[var(--color-border-subtle)]">
-                {/* Variants */}
-                <div className="flex items-center gap-2 px-4 py-3">
-                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Variant</span>
+              {/* ═══ Standalone atoms ═══ */}
+              <TabsContent value="atoms" className="space-y-12 pt-8">
+                <CatIntro>Self-sufficient components — drop them in anywhere, no parent or sibling required.</CatIntro>
+
+                {/* Button */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Button</h2>
+                  <div className="rounded-lg border border-[var(--color-border-default)] divide-y divide-[var(--color-border-subtle)]">
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Variant</span>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Button>Default</Button>
+                        <Button variant="secondary">Secondary</Button>
+                        <Button variant="outline">Outline</Button>
+                        <Button variant="ghost">Ghost</Button>
+                        <Button variant="destructive">Destructive</Button>
+                        <Button variant="link">Link</Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Size</span>
+                      <div className="flex flex-wrap gap-2 items-end">
+                        <Button size="xs">XSmall</Button>
+                        <Button size="sm">Small</Button>
+                        <Button size="default">Default</Button>
+                        <Button size="lg">Large</Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Icon only</span>
+                      <div className="flex flex-wrap gap-2 items-end">
+                        <Button size="icon-xs" aria-label="icon-xs"><Plus /></Button>
+                        <Button size="icon-sm" aria-label="icon-sm"><Plus /></Button>
+                        <Button size="icon" aria-label="icon"><Plus /></Button>
+                        <Button size="icon-lg" aria-label="icon-lg"><Plus /></Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">With icon</span>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Button><Plus /> Create</Button>
+                        <Button>Export <ChevronDown /></Button>
+                        <Button variant="secondary"><Plus /> Create</Button>
+                        <Button variant="outline">Export <ChevronDown /></Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Disabled</span>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Button disabled>Default</Button>
+                        <Button variant="secondary" disabled>Secondary</Button>
+                        <Button variant="outline" disabled>Outline</Button>
+                        <Button variant="ghost" disabled>Ghost</Button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <Separator />
+
+                {/* Badge */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Badge</h2>
                   <div className="flex flex-wrap gap-2 items-center">
-                    <Button>Default</Button>
-                    <Button variant="secondary">Secondary</Button>
-                    <Button variant="outline">Outline</Button>
-                    <Button variant="ghost">Ghost</Button>
-                    <Button variant="destructive">Destructive</Button>
-                    <Button variant="link">Link</Button>
+                    <Badge>Default</Badge>
+                    <Badge variant="filled">Filled</Badge>
+                    <Badge variant="secondary">Secondary</Badge>
+                    <Badge variant="destructive">Destructive</Badge>
+                    <Badge variant="success">Success</Badge>
+                    <Badge variant="warning">Warning</Badge>
+                    <Badge variant="error">Error</Badge>
+                    <Badge variant="info">Info</Badge>
+                    <Badge variant="outline">Outline</Badge>
+                    <Badge variant="ghost">Ghost</Badge>
                   </div>
-                </div>
-                {/* Sizes */}
-                <div className="flex items-center gap-2 px-4 py-3">
-                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Size</span>
-                  <div className="flex flex-wrap gap-2 items-end">
-                    <Button size="xs">XSmall</Button>
-                    <Button size="sm">Small</Button>
-                    <Button size="default">Default</Button>
-                    <Button size="lg">Large</Button>
+                </section>
+
+                <Separator />
+
+                {/* Input */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Input</h2>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="f-default">Default</Label>
+                      <Input id="f-default" placeholder="Enter text…" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="f-filled">Filled</Label>
+                      <Input id="f-filled" defaultValue="Andy Corredor" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="f-disabled">Disabled</Label>
+                      <Input id="f-disabled" placeholder="Disabled" disabled />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="f-disabled-filled">Disabled filled</Label>
+                      <Input id="f-disabled-filled" defaultValue="Read-only value" disabled />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="f-error">Error</Label>
+                      <Input id="f-error" defaultValue="invalid@" aria-invalid="true" />
+                      <p className="text-caption text-[var(--color-feedback-error)]">Invalid email address</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="f-error-empty">Error empty</Label>
+                      <Input id="f-error-empty" placeholder="Required field" aria-invalid="true" />
+                      <p className="text-caption text-[var(--color-feedback-error)]">This field is required</p>
+                    </div>
                   </div>
-                </div>
-                {/* Icon only */}
-                <div className="flex items-center gap-2 px-4 py-3">
-                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Icon only</span>
-                  <div className="flex flex-wrap gap-2 items-end">
-                    <Button size="icon-xs" aria-label="icon-xs"><Plus /></Button>
-                    <Button size="icon-sm" aria-label="icon-sm"><Plus /></Button>
-                    <Button size="icon" aria-label="icon"><Plus /></Button>
-                    <Button size="icon-lg" aria-label="icon-lg"><Plus /></Button>
+                </section>
+
+                <Separator />
+
+                {/* Textarea */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Textarea</h2>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="ta-default">Default</Label>
+                      <Textarea id="ta-default" placeholder="Enter description…" rows={3} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="ta-disabled">Disabled</Label>
+                      <Textarea id="ta-disabled" placeholder="Disabled" rows={3} disabled />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label htmlFor="ta-error">Error</Label>
+                      <Textarea id="ta-error" defaultValue="Too short" rows={3} aria-invalid="true" />
+                      <p className="text-caption text-[var(--color-feedback-error)]">Minimum 20 characters required</p>
+                    </div>
                   </div>
-                </div>
-                {/* Icon + label */}
-                <div className="flex items-center gap-2 px-4 py-3">
-                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">With icon</span>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <Button><Plus /> Create</Button>
-                    <Button>Export <ChevronDown /></Button>
-                    <Button variant="secondary"><Plus /> Create</Button>
-                    <Button variant="outline">Export <ChevronDown /></Button>
+                </section>
+
+                <Separator />
+
+                {/* Switch */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Switch</h2>
+                  <SwitchDemo />
+                </section>
+
+                <Separator />
+
+                {/* Skeleton */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Skeleton</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="size-10 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <Skeleton className="h-24 rounded-lg" />
+                      <Skeleton className="h-24 rounded-lg" />
+                      <Skeleton className="h-24 rounded-lg" />
+                    </div>
                   </div>
-                </div>
-                {/* States */}
-                <div className="flex items-center gap-2 px-4 py-3">
-                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Disabled</span>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <Button disabled>Default</Button>
-                    <Button variant="secondary" disabled>Secondary</Button>
-                    <Button variant="outline" disabled>Outline</Button>
-                    <Button variant="ghost" disabled>Ghost</Button>
+                </section>
+
+                <Separator />
+
+                {/* Separator */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Separator</h2>
+                  <div className="space-y-3">
+                    <p className="text-body-sm text-[var(--color-text-muted)]">Horizontal</p>
+                    <Separator />
+                    <div className="flex items-center gap-3 h-8">
+                      <span className="text-body-sm">Left</span>
+                      <Separator orientation="vertical" />
+                      <span className="text-body-sm">Right</span>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </section>
+                </section>
 
-            <Separator />
+                <Separator />
 
-            {/* Badges */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Badge</h2>
-              <div className="flex flex-wrap gap-2 items-center">
-                <Badge>Default</Badge>
-                <Badge variant="filled">Filled</Badge>
-                <Badge variant="secondary">Secondary</Badge>
-                <Badge variant="destructive">Destructive</Badge>
-                <Badge variant="success">Success</Badge>
-                <Badge variant="warning">Warning</Badge>
-                <Badge variant="error">Error</Badge>
-                <Badge variant="info">Info</Badge>
-                <Badge variant="outline">Outline</Badge>
-                <Badge variant="ghost">Ghost</Badge>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Calendar */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Calendar</h2>
-              <CalendarDemo />
-            </section>
-
-            <Separator />
-
-            {/* FilterChip */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Filter Chip</h2>
-              <FilterChipDemo />
-            </section>
-
-            <Separator />
-
-            {/* FilterCombobox */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Filter Combobox</h2>
-              <FilterComboboxDemo />
-            </section>
-
-            <Separator />
-
-            {/* SearchBar */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Search Bar</h2>
-              <SearchBarDemo />
-            </section>
-
-            <Separator />
-
-            {/* Alert */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Alert</h2>
-              <AlertDemo />
-            </section>
-
-            <Separator />
-
-            {/* Kbd */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Kbd</h2>
-              <div className="rounded-lg border border-[var(--color-border-default)] divide-y divide-[var(--color-border-subtle)]">
-                <div className="flex items-center gap-4 px-4 py-3">
-                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Mac</span>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <Kbd><CornerDownLeft className="size-3" /></Kbd>
-                    <Kbd><CornerDownLeft className="size-3" /> open</Kbd>
-                    <Kbd><Command className="size-3" /> K</Kbd>
-                    <Kbd><ArrowBigUp className="size-3" /> <Command className="size-3" /> P</Kbd>
-                    <Kbd><Option className="size-3" /></Kbd>
-                    <Kbd>Esc</Kbd>
+                {/* Kbd */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Kbd</h2>
+                  <div className="rounded-lg border border-[var(--color-border-default)] divide-y divide-[var(--color-border-subtle)]">
+                    <div className="flex items-center gap-4 px-4 py-3">
+                      <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Mac</span>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Kbd><CornerDownLeft className="size-3" /></Kbd>
+                        <Kbd><CornerDownLeft className="size-3" /> open</Kbd>
+                        <Kbd><Command className="size-3" /> K</Kbd>
+                        <Kbd><ArrowBigUp className="size-3" /> <Command className="size-3" /> P</Kbd>
+                        <Kbd><Option className="size-3" /></Kbd>
+                        <Kbd>Esc</Kbd>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 px-4 py-3">
+                      <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Windows</span>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Kbd><CornerDownLeft className="size-3" /></Kbd>
+                        <Kbd><CornerDownLeft className="size-3" /> open</Kbd>
+                        <Kbd>Ctrl K</Kbd>
+                        <Kbd><ArrowBigUp className="size-3" /> Ctrl P</Kbd>
+                        <Kbd><Option className="size-3" /></Kbd>
+                        <Kbd>Esc</Kbd>
+                      </div>
+                    </div>
                   </div>
+                </section>
+
+                <Separator />
+
+                {/* Alert */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Alert</h2>
+                  <AlertDemo />
+                </section>
+
+                <Separator />
+
+                {/* Calendar */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Calendar</h2>
+                  <CalendarDemo />
+                </section>
+              </TabsContent>
+
+              {/* ═══ Depending atoms (audit grid) ═══ */}
+              <TabsContent value="depending" className="space-y-6 pt-8">
+                <CatIntro>Building blocks that only exist inside a parent. Each is demonstrated live within its parent (Molecules / Cellular tabs) — this is the full inventory for auditing.</CatIntro>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-caption text-[var(--color-text-muted)]">
+                  <div><span className="text-[var(--color-text-default)]">Cells (cross-cutting):</span> TextStack · DataCell · AmountCell · BadgeCell · ActionCell · StatusCell</div>
+                  <div><span className="text-[var(--color-text-default)]">Table:</span> Header · Body · Footer · Row · Head · Cell · Caption</div>
+                  <div><span className="text-[var(--color-text-default)]">Tabs:</span> List · Trigger · Content · TabCount</div>
+                  <div><span className="text-[var(--color-text-default)]">Breadcrumb:</span> List · Item · Link · Page · Separator · Ellipsis</div>
+                  <div><span className="text-[var(--color-text-default)]">Pagination:</span> Content · Item · Link · Previous · Next · Ellipsis</div>
+                  <div><span className="text-[var(--color-text-default)]">Select:</span> Trigger · Value · Content · Item · Group · Label · Separator</div>
+                  <div><span className="text-[var(--color-text-default)]">Card:</span> Header · Title · Description · Action · Content · Footer</div>
+                  <div><span className="text-[var(--color-text-default)]">InputGroup:</span> Addon · Button · Text · Input · Textarea</div>
+                  <div><span className="text-[var(--color-text-default)]">ButtonGroup:</span> Text · Separator</div>
+                  <div><span className="text-[var(--color-text-default)]">Tooltip:</span> Provider · Trigger · Content · Label · Description</div>
+                  <div><span className="text-[var(--color-text-default)]">Collapsible:</span> Trigger · Content</div>
+                  <div><span className="text-[var(--color-text-default)]">Dialog:</span> Trigger · Content · Header · Title · Description · Footer · Close</div>
+                  <div><span className="text-[var(--color-text-default)]">Sheet:</span> Trigger · Content · Header · Title · Description · Footer · Close</div>
+                  <div><span className="text-[var(--color-text-default)]">DropdownMenu:</span> Trigger · Content · Item · CheckboxItem · RadioItem · Label · Separator · Sub…</div>
+                  <div className="sm:col-span-2"><span className="text-[var(--color-text-default)]">Sidebar:</span> Provider · Trigger · Content · Header · Footer · Inset · Rail · Group(+Action/Content/Label) · Menu(+Item/Button/Action/Badge/Skeleton/Sub…)</div>
                 </div>
-                <div className="flex items-center gap-4 px-4 py-3">
-                  <span className="text-caption text-[var(--color-text-muted)] w-20 shrink-0">Windows</span>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <Kbd><CornerDownLeft className="size-3" /></Kbd>
-                    <Kbd><CornerDownLeft className="size-3" /> open</Kbd>
-                    <Kbd>Ctrl K</Kbd>
-                    <Kbd><ArrowBigUp className="size-3" /> Ctrl P</Kbd>
-                    <Kbd><Option className="size-3" /></Kbd>
-                    <Kbd>Esc</Kbd>
+              </TabsContent>
+
+              {/* ═══ Molecules ═══ */}
+              <TabsContent value="molecules" className="space-y-12 pt-8">
+                <CatIntro>Components that compose atoms into a single, moderately complex unit.</CatIntro>
+
+                {/* Card */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Card</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: Card · CardHeader · CardTitle · CardDescription · CardAction · CardContent · CardFooter</p>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Card title</CardTitle>
+                        <CardDescription>Supporting description text below the title.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-body-sm text-[var(--color-text-muted)]">
+                          Card body content goes here. Cards are the primary surface for grouping related information.
+                        </p>
+                      </CardContent>
+                    </Card>
+                    <Card className="border-dashed">
+                      <CardHeader>
+                        <CardTitle>Dashed variant</CardTitle>
+                        <CardDescription>Used for empty states or add-new slots.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Button variant="outline" size="sm">+ Add item</Button>
+                      </CardContent>
+                    </Card>
                   </div>
-                </div>
-              </div>
-            </section>
+                </section>
 
-            <Separator />
+                <Separator />
 
-            {/* Form */}
-            <section className="space-y-4">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Form — Input</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="f-default">Default</Label>
-                  <Input id="f-default" placeholder="Enter text…" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="f-filled">Filled</Label>
-                  <Input id="f-filled" defaultValue="Andy Corredor" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="f-disabled">Disabled</Label>
-                  <Input id="f-disabled" placeholder="Disabled" disabled />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="f-disabled-filled">Disabled filled</Label>
-                  <Input id="f-disabled-filled" defaultValue="Read-only value" disabled />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="f-error">Error</Label>
-                  <Input id="f-error" defaultValue="invalid@" aria-invalid="true" />
-                  <p className="text-caption text-[var(--color-feedback-error)]">Invalid email address</p>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="f-error-empty">Error empty</Label>
-                  <Input id="f-error-empty" placeholder="Required field" aria-invalid="true" />
-                  <p className="text-caption text-[var(--color-feedback-error)]">This field is required</p>
-                </div>
-              </div>
-
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest pt-2">Form — Select</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="s-default">Default</Label>
-                  <Select>
-                    <SelectTrigger id="s-default"><SelectValue placeholder="Select an option" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Type</SelectLabel>
-                        <SelectItem value="p2p">P2P</SelectItem>
-                        <SelectItem value="p2m">P2M</SelectItem>
-                        <SelectItem value="b2p">B2P</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="s-disabled">Disabled</Label>
-                  <Select disabled>
-                    <SelectTrigger id="s-disabled"><SelectValue placeholder="Disabled" /></SelectTrigger>
-                    <SelectContent />
-                  </Select>
-                </div>
-              </div>
-
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest pt-2">Form — Textarea</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="ta-default">Default</Label>
-                  <Textarea id="ta-default" placeholder="Enter description…" rows={3} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="ta-disabled">Disabled</Label>
-                  <Textarea id="ta-disabled" placeholder="Disabled" rows={3} disabled />
-                </div>
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="ta-error">Error</Label>
-                  <Textarea id="ta-error" defaultValue="Too short" rows={3} aria-invalid="true" />
-                  <p className="text-caption text-[var(--color-feedback-error)]">Minimum 20 characters required</p>
-                </div>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Combobox */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Combobox</h2>
-              <ComboboxDemo />
-            </section>
-
-            <Separator />
-
-            {/* Cards */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Card</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Card title</CardTitle>
-                    <CardDescription>Supporting description text below the title.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-body-sm text-[var(--color-text-muted)]">
-                      Card body content goes here. Cards are the primary surface for grouping related information.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="border-dashed">
-                  <CardHeader>
-                    <CardTitle>Dashed variant</CardTitle>
-                    <CardDescription>Used for empty states or add-new slots.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button variant="outline" size="sm">+ Add item</Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Tabs */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Tabs</h2>
-              <div className="space-y-8">
-                <div className="space-y-2">
-                  <p className="text-caption text-[var(--color-text-muted)]">Default</p>
-                  <Tabs defaultValue="t1">
-                    <TabsList>
-                      <TabsTrigger value="t1">Overview</TabsTrigger>
-                      <TabsTrigger value="t2">Activity</TabsTrigger>
-                      <TabsTrigger value="t3">Settings</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="t1"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Overview content.</p></TabsContent>
-                    <TabsContent value="t2"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Activity content.</p></TabsContent>
-                    <TabsContent value="t3"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Settings content.</p></TabsContent>
-                  </Tabs>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-caption text-[var(--color-text-muted)]">Line variant</p>
-                  <Tabs defaultValue="t1">
-                    <TabsList variant="line">
-                      <TabsTrigger value="t1">Overview</TabsTrigger>
-                      <TabsTrigger value="t2">Activity</TabsTrigger>
-                      <TabsTrigger value="t3">Settings</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="t1"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Overview content.</p></TabsContent>
-                    <TabsContent value="t2"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Activity content.</p></TabsContent>
-                    <TabsContent value="t3"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Settings content.</p></TabsContent>
-                  </Tabs>
-                </div>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Data Table */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Data Table</h2>
-              <DataTableDemo />
-            </section>
-
-            <Separator />
-
-            {/* Tooltip */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Tooltip</h2>
-              <TooltipDemo />
-            </section>
-
-            <Separator />
-
-            {/* Toast */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Toast</h2>
-              <SonnerDemo />
-            </section>
-
-            <Separator />
-
-            {/* Dialog */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Dialog</h2>
-              <DialogDemo />
-            </section>
-
-            <Separator />
-
-            {/* Sidebar */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Sidebar</h2>
-              <SidebarDemo />
-            </section>
-
-            <Separator />
-
-            {/* StatCard */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Stat Card</h2>
-              <div className="space-y-4">
-                <p className="text-caption text-[var(--color-text-muted)]">Count</p>
-                <div className="grid grid-cols-4 gap-3">
-                  <StatCard label="Completed" value={205} percent={68} color="success" dot="var(--color-feedback-success)" />
-                  <StatCard label="Pending"   value={58}  percent={19} color="default" dot="var(--color-feedback-warning)" />
-                  <StatCard label="Rejected"  value={14}  percent={5}  color="default" dot="rgb(71 85 105)" />
-                  <StatCard label="Failed"    value={23}  percent={8}  color="error"   dot="var(--color-feedback-error)" />
-                </div>
-                <p className="text-caption text-[var(--color-text-muted)]">Amount</p>
-                <div className="grid grid-cols-4 gap-3">
-                  <StatCard type="amount" label="Total moved" value="$254.7M" subvalue="$848K avg / trx" />
-                  <StatCard type="amount" label="P2P" value="$72.0M" percent={28} subvalue="$910K avg / trx" />
-                  <StatCard type="amount" label="P2M" value="$89.4M" percent={35} subvalue="$780K avg / trx" color="success" />
-                  <StatCard type="amount" label="Alert threshold" value={null} unit="COP" />
-                </div>
-                <p className="text-caption text-[var(--color-text-muted)]">Status</p>
-                <div className="grid grid-cols-3 gap-3">
-                  <StatCard type="status" label="Settlement" status="Active"        color="success" />
-                  <StatCard type="status" label="Settlement" status="Balance alert" color="error"   />
-                  <StatCard type="status" label="Settlement" status="Inactive"      color="muted"   />
-                </div>
-                <p className="text-caption text-[var(--color-text-muted)]">With actions</p>
-                <StatCardActionsDemo />
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Switch */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Switch</h2>
-              <SwitchDemo />
-            </section>
-
-            <Separator />
-
-            {/* Skeleton */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Skeleton</h2>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Skeleton className="size-10 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-3 w-32" />
+                {/* Select */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Select</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: Select · SelectTrigger · SelectValue · SelectContent · SelectGroup · SelectLabel · SelectItem · SelectSeparator</p>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="s-default">Default</Label>
+                      <Select>
+                        <SelectTrigger id="s-default"><SelectValue placeholder="Select an option" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Type</SelectLabel>
+                            <SelectItem value="p2p">P2P</SelectItem>
+                            <SelectItem value="p2m">P2M</SelectItem>
+                            <SelectItem value="b2p">B2P</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="s-disabled">Disabled</Label>
+                      <Select disabled>
+                        <SelectTrigger id="s-disabled"><SelectValue placeholder="Disabled" /></SelectTrigger>
+                        <SelectContent />
+                      </Select>
+                    </div>
                   </div>
+                </section>
+
+                <Separator />
+
+                {/* Tabs */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Tabs</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: Tabs · TabsList · TabsTrigger · TabsContent · TabCount</p>
+                  <div className="space-y-8">
+                    <div className="space-y-2">
+                      <p className="text-caption text-[var(--color-text-muted)]">Default</p>
+                      <Tabs defaultValue="t1">
+                        <TabsList>
+                          <TabsTrigger value="t1">Overview</TabsTrigger>
+                          <TabsTrigger value="t2">Activity</TabsTrigger>
+                          <TabsTrigger value="t3">Settings</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="t1"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Overview content.</p></TabsContent>
+                        <TabsContent value="t2"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Activity content.</p></TabsContent>
+                        <TabsContent value="t3"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Settings content.</p></TabsContent>
+                      </Tabs>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-caption text-[var(--color-text-muted)]">Line variant</p>
+                      <Tabs defaultValue="t1">
+                        <TabsList variant="line">
+                          <TabsTrigger value="t1">Overview</TabsTrigger>
+                          <TabsTrigger value="t2">Activity</TabsTrigger>
+                          <TabsTrigger value="t3">Settings</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="t1"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Overview content.</p></TabsContent>
+                        <TabsContent value="t2"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Activity content.</p></TabsContent>
+                        <TabsContent value="t3"><p className="text-body-sm pt-3 text-[var(--color-text-muted)]">Settings content.</p></TabsContent>
+                      </Tabs>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-caption text-[var(--color-text-muted)]">With TabCount</p>
+                      <Tabs defaultValue="all">
+                        <TabsList variant="line">
+                          <TabsTrigger value="all">All <TabCount count={300} /></TabsTrigger>
+                          <TabsTrigger value="completed">Completed <TabCount count={205} /></TabsTrigger>
+                          <TabsTrigger value="pending">Pending <TabCount count={58} /></TabsTrigger>
+                          <TabsTrigger value="failed">Failed <TabCount count={23} /></TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                    </div>
+                  </div>
+                </section>
+
+                <Separator />
+
+                {/* Breadcrumb */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Breadcrumb</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: Breadcrumb · BreadcrumbList · BreadcrumbItem · BreadcrumbLink · BreadcrumbPage · BreadcrumbSeparator · BreadcrumbEllipsis</p>
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem><BreadcrumbLink href="#">Transactions</BreadcrumbLink></BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem><BreadcrumbLink href="#">List</BreadcrumbLink></BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem><BreadcrumbPage>MOL-9282-542F-F3C2</BreadcrumbPage></BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
+                </section>
+
+                <Separator />
+
+                {/* Pagination */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Pagination</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: Pagination · PaginationContent · PaginationItem · PaginationLink · PaginationPrevious · PaginationNext · PaginationEllipsis</p>
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+                      <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
+                      <PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem>
+                      <PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem>
+                      <PaginationItem><PaginationEllipsis /></PaginationItem>
+                      <PaginationItem><PaginationLink href="#">8</PaginationLink></PaginationItem>
+                      <PaginationItem><PaginationNext href="#" /></PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </section>
+
+                <Separator />
+
+                {/* Tooltip */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Tooltip</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: TooltipProvider · Tooltip · TooltipTrigger · TooltipContent · TooltipLabel · TooltipDescription</p>
+                  <TooltipDemo />
+                </section>
+
+                <Separator />
+
+                {/* Input Group */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Input Group</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: InputGroup · InputGroupAddon · InputGroupButton · InputGroupText · InputGroupInput · InputGroupTextarea</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <p className="text-caption text-[var(--color-text-muted)]">With icon addon</p>
+                      <InputGroup>
+                        <InputGroupAddon><Search className="size-4 text-[var(--color-text-hint)]" /></InputGroupAddon>
+                        <InputGroupInput placeholder="Search…" />
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-caption text-[var(--color-text-muted)]">With text addon</p>
+                      <InputGroup>
+                        <InputGroupText>$</InputGroupText>
+                        <InputGroupInput placeholder="0.00" />
+                        <InputGroupText>COP</InputGroupText>
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-caption text-[var(--color-text-muted)]">With trailing icon</p>
+                      <InputGroup>
+                        <InputGroupAddon><Mail className="size-4 text-[var(--color-text-hint)]" /></InputGroupAddon>
+                        <InputGroupInput placeholder="you@company.com" />
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-caption text-[var(--color-text-muted)]">Password with toggle</p>
+                      <PasswordInputDemo />
+                    </div>
+                  </div>
+                </section>
+
+                <Separator />
+
+                {/* Button Group */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Button Group</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: ButtonGroup · ButtonGroupText · ButtonGroupSeparator</p>
+                  <div className="flex flex-wrap gap-4">
+                    <ButtonGroup>
+                      <ButtonGroupText>Sort by</ButtonGroupText>
+                      <ButtonGroupSeparator />
+                      <ButtonGroupText>Date</ButtonGroupText>
+                    </ButtonGroup>
+                    <ButtonGroup>
+                      <ButtonGroupText>Filter</ButtonGroupText>
+                      <ButtonGroupSeparator />
+                      <ButtonGroupText>All statuses</ButtonGroupText>
+                      <ButtonGroupSeparator />
+                      <ButtonGroupText><Plus className="size-3.5" /></ButtonGroupText>
+                    </ButtonGroup>
+                  </div>
+                </section>
+
+                <Separator />
+
+                {/* Collapsible */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Collapsible</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: Collapsible · CollapsibleTrigger · CollapsibleContent</p>
+                  <Collapsible className="w-80 space-y-2">
+                    <CollapsibleTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        Advanced filters <ChevronDown className="size-4" />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-2 px-1">
+                      <p className="text-body-sm text-[var(--color-text-muted)]">Filter by date range</p>
+                      <p className="text-body-sm text-[var(--color-text-muted)]">Filter by participant</p>
+                      <p className="text-body-sm text-[var(--color-text-muted)]">Filter by amount</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </section>
+
+                <Separator />
+
+                {/* Filter Chip */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Filter Chip</h2>
+                  <FilterChipDemo />
+                </section>
+
+                <Separator />
+
+                {/* Dropdown Menu */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Dropdown Menu</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: DropdownMenu · Trigger · Content · Item · CheckboxItem · RadioItem · Label · Separator · Sub(Trigger/Content)</p>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline">Open menu <ChevronDown className="size-4" /></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-48">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>View details</DropdownMenuItem>
+                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-[var(--color-feedback-error)]">Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </section>
+
+                <Separator />
+
+                {/* Stat Card */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Stat Card</h2>
+                  <div className="space-y-4">
+                    <p className="text-caption text-[var(--color-text-muted)]">Count</p>
+                    <div className="grid grid-cols-4 gap-3">
+                      <StatCard label="Completed" value={205} percent={68} color="success" dot="var(--color-feedback-success)" />
+                      <StatCard label="Pending"   value={58}  percent={19} color="default" dot="var(--color-feedback-warning)" />
+                      <StatCard label="Rejected"  value={14}  percent={5}  color="default" dot="rgb(71 85 105)" />
+                      <StatCard label="Failed"    value={23}  percent={8}  color="error"   dot="var(--color-feedback-error)" />
+                    </div>
+                    <p className="text-caption text-[var(--color-text-muted)]">Amount</p>
+                    <div className="grid grid-cols-4 gap-3">
+                      <StatCard type="amount" label="Total moved" value="$254.7M" subvalue="$848K avg / trx" />
+                      <StatCard type="amount" label="P2P" value="$72.0M" percent={28} subvalue="$910K avg / trx" />
+                      <StatCard type="amount" label="P2M" value="$89.4M" percent={35} subvalue="$780K avg / trx" color="success" />
+                      <StatCard type="amount" label="Alert threshold" value={null} unit="COP" />
+                    </div>
+                    <p className="text-caption text-[var(--color-text-muted)]">Status</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      <StatCard type="status" label="Settlement" status="Active"        color="success" />
+                      <StatCard type="status" label="Settlement" status="Balance alert" color="error"   />
+                      <StatCard type="status" label="Settlement" status="Inactive"      color="muted"   />
+                    </div>
+                    <p className="text-caption text-[var(--color-text-muted)]">With actions</p>
+                    <StatCardActionsDemo />
+                  </div>
+                </section>
+              </TabsContent>
+
+              {/* ═══ Cellular beings ═══ */}
+              <TabsContent value="cellular" className="space-y-12 pt-8">
+                <CatIntro>Composed of multiple molecules and atoms — full interface regions.</CatIntro>
+
+                {/* Data Table */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Data Table</h2>
+                  <DataTableDemo />
+                </section>
+
+                <Separator />
+
+                {/* Cells — depending atoms, shown in their canonical context */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Cells</h2>
+                  <p className="text-caption text-[var(--color-text-muted)]">Depending atoms — TextStack · DataCell · AmountCell · BadgeCell · ActionCell · StatusCell, composed inside table rows.</p>
+                  <CellsDemo />
+                </section>
+
+                <Separator />
+
+                {/* Table parts */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Table parts</h2>
+                  <p className="text-caption text-[var(--color-text-muted)]">Depending atoms — Table · TableHeader · TableBody · TableRow · TableHead · TableCell.</p>
+                  <TablePartsDemo />
+                </section>
+
+                <Separator />
+
+                {/* Search Bar */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Search Bar</h2>
+                  <SearchBarDemo />
+                </section>
+
+                <Separator />
+
+                {/* Filter Combobox */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Filter Combobox</h2>
+                  <FilterComboboxDemo />
+                </section>
+
+                <Separator />
+
+                {/* Combobox */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Combobox</h2>
+                  <ComboboxDemo />
+                </section>
+
+                <Separator />
+
+                {/* Dialog */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Dialog</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: Dialog · DialogTrigger · DialogContent · DialogHeader · DialogTitle · DialogDescription · DialogFooter · DialogClose</p>
+                  <DialogDemo />
+                </section>
+
+                <Separator />
+
+                {/* Toast */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Toast</h2>
+                  <SonnerDemo />
+                </section>
+
+                <Separator />
+
+                {/* Sidebar */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Sidebar</h2>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: SidebarProvider · Sidebar · Trigger · Content · Header · Footer · Inset · Group(+Content/Label) · Menu(+Item/Button/Sub…)</p>
+                  <SidebarDemo />
+                </section>
+              </TabsContent>
+
+              {/* ═══ Thoughtful beings ═══ */}
+              <TabsContent value="thoughtful" className="pt-8">
+                <div className="rounded-lg border border-dashed border-[var(--color-border-default)] px-8 py-16 text-center space-y-2">
+                  <p className="text-heading-4-serif text-[var(--color-text-default)]">Thoughtful beings</p>
+                  <p className="text-body-sm text-[var(--color-text-muted)] max-w-md mx-auto">
+                    UX patterns, layouts, and flows that define how screens and journeys behave — coming soon.
+                  </p>
                 </div>
-                <div className="grid grid-cols-3 gap-3">
-                  <Skeleton className="h-24 rounded-lg" />
-                  <Skeleton className="h-24 rounded-lg" />
-                  <Skeleton className="h-24 rounded-lg" />
-                </div>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Pagination */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Pagination</h2>
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
-                  <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
-                  <PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem>
-                  <PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem>
-                  <PaginationItem><PaginationEllipsis /></PaginationItem>
-                  <PaginationItem><PaginationLink href="#">8</PaginationLink></PaginationItem>
-                  <PaginationItem><PaginationNext href="#" /></PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </section>
-
-            <Separator />
-
-            {/* Input Group */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Input Group</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <p className="text-caption text-[var(--color-text-muted)]">With icon addon</p>
-                  <InputGroup>
-                    <InputGroupAddon><Search className="size-4 text-[var(--color-text-hint)]" /></InputGroupAddon>
-                    <InputGroupInput placeholder="Search…" />
-                  </InputGroup>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-caption text-[var(--color-text-muted)]">With text addon</p>
-                  <InputGroup>
-                    <InputGroupText>$</InputGroupText>
-                    <InputGroupInput placeholder="0.00" />
-                    <InputGroupText>COP</InputGroupText>
-                  </InputGroup>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-caption text-[var(--color-text-muted)]">With trailing icon</p>
-                  <InputGroup>
-                    <InputGroupAddon><Mail className="size-4 text-[var(--color-text-hint)]" /></InputGroupAddon>
-                    <InputGroupInput placeholder="you@company.com" />
-                  </InputGroup>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-caption text-[var(--color-text-muted)]">Password with toggle</p>
-                  <PasswordInputDemo />
-                </div>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Dropdown Menu */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Dropdown Menu</h2>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">Open menu <ChevronDown className="size-4" /></Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-48">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>View details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-[var(--color-feedback-error)]">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </section>
-
-            <Separator />
-
-            {/* Button Group */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Button Group</h2>
-              <div className="flex flex-wrap gap-4">
-                <ButtonGroup>
-                  <ButtonGroupText>Sort by</ButtonGroupText>
-                  <ButtonGroupSeparator />
-                  <ButtonGroupText>Date</ButtonGroupText>
-                </ButtonGroup>
-                <ButtonGroup>
-                  <ButtonGroupText>Filter</ButtonGroupText>
-                  <ButtonGroupSeparator />
-                  <ButtonGroupText>All statuses</ButtonGroupText>
-                  <ButtonGroupSeparator />
-                  <ButtonGroupText><Plus className="size-3.5" /></ButtonGroupText>
-                </ButtonGroup>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Breadcrumb */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Breadcrumb</h2>
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem><BreadcrumbLink href="#">Transactions</BreadcrumbLink></BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem><BreadcrumbLink href="#">List</BreadcrumbLink></BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem><BreadcrumbPage>MOL-9282-542F-F3C2</BreadcrumbPage></BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </section>
-
-            <Separator />
-
-            {/* Amount Cell */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Amount Cell</h2>
-              <div className="flex flex-wrap gap-6 items-baseline">
-                <AmountCell>$1,875,000.00</AmountCell>
-                <AmountCell>$156,000.00</AmountCell>
-                <AmountCell>$3,200,000.00</AmountCell>
-                <AmountCell>$623,750.00</AmountCell>
-              </div>
-            </section>
-
-            <Separator />
-
-            {/* Tab Count */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Tab Count</h2>
-              <Tabs defaultValue="all">
-                <TabsList variant="line">
-                  <TabsTrigger value="all">All <TabCount count={300} /></TabsTrigger>
-                  <TabsTrigger value="completed">Completed <TabCount count={205} /></TabsTrigger>
-                  <TabsTrigger value="pending">Pending <TabCount count={58} /></TabsTrigger>
-                  <TabsTrigger value="failed">Failed <TabCount count={23} /></TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </section>
-
-            <Separator />
-
-            {/* Collapsible */}
-            <section className="space-y-3">
-              <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Collapsible</h2>
-              <Collapsible className="w-80 space-y-2">
-                <CollapsibleTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
-                    Advanced filters <ChevronDown className="size-4" />
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-2 px-1">
-                  <p className="text-body-sm text-[var(--color-text-muted)]">Filter by date range</p>
-                  <p className="text-body-sm text-[var(--color-text-muted)]">Filter by participant</p>
-                  <p className="text-body-sm text-[var(--color-text-muted)]">Filter by amount</p>
-                </CollapsibleContent>
-              </Collapsible>
-            </section>
-
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           {/* ── Tokens tab ─────────────────────────────────────── */}
@@ -741,8 +830,11 @@ export default function DesignSystemPlayground() {
                   ["beige",  "--color-brand-beige"],
                   ["yellow", "--color-brand-yellow"],
                   ["rose",   "--color-brand-rose"],
-                  ["red",    "--color-brand-red"],
+                  ["coral",  "--color-brand-coral"],
                   ["blue",   "--color-brand-blue"],
+                  ["darkforest", "--color-brand-darkforest"],
+                  ["navy",   "--color-brand-navy"],
+                  ["bronze", "--color-brand-bronze"],
                 ].map(([label, token]) => (
                   <div key={token} className="flex flex-col items-center gap-1.5">
                     <div className="w-16 h-12 rounded-md border border-[var(--color-border-default)]" style={{ backgroundColor: `var(${token})` }} />

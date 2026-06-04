@@ -35,7 +35,7 @@
   --primitive-beige-950: oklch(0.230 0.020 98);
 
   --primitive-red-50:  oklch(0.95 0.03 28);
-  --primitive-red-100: oklch(0.93 0.05 28);
+  --primitive-red-100: oklch(0.933859 0.034874 39.988);
   --primitive-red-200: oklch(0.89 0.07 28);
   --primitive-red-300: oklch(0.84 0.11 28);
   --primitive-red-400: oklch(0.79 0.16 28);
@@ -70,7 +70,7 @@
   --primitive-yellow-900: oklch(0.3 0.07 98);
   --primitive-yellow-950: oklch(0.25 0.06 98);
 
-  --primitive-lulo-50:  oklch(0.967 0.099 118);
+  --primitive-lulo-50:  oklch(0.9654 0.1157 112.05);
   --primitive-lulo-100: oklch(0.918 0.136 116);
   --primitive-lulo-200: oklch(0.869 0.173 114);
   --primitive-lulo-300: oklch(0.82 0.21 112);
@@ -99,12 +99,12 @@
   --primitive-aquamarine-200: oklch(0.85 0.24 167);
   --primitive-aquamarine-300: oklch(0.8 0.22 167);
   --primitive-aquamarine-400: oklch(0.74 0.21 167);
-  --primitive-aquamarine-500: oklch(0.68 0.19 167);
-  --primitive-aquamarine-600: oklch(0.59 0.16 167);
-  --primitive-aquamarine-700: oklch(0.52 0.14 167);
-  --primitive-aquamarine-800: oklch(0.39 0.11 167);
-  --primitive-aquamarine-900: oklch(0.29 0.08 167);
-  --primitive-aquamarine-950: oklch(0.23 0.07 167);
+  --primitive-aquamarine-500: oklch(0.642 0.165 167);
+  --primitive-aquamarine-600: oklch(0.544 0.120 167);
+  --primitive-aquamarine-700: oklch(0.446 0.075 168);
+  --primitive-aquamarine-800: oklch(0.3479 0.0291 167.95);
+  --primitive-aquamarine-900: oklch(0.268 0.022 168);
+  --primitive-aquamarine-950: oklch(0.218 0.016 168);
 
   --primitive-sea-50:  oklch(0.94 0.04 220);
   --primitive-sea-100: oklch(0.92 0.06 220);
@@ -118,17 +118,17 @@
   --primitive-sea-900: oklch(0.29 0.07 220);
   --primitive-sea-950: oklch(0.24 0.06 220);
 
-  --primitive-slate-50:  oklch(0.950 0.012 218);
-  --primitive-slate-100: oklch(0.932 0.020 218);
-  --primitive-slate-200: oklch(0.898 0.032 218);
-  --primitive-slate-300: oklch(0.848 0.042 218);
-  --primitive-slate-400: oklch(0.762 0.054 218);
-  --primitive-slate-500: oklch(0.656 0.063 218);
-  --primitive-slate-600: oklch(0.560 0.054 218);
-  --primitive-slate-700: oklch(0.472 0.046 218);
-  --primitive-slate-800: oklch(0.352 0.034 218);
-  --primitive-slate-900: oklch(0.248 0.023 218);
-  --primitive-slate-950: oklch(0.198 0.017 218);
+  --primitive-slate-50:  oklch(0.965 0.010 225);
+  --primitive-slate-100: oklch(0.930 0.018 226);
+  --primitive-slate-200: oklch(0.880 0.030 228);
+  --primitive-slate-300: oklch(0.825 0.044 229);
+  --primitive-slate-400: oklch(0.762 0.055 231);
+  --primitive-slate-500: oklch(0.6916 0.0616 232.57);
+  --primitive-slate-600: oklch(0.580 0.045 243);
+  --primitive-slate-700: oklch(0.468 0.030 254);
+  --primitive-slate-800: oklch(0.3555 0.0149 264.37);
+  --primitive-slate-900: oklch(0.270 0.012 268);
+  --primitive-slate-950: oklch(0.215 0.010 270);
 
   --primitive-blue-50:  oklch(0.95 0.03 257);
   --primitive-blue-100: oklch(0.93 0.04 257);

@@ -2,6 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Scan the minka-ds package source so utility classes used only inside
+   DS components are generated (Tailwind v4 skips node_modules by default) */
+@source "../../../packages/minka-ds/src";
+
 /* Primitives — raw scale values, source of truth */
 @import "../tokens/primitives.css";
 @import "../tokens/gradients.css";
@@ -205,8 +209,11 @@
   --color-brand-beige:  var(--primitive-beige-100);
   --color-brand-yellow: var(--primitive-lulo-50);
   --color-brand-rose:   var(--primitive-red-100);
-  --color-brand-red:    var(--primitive-red-500);
+  --color-brand-coral:  var(--primitive-red-500);
   --color-brand-blue:   var(--primitive-slate-500);
+  --color-brand-darkforest: var(--primitive-aquamarine-800);
+  --color-brand-navy:   var(--primitive-slate-800);
+  --color-brand-bronze: var(--primitive-bronze-900);
 
   /* component z-index aliases */
   --z-sticky:   var(--primitive-z-raised);
