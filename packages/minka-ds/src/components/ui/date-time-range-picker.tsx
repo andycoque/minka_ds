@@ -29,7 +29,25 @@ export function DateTimeRangePicker({
   const range: DateRange | undefined =
     value?.from ? { from: value.from, to: value.to } : undefined
 
-  function handleRangeSelect(selected: DateRange | undefined) {
+  // A range is "complete" once from and to differ (or a real end was picked).
+  const isComplete = Boolean(value?.from && value?.to && value.from.getTime() !== value.to.getTime())
+
+  function handleRangeSelect(
+    selected: DateRange | undefined,
+    selectedDay: Date,
+  ) {
+    // If a complete range already exists, any click starts a brand-new range
+    // anchored on the clicked day — instead of extending the old one. This also
+    // frees the user from the max-range cap that was anchored on the old `from`.
+    if (isComplete) {
+      onChange({
+        from: selectedDay,
+        to: selectedDay,
+        startTime: value?.startTime ?? "",
+        endTime:   value?.endTime   ?? "",
+      })
+      return
+    }
     if (!selected?.from) { onChange(null); return }
     onChange({
       from: selected.from,
@@ -49,8 +67,11 @@ export function DateTimeRangePicker({
     onChange({ ...value, endTime: e.target.value })
   }
 
+  // Only cap the calendar while the user is picking the second date (from set,
+  // range not yet complete). Once complete, all dates stay clickable so a fresh
+  // click elsewhere can start a new range.
   const disabledAfter =
-    maxRangeDays && range?.from
+    maxRangeDays && range?.from && !isComplete
       ? { after: new Date(range.from.getTime() + maxRangeDays * 86_400_000) }
       : undefined
 

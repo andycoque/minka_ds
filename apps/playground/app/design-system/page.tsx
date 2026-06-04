@@ -33,6 +33,7 @@ import { ButtonGroup, ButtonGroupText, ButtonGroupSeparator } from "@/components
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { CellsDemo, TablePartsDemo } from "./depending-atoms-demo"
+import { DateTimeRangeDemo } from "./datetime-range-demo"
 
 function CatIntro({ children }: { children: React.ReactNode }) {
   return <p className="text-body-sm text-[var(--color-text-muted)] max-w-2xl">{children}</p>
@@ -670,6 +671,14 @@ export default function DesignSystemPlayground() {
                 <section className="space-y-3">
                   <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Combobox</h2>
                   <ComboboxDemo />
+                </section>
+
+                <Separator />
+
+                {/* DateTime Range Picker */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">DateTime Range Picker</h2>
+                  <DateTimeRangeDemo />
                 </section>
 
                 <Separator />
