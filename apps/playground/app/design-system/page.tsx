@@ -23,7 +23,7 @@ import { PasswordInputDemo } from "./password-input-demo"
 import { ComboboxDemo } from "./combobox-demo"
 import { SonnerDemo } from "./sonner-demo"
 import { TooltipDemo } from "./tooltip-demo"
-import { StatCard, TabCount } from "minka-ds"
+import { StatCard, TabCount, Avatar } from "minka-ds"
 import { SwitchDemo } from "./switch-demo"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination"
@@ -293,6 +293,28 @@ export default function DesignSystemPlayground() {
                 <section className="space-y-3">
                   <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Alert</h2>
                   <AlertDemo />
+                </section>
+
+                <Separator />
+
+                {/* Avatar */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Avatar</h2>
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <Avatar name="Andy Corredor" size="sm" />
+                      <Avatar name="Andy Corredor" size="md" />
+                      <Avatar name="Andy Corredor" size="lg" />
+                    </div>
+                    <span className="text-caption text-[var(--color-text-hint)]">initials · sizes sm / md / lg</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Avatar name="María García" background="var(--color-brand-darkforest)" />
+                    <Avatar name="Carlos Méndez" background="var(--color-brand-bronze)" />
+                    <Avatar name="Diana Restrepo" background="var(--color-brand-navy)" />
+                    <Avatar name="Felipe Ríos" background="var(--color-brand-coral)" />
+                    <span className="text-caption text-[var(--color-text-hint)]">brand backgrounds</span>
+                  </div>
                 </section>
 
                 <Separator />

@@ -3,13 +3,13 @@
 import * as React from "react"
 import {
   LayoutDashboard, Users, FileText, Bell, Settings,
-  ChevronsUpDown, ChevronDown, UsersRound, UserCheck, Archive,
+  ChevronsUpDown, ChevronDown, UsersRound, UserCheck, Archive, MoreVertical,
 } from "lucide-react"
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton,
   SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
-  SidebarProvider, SidebarTrigger,
+  SidebarProvider, SidebarTrigger, SidebarSeparator, SidebarUser,
 } from "@/components/ui/sidebar"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
@@ -188,6 +188,16 @@ export function SidebarDemo() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
+            <SidebarSeparator className="my-0" />
+            <SidebarUser
+              name="Andy Corredor"
+              role="Admin"
+              action={
+                <button className="size-7 shrink-0 flex items-center justify-center rounded-[var(--radius-button)] text-[var(--color-text-hint)] hover:bg-[var(--color-action-ghost-hover)] hover:text-[var(--color-text-default)] transition-colors" aria-label="User menu">
+                  <MoreVertical className="size-4" />
+                </button>
+              }
+            />
           </SidebarFooter>
 
         </Sidebar>

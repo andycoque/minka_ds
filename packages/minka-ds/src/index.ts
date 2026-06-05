@@ -6,6 +6,7 @@ export { usePlatform } from "./hooks/use-platform"
 
 // Components
 export * from "./components/ui/alert"
+export * from "./components/ui/avatar"
 export * from "./components/ui/badge"
 export * from "./components/ui/breadcrumb"
 export * from "./components/ui/calendar"

@@ -7,6 +7,7 @@ import { Slot } from "radix-ui"
 
 import { useIsMobile } from "../../hooks/use-mobile"
 import { cn } from "../../lib/utils"
+import { Avatar } from "./avatar"
 import { Button } from "./button"
 import { Input } from "./input"
 import { Separator } from "./separator"
@@ -368,6 +369,38 @@ function SidebarSeparator({
   )
 }
 
+// Footer user block: avatar + name/role, with an optional trailing action
+// (e.g. a kebab dropdown trigger). Composed for the sidebar footer.
+function SidebarUser({
+  name,
+  role,
+  avatarSrc,
+  avatarBackground,
+  action,
+  className,
+}: {
+  name: string
+  role?: string
+  avatarSrc?: string
+  avatarBackground?: string
+  action?: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      data-slot="sidebar-user"
+      className={cn("flex items-center gap-2.5 px-2 py-1.5", className)}
+    >
+      <Avatar name={name} src={avatarSrc} background={avatarBackground} />
+      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+        <span className="text-body-sm text-[var(--color-text-default)] truncate">{name}</span>
+        {role && <span className="text-caption-light text-[var(--color-text-muted)] truncate">{role}</span>}
+      </div>
+      {action}
+    </div>
+  )
+}
+
 function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -722,5 +755,6 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
+  SidebarUser,
   useSidebar,
 }
