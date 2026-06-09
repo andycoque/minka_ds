@@ -1,0 +1,6 @@
+# Texture source SVGs — consumers use the generated .tsx components, not the raw
+# SVGs. Excluded to keep the published package lean (~1MB saved).
+src/textures/*.svg
+
+# Build artifacts
+tsconfig.tsbuildinfo

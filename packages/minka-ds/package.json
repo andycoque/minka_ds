@@ -1,11 +1,12 @@
 {
   "name": "minka-ds",
-  "version": "0.3.12",
+  "version": "0.4.0",
   "description": "Minka product design system — tokenized component library",
   "license": "MIT",
   "files": [
     "src",
-    "tokens"
+    "tokens",
+    "!src/textures/*.svg"
   ],
   "exports": {
     ".": "./src/index.ts",

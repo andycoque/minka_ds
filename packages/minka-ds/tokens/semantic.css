@@ -160,6 +160,24 @@
   --color-brand-navy:   var(--primitive-slate-800);
   --color-brand-bronze: var(--primitive-bronze-900);
 
+  /* brand pairs — sanctioned two-color combinations. Each pair is reversible:
+     use either member as background and the other as content. Stay within a
+     pair; cross-pair combinations are off-spec. */
+  --color-pair-yellow-darkforest-light: var(--color-brand-yellow);
+  --color-pair-yellow-darkforest-dark:  var(--color-brand-darkforest);
+
+  --color-pair-rose-coral-light: var(--color-brand-rose);
+  --color-pair-rose-coral-dark:  var(--color-brand-coral);
+
+  --color-pair-blue-navy-light: var(--color-brand-blue);
+  --color-pair-blue-navy-dark:  var(--color-brand-navy);
+
+  --color-pair-beige-bronze-light: var(--color-brand-beige);
+  --color-pair-beige-bronze-dark:  var(--color-brand-bronze);
+
+  --color-pair-gray-black-light: var(--color-bg-disabled);
+  --color-pair-gray-black-dark:  var(--color-text-default);
+
   /* z-index aliases */
   --z-sticky:   var(--primitive-z-raised);
   --z-dropdown: var(--primitive-z-dropdown);

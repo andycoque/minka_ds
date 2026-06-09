@@ -6,6 +6,7 @@ import { FilterChipDemo } from "./filter-chip-demo"
 import { FilterComboboxDemo } from "./filter-combobox-demo"
 import { CodeBlock } from "./code-block"
 import { SearchBarDemo } from "./search-bar-demo"
+import { TexturesDemo } from "./textures-demo"
 import { AlertDemo } from "./alert-demo"
 import { CornerDownLeft, Command, ArrowBigUp, Option, ChevronDown, Plus, Search, Mail } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -34,6 +35,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { CellsDemo, TablePartsDemo } from "./depending-atoms-demo"
 import { DateTimeRangeDemo } from "./datetime-range-demo"
+import { OtpDemo } from "./otp-demo"
 
 function CatIntro({ children }: { children: React.ReactNode }) {
   return <p className="text-body-sm text-[var(--color-text-muted)] max-w-2xl">{children}</p>
@@ -315,6 +317,14 @@ export default function DesignSystemPlayground() {
                     <Avatar name="Felipe Ríos" background="var(--color-brand-coral)" />
                     <span className="text-caption text-[var(--color-text-hint)]">brand backgrounds</span>
                   </div>
+                </section>
+
+                <Separator />
+
+                {/* Input OTP */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Input OTP</h2>
+                  <OtpDemo />
                 </section>
 
                 <Separator />
@@ -873,6 +883,60 @@ export default function DesignSystemPlayground() {
                   </div>
                 ))}
               </div>
+            </section>
+
+            <Separator />
+
+            <section className="space-y-4">
+              <h2 className="text-xl font-semibold">Brand pairs</h2>
+              <p className="text-body-sm text-[var(--color-text-muted)] max-w-prose">
+                Sanctioned two-color combinations. Each pair is reversible — use either member
+                as the background and the other as content. Stay within a pair; mixing across
+                pairs is off-spec.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { name: "yellow-darkforest", light: "--color-pair-yellow-darkforest-light", dark: "--color-pair-yellow-darkforest-dark" },
+                  { name: "rose-coral",        light: "--color-pair-rose-coral-light",        dark: "--color-pair-rose-coral-dark" },
+                  { name: "blue-navy",         light: "--color-pair-blue-navy-light",         dark: "--color-pair-blue-navy-dark" },
+                  { name: "beige-bronze",      light: "--color-pair-beige-bronze-light",      dark: "--color-pair-beige-bronze-dark" },
+                  { name: "gray-black",        light: "--color-pair-gray-black-light",        dark: "--color-pair-gray-black-dark" },
+                ].map((pair) => (
+                  <div key={pair.name} className="flex flex-col gap-2">
+                    <code className="text-caption text-[var(--color-text-muted)]">{pair.name}</code>
+                    <div className="grid grid-cols-2 gap-2">
+                      {/* light bg / dark content */}
+                      <div
+                        className="h-24 rounded-md border border-[var(--color-border-default)] flex flex-col justify-end p-3"
+                        style={{ backgroundColor: `var(${pair.light})`, color: `var(${pair.dark})` }}
+                      >
+                        <span className="text-heading-4-serif leading-none">Aa</span>
+                        <span className="text-caption-sm opacity-80">light bg</span>
+                      </div>
+                      {/* dark bg / light content (reversed) */}
+                      <div
+                        className="h-24 rounded-md border border-[var(--color-border-default)] flex flex-col justify-end p-3"
+                        style={{ backgroundColor: `var(${pair.dark})`, color: `var(${pair.light})` }}
+                      >
+                        <span className="text-heading-4-serif leading-none">Aa</span>
+                        <span className="text-caption-sm opacity-80">dark bg</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <Separator />
+
+            <section className="space-y-4">
+              <h2 className="text-xl font-semibold">Brand textures</h2>
+              <p className="text-body-sm text-[var(--color-text-muted)] max-w-prose">
+                Decorative SVG motifs colored by a brand pair — shapes take the ink member,
+                the secondary tone takes the background. Pick a pair and toggle reverse to swap
+                ink/background.
+              </p>
+              <TexturesDemo />
             </section>
 
             <Separator />
