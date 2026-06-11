@@ -2,6 +2,14 @@
 
 import * as React from "react"
 
+/** Brand pair used to give a node / the flow a semantic accent. */
+export type FlowAccent =
+  | "yellow-darkforest"
+  | "rose-coral"
+  | "blue-navy"
+  | "beige-bronze"
+  | "gray-black"
+
 export interface FlowNode {
   /** Node label (party name). */
   name: string
@@ -13,6 +21,18 @@ export interface FlowNode {
   subtitle?: string
   /** True when this node is an unfilled slot (e.g. nothing selected yet). */
   empty?: boolean
+  /** Optional leading icon (used by state nodes like issue/destroy). */
+  icon?: React.ReactNode
+  /**
+   * When set, this node is a "state" node (no balance) rendered in the pair's
+   * colors — used for the abstract create/destroy end of issue/destroy flows.
+   */
+  accent?: FlowAccent
+  /**
+   * Invert the accent fill: light member as background, dark as text/border
+   * (instead of dark bg + light text). Used to contrast destroy vs issue.
+   */
+  accentInverted?: boolean
 }
 
 type FormatFn = (n: number) => string
@@ -55,6 +75,11 @@ export interface FlowDiagramProps {
   format?: FormatFn
   /** Optional content rendered below the diagram (e.g. a reference pill). */
   footer?: React.ReactNode
+  /**
+   * Semantic accent (brand pair) for the flow — tints the arrow, sheen and
+   * amount chip. Used by issue/destroy to read as generative/destructive.
+   */
+  accent?: FlowAccent
 }
 
 /**
@@ -65,12 +90,12 @@ export interface FlowDiagramProps {
  * an amount is entered. Unfilled nodes render as a dashed empty slot. Neutral
  * styling — suited to neutral transfers.
  */
-function FlowDiagram({ top, bottom, amount, direction, currency = "COP", format = defaultFormat, footer }: FlowDiagramProps) {
+function FlowDiagram({ top, bottom, amount, direction, currency = "COP", format = defaultFormat, footer, accent }: FlowDiagramProps) {
   const active = amount > 0
   const glintKey = active ? amount : 0
 
   return (
-    <div data-slot="flow-diagram" className="flex flex-col items-center">
+    <div data-slot="flow-diagram" className="relative flex flex-col items-center">
       <style>{`
         @keyframes flow-slide-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes flow-pop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
@@ -78,11 +103,15 @@ function FlowDiagram({ top, bottom, amount, direction, currency = "COP", format 
 
       <FlowNodeCard key={top.empty ? "top-empty" : `top-${top.name}`} node={top} active={active} format={format} pop />
 
-      <Connector active={active} direction={direction} amount={amount} currency={currency} format={format} glintKey={glintKey} />
+      <Connector active={active} direction={direction} amount={amount} currency={currency} format={format} glintKey={glintKey} accent={accent} />
 
       <FlowNodeCard key={bottom.empty ? "bottom-empty" : `bottom-${bottom.name}`} node={bottom} active={active} format={format} pop />
 
-      {footer && <div className="mt-4">{footer}</div>}
+      {/* footer (e.g. reference pill) is absolutely positioned above the diagram
+          so it doesn't shift the diagram's vertical centering when it appears */}
+      {footer && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-6">{footer}</div>
+      )}
     </div>
   )
 }
@@ -91,7 +120,7 @@ function FlowDiagram({ top, bottom, amount, direction, currency = "COP", format 
 const CONNECTOR_H = 80
 
 function Connector({
-  active, direction, amount, currency, format, glintKey,
+  active, direction, amount, currency, format, glintKey, accent,
 }: {
   active: boolean
   direction: "up" | "down"
@@ -99,10 +128,14 @@ function Connector({
   currency: string
   format: FormatFn
   glintKey: number
+  accent?: FlowAccent
 }) {
   const gid = React.useId()
   const H = CONNECTOR_H
   const headUp = direction === "up"
+
+  // active stroke: semantic pair-dark when accented, else default ink
+  const activeStroke = accent ? `var(--color-pair-${accent}-dark)` : "var(--color-text-default)"
 
   const head = headUp ? "M2 6 L7 0 L12 6" : `M2 ${H - 6} L7 ${H} L12 ${H - 6}`
   const shapes = (
@@ -115,7 +148,7 @@ function Connector({
   return (
     <div className="relative flex items-center justify-center my-1" style={{ height: H }}>
       <svg width="14" height={H} viewBox={`0 0 14 ${H}`} className="block overflow-visible" aria-hidden>
-        <g stroke={active ? "var(--color-text-default)" : "var(--color-border-strong)"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none">
+        <g stroke={active ? activeStroke : "var(--color-border-strong)"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none">
           {shapes}
         </g>
         {active && (
@@ -161,6 +194,28 @@ function FlowNodeCard({ node, active, format, pop }: { node: FlowNode; active: b
       <div className="relative flex flex-col items-center justify-center gap-1 [border-radius:var(--radius-card)] bg-[var(--color-bg-base)] px-5 py-3 text-center min-w-[180px] min-h-[64px]">
         <DashedBorder radius={10} />
         <span className="text-body-sm text-[var(--color-text-hint)]">{node.name}</span>
+      </div>
+    )
+  }
+
+  // State node (issue/destroy abstract end): pair-colored, no balance. Icon sits
+  // inline next to the main label; subtext below.
+  if (node.accent) {
+    // default: dark fill + light text; inverted: light fill + dark text.
+    const fill = node.accentInverted ? `var(--color-pair-${node.accent}-light)` : `var(--color-pair-${node.accent}-dark)`
+    const ink  = node.accentInverted ? `var(--color-pair-${node.accent}-dark)` : `var(--color-pair-${node.accent}-light)`
+    const ring = node.accentInverted ? `var(--color-pair-${node.accent}-dark)` : `var(--color-pair-${node.accent}-light)`
+    const subInk = node.accentInverted ? "var(--color-text-default)" : "var(--color-text-inverse)"
+    return (
+      <div
+        className="flex flex-col items-center gap-1 [border-radius:var(--radius-card)] border px-5 py-3 text-center min-w-[180px]"
+        style={{ backgroundColor: fill, color: ink, borderColor: ring }}
+      >
+        <span className="flex items-center gap-1.5 text-body-sm">
+          {node.icon && <span className="flex items-center [&_svg]:size-4">{node.icon}</span>}
+          {node.name}
+        </span>
+        {node.subtitle && <span className="text-caption" style={{ color: subInk }}>{node.subtitle}</span>}
       </div>
     )
   }
