@@ -17,6 +17,8 @@ interface AvatarProps {
   size?: "sm" | "md" | "lg"
   /** Background for the initials state. Defaults to a brand color. */
   background?: string
+  /** Foreground (initials) color. Defaults to the inverse text token. */
+  color?: string
   className?: string
 }
 
@@ -25,7 +27,7 @@ function deriveInitials(name?: string): string {
   return name.trim().split(/\s+/).map(p => p[0]).join("").slice(0, 2).toUpperCase()
 }
 
-function Avatar({ src, name, initials, size = "md", background, className }: AvatarProps) {
+function Avatar({ src, name, initials, size = "md", background, color, className }: AvatarProps) {
   return (
     <div
       data-slot="avatar"
@@ -34,7 +36,10 @@ function Avatar({ src, name, initials, size = "md", background, className }: Ava
         SIZE[size],
         className
       )}
-      style={{ background: src ? undefined : (background ?? "var(--color-brand-blue)") }}
+      style={{
+        background: src ? undefined : (background ?? "var(--color-brand-blue)"),
+        ...(color ? { color } : {}),
+      }}
     >
       {src
         ? <img src={src} alt={name ?? ""} className="size-full object-cover" />

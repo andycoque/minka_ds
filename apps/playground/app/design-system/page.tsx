@@ -311,11 +311,18 @@ export default function DesignSystemPlayground() {
                     <span className="text-caption text-[var(--color-text-hint)]">initials · sizes sm / md / lg</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Avatar name="María García" background="var(--color-brand-darkforest)" />
-                    <Avatar name="Carlos Méndez" background="var(--color-brand-bronze)" />
-                    <Avatar name="Diana Restrepo" background="var(--color-brand-navy)" />
-                    <Avatar name="Felipe Ríos" background="var(--color-brand-coral)" />
-                    <span className="text-caption text-[var(--color-text-hint)]">brand backgrounds</span>
+                    <Avatar name="María García"   background="var(--color-pair-yellow-darkforest-dark)" color="var(--color-pair-yellow-darkforest-light)" />
+                    <Avatar name="Carlos Méndez"  background="var(--color-pair-beige-bronze-dark)"      color="var(--color-pair-beige-bronze-light)" />
+                    <Avatar name="Diana Restrepo" background="var(--color-pair-blue-navy-dark)"         color="var(--color-pair-blue-navy-light)" />
+                    <Avatar name="Felipe Ríos"    background="var(--color-pair-rose-coral-dark)"        color="var(--color-pair-rose-coral-light)" />
+                    <span className="text-caption text-[var(--color-text-hint)]">brand pairs · dark bg, light initials</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Avatar name="María García"   background="var(--color-pair-yellow-darkforest-light)" color="var(--color-pair-yellow-darkforest-dark)" />
+                    <Avatar name="Carlos Méndez"  background="var(--color-pair-beige-bronze-light)"      color="var(--color-pair-beige-bronze-dark)" />
+                    <Avatar name="Diana Restrepo" background="var(--color-pair-blue-navy-light)"         color="var(--color-pair-blue-navy-dark)" />
+                    <Avatar name="Felipe Ríos"    background="var(--color-pair-rose-coral-light)"        color="var(--color-pair-rose-coral-dark)" />
+                    <span className="text-caption text-[var(--color-text-hint)]">reversed · light bg, dark initials</span>
                   </div>
                 </section>
 

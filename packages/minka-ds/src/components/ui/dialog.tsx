@@ -47,6 +47,44 @@ function DialogOverlay({
   )
 }
 
+type PanelPlacement = "side" | "top"
+
+/**
+ * Optional contextual panel rendered inside DialogContent. Holds supporting
+ * media or guidance (illustration, brand texture, action summary, help text).
+ * Place it as a direct child of DialogContent; the content adapts its layout.
+ *
+ * By default the panel bleeds to the dialog edges. Pass `inset` to float it
+ * inside the dialog with an 8px frame and rounded corners.
+ */
+function DialogPanel({
+  className,
+  placement = "side",
+  inset = false,
+  ...props
+}: React.ComponentProps<"div"> & { placement?: PanelPlacement; inset?: boolean }) {
+  return (
+    <div
+      data-slot="dialog-panel"
+      data-placement={placement}
+      data-inset={inset || undefined}
+      className={cn(
+        "relative flex flex-col justify-center bg-[var(--color-bg-canvas)]",
+        // inset panels are tighter — the 8px frame already adds breathing room
+        inset ? "p-4" : "p-6",
+        // side: a column down the left; top: a banner across the top
+        placement === "side" ? "shrink-0 sm:w-2/5" : "min-h-32",
+        // inset: float inside the dialog with an 8px frame on the dialog-facing
+        // edges only — the interior edge stays flush, the body padding separates
+        inset && "overflow-hidden [border-radius:var(--radius-card)]",
+        inset && (placement === "side" ? "ml-2 my-2" : "mt-2 mx-2"),
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 function DialogContent({
   className,
   children,
@@ -57,31 +95,66 @@ function DialogContent({
   showCloseButton?: boolean
   container?: HTMLElement | null
 }) {
+  // Detect an optional DialogPanel child and split it out from the body.
+  const childArray = React.Children.toArray(children)
+  const panel = childArray.find(
+    (c): c is React.ReactElement<{ placement?: PanelPlacement; children?: React.ReactNode }> =>
+      React.isValidElement(c) && (c.type as { displayName?: string })?.displayName === "DialogPanel"
+  )
+  const body = childArray.filter(c => c !== panel)
+  const placement = panel?.props.placement ?? "side"
+  const hasPanel = Boolean(panel)
+
+  const closeButton = showCloseButton && (
+    <DialogPrimitive.Close asChild>
+      <Button
+        data-slot="dialog-close"
+        variant="ghost"
+        size="icon-sm"
+        aria-label="Close"
+        className="absolute top-5 right-5 z-10 translate-y-[5px] text-current opacity-70 hover:opacity-100"
+      >
+        <XIcon />
+      </Button>
+    </DialogPrimitive.Close>
+  )
+
   return (
     <DialogPortal container={container}>
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
+        data-panel={hasPanel ? placement : undefined}
         className={cn(
-          "fixed top-[50%] left-[50%] [z-index:var(--z-modal)] grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 [border-radius:var(--radius-modal)] border border-[var(--color-border-default)] bg-[var(--color-bg-overlay)] p-6 shadow-[var(--shadow-modal)] duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
+          "fixed top-[50%] left-[50%] [z-index:var(--z-modal)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden [border-radius:var(--radius-modal)] border border-[var(--color-border-default)] bg-[var(--color-bg-overlay)] shadow-[var(--shadow-modal)] duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
+          // layout: plain (padded grid) vs panelled (flex split, panel bleeds to edges)
+          hasPanel
+            ? placement === "side"
+              ? "flex flex-col sm:flex-row sm:max-w-2xl"
+              : "flex flex-col"
+            : "grid gap-4 p-5",
           className
         )}
         {...props}
       >
-        {children}
-        {showCloseButton && (
-          <DialogPrimitive.Close
-            data-slot="dialog-close"
-            className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-          >
-            <XIcon />
-            <span className="sr-only">Close</span>
-          </DialogPrimitive.Close>
+        {/* top: close lives inside the panel so it inherits the panel's foreground */}
+        {placement === "top" && panel
+          ? React.cloneElement(panel, {}, panel.props.children, closeButton)
+          : panel}
+        {hasPanel ? (
+          <div data-slot="dialog-body" className="relative flex flex-1 flex-col gap-4 p-5">
+            {body}
+          </div>
+        ) : (
+          body
         )}
+        {/* side / no panel: close sits over the content body */}
+        {placement !== "top" && closeButton}
       </DialogPrimitive.Content>
     </DialogPortal>
   )
 }
+DialogPanel.displayName = "DialogPanel"
 
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -127,7 +200,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("text-heading-4", className)}
+      className={cn("text-heading-2-serif", className)}
       {...props}
     />
   )
@@ -154,6 +227,7 @@ export {
   DialogFooter,
   DialogHeader,
   DialogOverlay,
+  DialogPanel,
   DialogPortal,
   DialogTitle,
   DialogTrigger,

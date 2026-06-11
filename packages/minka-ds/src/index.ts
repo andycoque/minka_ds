@@ -43,6 +43,7 @@ export * from "./components/ui/tab-count"
 export * from "./components/ui/tabs"
 export * from "./components/ui/textarea"
 export * from "./components/ui/tooltip"
+export * from "./components/ui/flow-diagram"
 
 // Brand textures + logo
 export * from "./textures"
