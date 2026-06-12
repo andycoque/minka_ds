@@ -240,6 +240,7 @@
   --primitive-shadow-md: 0 4px 6px oklch(0 0 0 / 0.07), 0 2px 4px oklch(0 0 0 / 0.06);
   --primitive-shadow-lg: 0 10px 15px oklch(0 0 0 / 0.10), 0 4px 6px oklch(0 0 0 / 0.05);
   --primitive-shadow-xl: 0 20px 25px oklch(0 0 0 / 0.10), 0 8px 10px oklch(0 0 0 / 0.04);
+  --primitive-shadow-raised: 0 4px 12px -1px oklch(0 0 0 / 0.18), 0 2px 5px -1px oklch(0 0 0 / 0.12);
 
   /* --- Z-index scale --- */
   --primitive-z-base:      0;

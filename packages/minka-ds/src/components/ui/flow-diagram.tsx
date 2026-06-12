@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { DiagramNode } from "./diagram-node"
 
 /** Brand pair used to give a node / the flow a semantic accent. */
 export type FlowAccent =
@@ -185,72 +186,66 @@ function Connector({
   )
 }
 
-function FlowNodeCard({ node, active, format, pop }: { node: FlowNode; active: boolean; format: FormatFn; pop?: boolean }) {
+function FlowNodeCard({ node, active, format }: { node: FlowNode; active: boolean; format: FormatFn; pop?: boolean }) {
   const showAfter = active && node.after !== null
   const overdrawn = node.after !== null && node.after < 0
 
+  // Empty slot
   if (node.empty) {
     return (
-      <div className="relative flex flex-col items-center justify-center gap-1 [border-radius:var(--radius-card)] bg-[var(--color-bg-base)] px-5 py-3 text-center min-w-[180px] min-h-[64px]">
-        <DashedBorder radius={10} />
+      <DiagramNode filled={false}>
         <span className="text-body-sm text-[var(--color-text-hint)]">{node.name}</span>
-      </div>
+      </DiagramNode>
     )
   }
 
-  // State node (issue/destroy abstract end): pair-colored, no balance. Icon sits
-  // inline next to the main label; subtext below.
+  // State node (issue/destroy): pair-colored, no balance. Icon + label, subtext below.
   if (node.accent) {
-    // default: dark fill + light text; inverted: light fill + dark text.
-    const fill = node.accentInverted ? `var(--color-pair-${node.accent}-light)` : `var(--color-pair-${node.accent}-dark)`
-    const ink  = node.accentInverted ? `var(--color-pair-${node.accent}-dark)` : `var(--color-pair-${node.accent}-light)`
-    const ring = node.accentInverted ? `var(--color-pair-${node.accent}-dark)` : `var(--color-pair-${node.accent}-light)`
     const subInk = node.accentInverted ? "var(--color-text-default)" : "var(--color-text-inverse)"
     return (
-      <div
-        className="flex flex-col items-center gap-1 [border-radius:var(--radius-card)] border px-5 py-3 text-center min-w-[180px]"
-        style={{ backgroundColor: fill, color: ink, borderColor: ring }}
-      >
-        <span className="flex items-center gap-1.5 text-body-sm">
-          {node.icon && <span className="flex items-center [&_svg]:size-4">{node.icon}</span>}
-          {node.name}
-        </span>
-        {node.subtitle && <span className="text-caption" style={{ color: subInk }}>{node.subtitle}</span>}
-      </div>
+      <DiagramNode accent={node.accent} accentInverted={node.accentInverted}>
+        <div className="flex flex-col items-center gap-1">
+          <span className="flex items-center gap-1.5 text-body-sm">
+            {node.icon && <span className="flex items-center [&_svg]:size-4">{node.icon}</span>}
+            {node.name}
+          </span>
+          {node.subtitle && <span className="text-caption" style={{ color: subInk }}>{node.subtitle}</span>}
+        </div>
+      </DiagramNode>
     )
   }
 
+  // Wallet / balance node
   return (
-    <div
-      className="flex flex-col items-center gap-1 [border-radius:var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] px-5 py-3 text-center min-w-[180px]"
-      style={pop ? { animation: "flow-pop .18s cubic-bezier(0.16,1,0.3,1) both" } : undefined}
-    >
-      <span className="text-body-sm text-[var(--color-text-default)]">{node.name}</span>
+    <DiagramNode variant="wallet">
+      <div className="flex flex-col items-center gap-1">
+        <span className="text-body-sm text-[var(--color-text-default)]">{node.name}</span>
 
-      {node.current === null ? (
-        node.subtitle ? <span className="text-caption text-[var(--color-text-muted)]">{node.subtitle}</span> : null
-      ) : (
-        <div className="flex flex-col items-center leading-none">
-          <span
-            className={`origin-bottom transition-all duration-300 ${
-              showAfter
-                ? "scale-[0.78] text-caption text-[var(--color-text-muted)] mb-0.5"
-                : "text-label-mono text-[var(--color-text-default)]"
-            }`}
-          >
-            {showAfter ? `was ${format(node.current)}` : format(node.current)}
-          </span>
-          {showAfter && (
+        {node.current === null ? (
+          node.subtitle ? <span className="text-caption text-[var(--color-text-muted)]">{node.subtitle}</span> : null
+        ) : (
+          <div className="flex flex-col items-center leading-none">
             <span
-              className={`text-label-mono ${overdrawn ? "text-[var(--color-feedback-error)]" : "text-[var(--color-text-default)]"}`}
-              style={{ animation: "flow-slide-in .3s ease both" }}
+              className={`origin-bottom transition-all duration-300 ${
+                showAfter
+                  ? "scale-[0.78] text-caption text-[var(--color-text-muted)] mb-0.5"
+                  : "text-label-mono text-[var(--color-text-default)]"
+              }`}
             >
-              {format(node.after!)}
+              {showAfter ? `was ${format(node.current)}` : format(node.current)}
             </span>
-          )}
-        </div>
-      )}
-    </div>
+            {showAfter && (
+              <span
+                className={`text-label-mono ${overdrawn ? "text-[var(--color-feedback-error)]" : "text-[var(--color-text-default)]"}`}
+                style={{ animation: "flow-slide-in .3s ease both" }}
+              >
+                {format(node.after!)}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    </DiagramNode>
   )
 }
 

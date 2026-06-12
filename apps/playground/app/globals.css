@@ -247,6 +247,7 @@
   --shadow-card:    var(--primitive-shadow-xs);
   --shadow-popover: var(--primitive-shadow-md);
   --shadow-modal:   var(--primitive-shadow-lg);
+  --shadow-raised:  var(--primitive-shadow-raised);
 }
 
 /* ── Semantic layer — dark mode ──────────────────────────────────── */
@@ -376,6 +377,7 @@
   --shadow-card:    none;
   --shadow-popover: var(--primitive-shadow-lg);
   --shadow-modal:   var(--primitive-shadow-xl);
+  --shadow-raised:  var(--primitive-shadow-raised);
 }
 
 /* ── Semantic typography utilities ───────────────────────────────── */

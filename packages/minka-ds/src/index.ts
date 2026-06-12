@@ -44,6 +44,7 @@ export * from "./components/ui/tabs"
 export * from "./components/ui/textarea"
 export * from "./components/ui/tooltip"
 export * from "./components/ui/flow-diagram"
+export * from "./components/ui/diagram-node"
 export * from "./components/ui/help-expander"
 
 // Brand textures + logo
