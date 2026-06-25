@@ -83,7 +83,7 @@ function DiagramNode({
   return (
     <div
       data-slot="diagram-node"
-      className={cn("relative [border-radius:var(--radius-card)]", className)}
+      className={cn("relative inline-flex [border-radius:var(--radius-card)]", className)}
       style={filled ? { animation: "diagram-node-pop .18s cubic-bezier(0.16,1,0.3,1) both" } : undefined}
     >
       <style>{`@keyframes diagram-node-pop { from { opacity:0; transform: scale(.96) } to { opacity:1; transform: scale(1) } }`}</style>
@@ -94,10 +94,12 @@ function DiagramNode({
         style={{ boxShadow: filled ? `inset 0 0 0 4px ${stroke}` : "inset 0 0 0 0px transparent" }}
       />
 
-      {/* top: surface — inset so the ring shows; bg + lift fade in on fill */}
+      {/* top: surface — inset so the ring shows; bg + lift fade in on fill.
+          flex-1 so it fills the wrapper when an explicit width is imposed
+          (e.g. w-full), while still shrink-wrapping content otherwise. */}
       <div
         className={cn(
-          "relative m-1 flex items-center justify-center [border-radius:calc(var(--radius-card)-4px)] text-center transition-[background-color,box-shadow] duration-300 ease-out",
+          "relative m-1 flex flex-1 items-center justify-center [border-radius:calc(var(--radius-card)-4px)] text-center transition-[background-color,box-shadow] duration-300 ease-out",
           sizeClass,
         )}
         style={{

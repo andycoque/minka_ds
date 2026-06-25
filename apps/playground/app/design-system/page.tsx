@@ -18,6 +18,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectGroup } from "@/components/ui/select"
 import { SidebarDemo } from "./sidebar-demo"
 import { DataTableDemo } from "./data-table-demo"
+import { TimelineDemo } from "./timeline-demo"
+import { ExpandablePanelDemo } from "./expandable-panel-demo"
 import { DialogDemo } from "./dialog-demo"
 import { StatCardActionsDemo } from "./stat-card-demo"
 import { PasswordInputDemo } from "./password-input-demo"
@@ -668,6 +670,24 @@ export default function DesignSystemPlayground() {
                 <section className="space-y-3">
                   <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Data Table</h2>
                   <DataTableDemo />
+                </section>
+
+                <Separator />
+
+                {/* Timeline */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Timeline</h2>
+                  <p className="text-caption text-[var(--color-text-muted)]">Vertical process timeline — milestone badges, two-layer progress rail, boundary annotation, and failure truncation.</p>
+                  <TimelineDemo />
+                </section>
+
+                <Separator />
+
+                {/* Expandable Panel */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Expandable Panel</h2>
+                  <p className="text-caption text-[var(--color-text-muted)]">Header (title · subtitle · meta · chevron) over a styled expandable body. Composed on the Collapsible primitive.</p>
+                  <ExpandablePanelDemo />
                 </section>
 
                 <Separator />
