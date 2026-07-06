@@ -80,7 +80,7 @@ export function DateTimeRangePicker({
       <Calendar
         mode="range"
         numberOfMonths={1}
-        captionLayout="label"
+        captionLayout="dropdown"
         selected={range}
         onSelect={(_, selectedDay) => handleDay(selectedDay)}
         // While picking the second date, soften days outside the ±maxRangeDays
