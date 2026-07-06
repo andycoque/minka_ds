@@ -63,6 +63,7 @@ const columns: ColumnDef<Client>[] = [
 
 const linearColumns: ColumnDef<Client>[] = [
   {
+    id: "id",
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => (
@@ -72,6 +73,7 @@ const linearColumns: ColumnDef<Client>[] = [
     ),
   },
   {
+    id: "name",
     accessorKey: "name",
     header: "Client",
     cell: ({ row }) => {
@@ -85,6 +87,7 @@ const linearColumns: ColumnDef<Client>[] = [
     },
   },
   {
+    id: "type",
     accessorKey: "type",
     header: "Type",
     cell: ({ row }) => {
@@ -94,7 +97,10 @@ const linearColumns: ColumnDef<Client>[] = [
     },
   },
   {
+    id: "amount",
     accessorKey: "amount",
+    // JSX header → toggle uses meta.label for a readable name.
+    meta: { label: "Amount" },
     header: () => <span className="block w-full text-right">Amount</span>,
     cell: ({ row }) => (
       <span className="block w-full text-right text-body-sm font-medium text-[var(--color-text-default)]">
@@ -103,13 +109,16 @@ const linearColumns: ColumnDef<Client>[] = [
     ),
   },
   {
+    id: "lastActivity",
     accessorKey: "lastActivity",
+    meta: { label: "Last activity" },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Last activity" />,
     cell: ({ row }) => (
       <span className="text-body-sm text-[var(--color-text-muted)]">{row.getValue("lastActivity")}</span>
     ),
   },
   {
+    id: "status",
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
@@ -135,5 +144,22 @@ const linearColumns: ColumnDef<Client>[] = [
 ]
 
 export function DataTableDemo() {
-  return <DataTable columns={linearColumns} data={data} variant="compact" />
+  return (
+    <div className="flex flex-col gap-8">
+      <DataTable columns={linearColumns} data={data} variant="compact" />
+
+      <div className="flex flex-col gap-2">
+        <p className="text-caption text-[var(--color-text-muted)]">
+          With <code className="text-code">persistenceKey</code> — hide a column via the toggle,
+          reload the page, and the choice is remembered (localStorage).
+        </p>
+        <DataTable
+          columns={linearColumns}
+          data={data}
+          variant="compact"
+          persistenceKey="playground-demo-columns"
+        />
+      </div>
+    </div>
+  )
 }

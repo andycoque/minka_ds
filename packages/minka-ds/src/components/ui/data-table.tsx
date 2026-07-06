@@ -32,6 +32,15 @@ import {
   TableRow,
 } from "./table"
 
+// Optional per-column metadata. `label` gives the column-visibility toggle a
+// readable name (headers may be JSX, and stable ids are opaque).
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends unknown, TValue> {
+    label?: string
+  }
+}
+
 // ── Column header with sort control ──────────────────────────────────────────
 
 function DataTableColumnHeader<TData, TValue>({
@@ -87,15 +96,20 @@ function DataTableColumnToggle<TData>({
         {table
           .getAllColumns()
           .filter((col) => col.getCanHide())
-          .map((col) => (
-            <DropdownMenuCheckboxItem
-              key={col.id}
-              checked={col.getIsVisible()}
-              onCheckedChange={(val) => col.toggleVisibility(!!val)}
-            >
-              {col.id}
-            </DropdownMenuCheckboxItem>
-          ))}
+          .map((col) => {
+            // Readable label: meta.label → a string header → the id.
+            const header = col.columnDef.header
+            const label = col.columnDef.meta?.label ?? (typeof header === "string" ? header : col.id)
+            return (
+              <DropdownMenuCheckboxItem
+                key={col.id}
+                checked={col.getIsVisible()}
+                onCheckedChange={(val) => col.toggleVisibility(!!val)}
+              >
+                {label}
+              </DropdownMenuCheckboxItem>
+            )
+          })}
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -104,13 +118,49 @@ function DataTableColumnToggle<TData>({
 // ── DataTable ─────────────────────────────────────────────────────────────────
 
 interface DataTableProps<TData, TValue> {
+  /**
+   * Column definitions. A column with `id: "actions"` is auto-pinned
+   * (non-hideable, never in the toggle). Pin any other column by setting
+   * `enableHiding: false` on its ColumnDef.
+   */
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   batchSize?: number
   onRowClick?: (row: TData) => void
   variant?: "default" | "compact"
   initialColumnVisibility?: VisibilityState
+  /**
+   * Opt-in: persist column visibility to localStorage under this key (namespaced
+   * as `minka-ds:datatable:{persistenceKey}`) so the choice survives navigation
+   * and reloads. Omit for the default per-mount behavior.
+   */
+  persistenceKey?: string
   className?: string
+}
+
+// localStorage helpers for column-visibility persistence. SSR-guarded and
+// defensive (bad JSON / disabled storage never throws).
+const STORAGE_PREFIX = "minka-ds:datatable:"
+
+function readStoredVisibility(key: string | undefined): VisibilityState | null {
+  if (!key || typeof window === "undefined") return null
+  try {
+    const raw = window.localStorage.getItem(STORAGE_PREFIX + key)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    return parsed && typeof parsed === "object" ? (parsed as VisibilityState) : null
+  } catch {
+    return null
+  }
+}
+
+function writeStoredVisibility(key: string, value: VisibilityState) {
+  if (typeof window === "undefined") return
+  try {
+    window.localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value))
+  } catch {
+    /* storage unavailable — ignore */
+  }
 }
 
 function DataTable<TData, TValue>({
@@ -120,6 +170,7 @@ function DataTable<TData, TValue>({
   onRowClick,
   variant = "default",
   initialColumnVisibility,
+  persistenceKey,
   className,
 }: DataTableProps<TData, TValue>) {
   const compact = variant === "compact"
@@ -128,14 +179,43 @@ function DataTable<TData, TValue>({
   const [displayCount, setDisplayCount] = React.useState(batchSize)
   const [hasMore, setHasMore] = React.useState(data.length > batchSize)
 
+  // Persistence: restore after mount (server and first client render use the
+  // plain default so hydration matches), then write on every change. Unknown
+  // saved ids are harmless — VisibilityState is a sparse map and TanStack
+  // ignores ids with no column; columns absent from the map default visible.
+  const restored = React.useRef(false)
+  React.useEffect(() => {
+    if (!persistenceKey) return
+    const saved = readStoredVisibility(persistenceKey)
+    if (saved) setColumnVisibility(prev => ({ ...prev, ...saved }))
+    restored.current = true
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [persistenceKey])
+  React.useEffect(() => {
+    if (!persistenceKey || !restored.current) return
+    writeStoredVisibility(persistenceKey, columnVisibility)
+  }, [persistenceKey, columnVisibility])
+
   const displayedData = React.useMemo(
     () => data.slice(0, displayCount),
     [data, displayCount]
   )
 
+  // Action columns (id "actions", e.g. a row kebab menu) stay pinned: default
+  // them to non-hideable so they never appear in the toggle and can't be hidden.
+  // Any column can opt out of hiding explicitly with `enableHiding: false`.
+  const resolvedColumns = React.useMemo(
+    () => columns.map(col =>
+      col.id === "actions" && col.enableHiding === undefined
+        ? { ...col, enableHiding: false }
+        : col
+    ),
+    [columns]
+  )
+
   const table = useReactTable({
     data: displayedData,
-    columns,
+    columns: resolvedColumns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
@@ -225,3 +305,4 @@ export {
   DataTableColumnHeader,
   DataTableColumnToggle,
 }
+export type { DataTableProps }
