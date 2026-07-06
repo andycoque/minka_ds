@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   CheckIcon,
+  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   PlusIcon,
@@ -22,7 +23,7 @@ import { DateTimeRangePicker, type DateTimeRange } from "./date-time-range-picke
 interface FilterCategory {
   id: string
   label: string
-  type?: "list" | "date" | "amount" | "hours" | "datetime"
+  type?: "list" | "date" | "amount" | "hours" | "datetime" | "text"
   values?: string[]
   maxRangeDays?: number
   renderValue?: (value: string) => React.ReactNode
@@ -30,7 +31,13 @@ interface FilterCategory {
 
 type AmountValue   = { exact: number } | { min?: number; max?: number }
 type HoursValue    = { from: string; to: string }
-type CategoryValue = string | DateRange | AmountValue | HoursValue | DateTimeRange
+// Free-text value with an operator (type: "text"). is/is not = exact
+// (in)equality; matches = case-insensitive substring.
+type TextOperator  = "is" | "is not" | "matches"
+type TextValue     = { operator: TextOperator; value: string }
+type CategoryValue = string | DateRange | AmountValue | HoursValue | DateTimeRange | TextValue
+
+const TEXT_OPERATORS: TextOperator[] = ["is", "is not", "matches"]
 
 
 type Step = 1 | 2 | 3
@@ -67,9 +74,13 @@ function FilterCombobox({
   const [hoursInputTo, setHoursInputTo]         = React.useState("")
   const [datetimeValue, setDatetimeValue]       = React.useState<DateTimeRange | null>(null)
   const [search, setSearch]                     = React.useState("")
+  const [textOperator, setTextOperator]         = React.useState<TextOperator>("is")
+  const [textInput, setTextInput]               = React.useState("")
+  const [operatorOpen, setOperatorOpen]         = React.useState(false)
 
   const containerRef = React.useRef<HTMLDivElement>(null)
   const searchRef    = React.useRef<HTMLInputElement>(null)
+  const textRef      = React.useRef<HTMLInputElement>(null)
   const isSingle     = categories.length === 1
 
   // Close on outside click
@@ -82,10 +93,15 @@ function FilterCombobox({
     return () => document.removeEventListener("mousedown", handler)
   }, [open])
 
-  // Auto-focus search when entering step 2
+  // Auto-focus search (or the text input) when entering step 2
   React.useEffect(() => {
-    if (open && step === 2) setTimeout(() => searchRef.current?.focus(), 30)
-  }, [open, step])
+    if (open && step === 2) {
+      setTimeout(() => {
+        if (selectedCategory?.type === "text") textRef.current?.focus()
+        else searchRef.current?.focus()
+      }, 30)
+    }
+  }, [open, step, selectedCategory])
 
   function handleClose() {
     setOpen(false)
@@ -101,6 +117,9 @@ function FilterCombobox({
     setHoursInput("")
     setHoursInputTo("")
     setDatetimeValue(null)
+    setTextOperator("is")
+    setTextInput("")
+    setOperatorOpen(false)
   }
 
   function handleToggle() {
@@ -175,6 +194,19 @@ function FilterCombobox({
       return
     }
 
+    if (cat.type === "text") {
+      const custom = existing.find((v): v is TextValue =>
+        typeof v === "object" && "operator" in v
+      )
+      setSelectedCategory(cat)
+      setSelectedValues(new Set())
+      setSearch("")
+      setTextOperator(custom?.operator ?? "is")
+      setTextInput(custom?.value ?? "")
+      setStep(2)
+      return
+    }
+
     setSelectedValues(new Set(existing.filter((v): v is string => typeof v === "string")))
     setSelectedCategory(cat)
     setSearch("")
@@ -222,6 +254,14 @@ function FilterCombobox({
     handleClose()
   }
 
+  function applyText() {
+    if (!selectedCategory) return
+    const value = textInput.trim()
+    if (!value) return
+    onApply(selectedCategory.id, [{ operator: textOperator, value }])
+    handleClose()
+  }
+
   function toggleValue(value: string, singleSelect = false) {
     setSelectedValues(prev => {
       if (singleSelect) return prev.has(value) ? new Set() : new Set([value])
@@ -237,6 +277,7 @@ function FilterCombobox({
   const isAmount   = selectedCategory?.type === "amount"
   const isHours    = selectedCategory?.type === "hours"
   const isDatetime = selectedCategory?.type === "datetime"
+  const isText     = selectedCategory?.type === "text"
 
   const step2AllValues = selectedCategory?.values ?? []
 
@@ -262,7 +303,10 @@ function FilterCombobox({
 
       {open && (
         <div className={cn(
-          dropdownAlign === "right" ? "absolute right-0 top-full mt-1.5 overflow-hidden [border-radius:var(--radius-popover)]" : "absolute left-0 top-full mt-1.5 overflow-hidden [border-radius:var(--radius-popover)]",
+          dropdownAlign === "right" ? "absolute right-0 top-full mt-1.5 [border-radius:var(--radius-popover)]" : "absolute left-0 top-full mt-1.5 [border-radius:var(--radius-popover)]",
+          // clip inner content to the rounded corners, EXCEPT on the text step
+          // where the operator dropdown must escape the popover bounds.
+          isText ? "overflow-visible" : "overflow-hidden",
           "bg-[var(--color-bg-overlay)] shadow-[var(--shadow-popover)] ring-1 ring-[var(--color-border-subtle)]",
           "[z-index:var(--z-floating)]",
           step === 3 && (isDate || isDatetime) ? "w-auto" : step === 3 && isHours ? "w-80" : "w-56"
@@ -279,8 +323,49 @@ function FilterCombobox({
             </ul>
           )}
 
+          {/* Step 2 — text value: title + operator on one row, then input. */}
+          {step === 2 && selectedCategory && isText && (
+            <>
+              {/* header row: back chevron (multi-cat) + title on the left,
+                  operator selector pinned far right next to the title. */}
+              <div className="flex items-center gap-1 px-2 pt-2">
+                {!isSingle && (
+                  <button
+                    type="button"
+                    onClick={() => { setStep(1); setTextInput(""); setOperatorOpen(false) }}
+                    className="flex items-center justify-center [border-radius:var(--radius-tag)] p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-action-ghost-hover)] transition-colors"
+                  >
+                    <ChevronLeftIcon className="size-4" />
+                  </button>
+                )}
+                <span className="text-body-sm font-medium text-[var(--color-text-default)]">{selectedCategory.label}</span>
+                <div className="ml-auto">
+                  <OperatorSelect
+                    value={textOperator}
+                    open={operatorOpen}
+                    onOpenChange={setOperatorOpen}
+                    onChange={op => { setTextOperator(op); textRef.current?.focus() }}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 p-2">
+                <Input
+                  ref={textRef}
+                  value={textInput}
+                  onChange={e => setTextInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter") applyText() }}
+                  onFocus={() => setOperatorOpen(false)}
+                  placeholder="Type a value"
+                />
+                <Button size="sm" className="w-full" disabled={textInput.trim() === ""} onClick={applyText}>
+                  Apply
+                </Button>
+              </div>
+            </>
+          )}
+
           {/* Step 2 — value list */}
-          {step === 2 && selectedCategory && (
+          {step === 2 && selectedCategory && !isText && (
             <>
               {!isSingle && (
                 <StepHeader
@@ -568,8 +653,49 @@ function EmptyRow() {
   return <li className="py-2 text-center text-body-sm text-[var(--color-text-muted)]">No results</li>
 }
 
+// Compact inline operator dropdown (is / is not / matches). Rendered inside the
+// filter popover container (NOT portaled) so opening it doesn't trip the filter's
+// outside-click close.
+function OperatorSelect({
+  value, open, onOpenChange, onChange,
+}: {
+  value: TextOperator
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onChange: (op: TextOperator) => void
+}) {
+  return (
+    <div className="relative w-fit">
+      <button
+        type="button"
+        onClick={() => onOpenChange(!open)}
+        className="flex h-8 items-center gap-1.5 [border-radius:var(--radius-input)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] px-2.5 text-body-sm text-[var(--color-text-default)] hover:bg-[var(--color-action-ghost-hover)] transition-colors"
+      >
+        {value}
+        <ChevronDownIcon className="size-3.5 text-[var(--color-text-muted)]" />
+      </button>
+      {open && (
+        <ul className="absolute right-0 top-full z-10 mt-1 w-32 [border-radius:var(--radius-popover)] bg-[var(--color-bg-overlay)] p-1 shadow-[var(--shadow-popover)] ring-1 ring-[var(--color-border-subtle)]">
+          {TEXT_OPERATORS.map(op => (
+            <li key={op}>
+              <button
+                type="button"
+                onClick={() => { onChange(op); onOpenChange(false) }}
+                className="relative flex w-full items-center [border-radius:var(--radius-tag)] py-1.5 pl-2 pr-7 text-body-sm text-[var(--color-text-default)] hover:bg-[var(--color-action-ghost-hover)] transition-colors"
+              >
+                {op}
+                {op === value && <CheckIcon className="pointer-events-none absolute right-2 size-3.5 text-[var(--color-text-default)]" />}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
 // ── Exports ────────────────────────────────────────────────────────────────────
 
 export { FilterCombobox }
-export type { FilterCategory, CategoryValue, AmountValue, HoursValue }
+export type { FilterCategory, CategoryValue, AmountValue, HoursValue, TextValue, TextOperator }
 export type { DateTimeRange } from "./date-time-range-picker"

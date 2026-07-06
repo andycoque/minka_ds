@@ -20,6 +20,10 @@ function formatTime(t: string): string {
 
 function defaultFilterValueLabel(_categoryId: string, value: CategoryValue): string {
   if (typeof value === "string") return value
+  if (typeof value === "object" && "operator" in value) {
+    const v = value as { operator: string; value: string }
+    return `${v.operator} "${v.value}"`
+  }
   if (typeof value === "object" && "startTime" in value) {
     const v = value as DateTimeRange
     const fmtDate = (d: Date) => d.toLocaleDateString("default", { month: "short", day: "numeric" })

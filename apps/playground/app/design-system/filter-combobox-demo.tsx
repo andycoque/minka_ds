@@ -7,6 +7,11 @@ import { FilterChip } from "@/components/ui/filter-chip"
 
 const CATEGORIES = [
   {
+    id: "handle",
+    label: "Handle",
+    type: "text" as const,
+  },
+  {
     id: "status",
     label: "Status",
     type: "list" as const,
@@ -40,6 +45,10 @@ const CATEGORIES = [
 ]
 
 function labelForValue(categoryId: string, value: CategoryValue): string {
+  if (typeof value === "object" && "operator" in value) {
+    const v = value as { operator: string; value: string }
+    return `${v.operator} "${v.value}"`
+  }
   if (categoryId === "date" && typeof value === "object" && "from" in value && value.from instanceof Date) {
     const from = value.from.toLocaleDateString("default", { month: "short", day: "numeric" })
     const to   = value.to instanceof Date ? value.to.toLocaleDateString("default", { month: "short", day: "numeric" }) : undefined
