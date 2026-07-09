@@ -24,6 +24,8 @@ export interface DiagramNodeProps {
   accentInverted?: boolean
   /** Compact sizing (used by anchor/alias nodes). */
   compact?: boolean
+  /** Override the filled surface background color (a CSS color / token var). */
+  fill?: string
   className?: string
   children?: React.ReactNode
 }
@@ -60,6 +62,7 @@ function DiagramNode({
   accent,
   accentInverted = false,
   compact = false,
+  fill: fillOverride,
   className,
   children,
 }: DiagramNodeProps) {
@@ -79,6 +82,9 @@ function DiagramNode({
     stroke = "var(--color-pair-blue-navy-light)"
     ink = "var(--color-text-inverse)"
   }
+
+  // Explicit override wins over the variant/accent default.
+  if (fillOverride) fill = fillOverride
 
   return (
     <div

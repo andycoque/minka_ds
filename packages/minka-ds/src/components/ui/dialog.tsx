@@ -90,10 +90,21 @@ function DialogContent({
   children,
   showCloseButton = true,
   container,
+  attachment,
+  contentBlurred = false,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
   container?: HTMLElement | null
+  /**
+   * Optional element rendered attached just below the content box, inside the
+   * same portal but OUTSIDE the (optionally blurred) box — e.g. a contextual
+   * confirmation strip. Keeps the box focus-trapped while the attachment stays
+   * sharp and interactive.
+   */
+  attachment?: React.ReactNode
+  /** Blur + dim the content box (not the attachment) to shift focus to it. */
+  contentBlurred?: boolean
 }) {
   // Detect an optional DialogPanel child and split it out from the body.
   const childArray = React.Children.toArray(children)
@@ -119,6 +130,40 @@ function DialogContent({
     </DialogPrimitive.Close>
   )
 
+  const box = (
+    <div
+      data-slot="dialog-box"
+      className={cn(
+        // the box is the centered anchor and stays put; the attachment floats
+        // below it (absolute) so it never shifts the box.
+        "relative w-full overflow-hidden [border-radius:var(--radius-modal)] border border-[var(--color-border-default)] bg-[var(--color-bg-overlay)] shadow-[var(--shadow-modal)]",
+        // blur/dim transitions both ways so focus shifts smoothly.
+        "transition-[filter,opacity] duration-200 ease-out",
+        // layout: plain (padded grid) vs panelled (flex split, panel bleeds to edges)
+        hasPanel
+          ? placement === "side"
+            ? "flex flex-col sm:flex-row"
+            : "flex flex-col"
+          : "grid gap-4 p-5",
+        contentBlurred && "pointer-events-none blur-[2px] opacity-60"
+      )}
+    >
+      {/* top: close lives inside the panel so it inherits the panel's foreground */}
+      {placement === "top" && panel
+        ? React.cloneElement(panel, {}, panel.props.children, closeButton)
+        : panel}
+      {hasPanel ? (
+        <div data-slot="dialog-body" className="relative flex flex-1 flex-col gap-4 p-5">
+          {body}
+        </div>
+      ) : (
+        body
+      )}
+      {/* side / no panel: close sits over the content body */}
+      {placement !== "top" && closeButton}
+    </div>
+  )
+
   return (
     <DialogPortal container={container}>
       <DialogOverlay />
@@ -126,30 +171,26 @@ function DialogContent({
         data-slot="dialog-content"
         data-panel={hasPanel ? placement : undefined}
         className={cn(
-          "fixed top-[50%] left-[50%] [z-index:var(--z-modal)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden [border-radius:var(--radius-modal)] border border-[var(--color-border-default)] bg-[var(--color-bg-overlay)] shadow-[var(--shadow-modal)] duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
-          // layout: plain (padded grid) vs panelled (flex split, panel bleeds to edges)
-          hasPanel
-            ? placement === "side"
-              ? "flex flex-col sm:flex-row sm:max-w-2xl"
-              : "flex flex-col"
-            : "grid gap-4 p-5",
+          // Anchor = the box, always centered. The attachment is absolutely
+          // positioned relative to this wrapper's box, so its presence never
+          // re-centers the dialog.
+          "fixed top-[50%] left-[50%] [z-index:var(--z-modal)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] outline-none duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+          hasPanel && placement === "side" ? "sm:max-w-2xl" : "sm:max-w-lg",
           className
         )}
         {...props}
       >
-        {/* top: close lives inside the panel so it inherits the panel's foreground */}
-        {placement === "top" && panel
-          ? React.cloneElement(panel, {}, panel.props.children, closeButton)
-          : panel}
-        {hasPanel ? (
-          <div data-slot="dialog-body" className="relative flex flex-1 flex-col gap-4 p-5">
-            {body}
+        {box}
+        {attachment && (
+          <div
+            data-slot="dialog-attachment"
+            className="absolute top-full right-0 left-0 mt-3"
+            style={{ animation: "dialog-attachment-in .2s cubic-bezier(0.16,1,0.3,1) both" }}
+          >
+            <style>{`@keyframes dialog-attachment-in { from { opacity: 0; transform: translateY(-6px) } to { opacity: 1; transform: translateY(0) } }`}</style>
+            {attachment}
           </div>
-        ) : (
-          body
         )}
-        {/* side / no panel: close sits over the content body */}
-        {placement !== "top" && closeButton}
       </DialogPrimitive.Content>
     </DialogPortal>
   )

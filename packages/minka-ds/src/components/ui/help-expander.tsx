@@ -35,6 +35,14 @@ const ANCHOR_POS: Record<Anchor, string> = {
   "top-left":     "top-3 left-3 items-start",
 }
 
+// transform-origin so the card grows out of / shrinks back into the anchor corner
+const ANCHOR_ORIGIN: Record<Anchor, string> = {
+  "bottom-right": "bottom right",
+  "bottom-left":  "bottom left",
+  "top-right":    "top right",
+  "top-left":     "top left",
+}
+
 // shared trigger button
 function TriggerButton({ trigger, ...props }: { trigger?: HelpExpanderProps["trigger"] } & React.ComponentProps<"button">) {
   const icon = trigger?.icon ?? <HelpCircle className="size-4" />
@@ -55,17 +63,29 @@ function TriggerButton({ trigger, ...props }: { trigger?: HelpExpanderProps["tri
 }
 
 // shared frosted card body
-function CardBody({ title, children, docHref, docLabel, onClose }: {
+function CardBody({ title, children, docHref, docLabel, onClose, open, origin }: {
   title: string
   children: React.ReactNode
   docHref?: string
   docLabel?: string
   onClose: () => void
+  /** When provided, the card scales/fades in and out from `origin` (inset mode). */
+  open?: boolean
+  origin?: string
 }) {
+  const animated = origin != null
   return (
     <div
-      className="w-full [border-radius:var(--radius-card)] border border-[var(--color-border-default)] backdrop-blur-md shadow-[var(--shadow-popover)] p-4 [animation:help-in_.2s_cubic-bezier(0.16,1,0.3,1)]"
-      style={{ backgroundColor: "color-mix(in srgb, var(--color-bg-overlay) 70%, transparent)" }}
+      className={cn(
+        "w-full [border-radius:var(--radius-card)] border border-[var(--color-border-default)] backdrop-blur-md shadow-[var(--shadow-popover)] p-4",
+        animated && "transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        animated && (open ? "scale-100 opacity-100" : "pointer-events-none scale-90 opacity-0"),
+        !animated && "[animation:help-in_.2s_cubic-bezier(0.16,1,0.3,1)]"
+      )}
+      style={{
+        backgroundColor: "color-mix(in srgb, var(--color-bg-overlay) 70%, transparent)",
+        transformOrigin: origin,
+      }}
     >
       <style>{`@keyframes help-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
       <div className="flex items-start justify-between gap-3">
@@ -100,12 +120,34 @@ function HelpExpander({
 }: HelpExpanderProps) {
   const [open, setOpen] = React.useState(false)
 
+  // Keep the inset card mounted through its close animation before unmounting.
+  const [cardMounted, setCardMounted] = React.useState(false)
+  const [cardShown, setCardShown] = React.useState(false)
+  React.useEffect(() => {
+    if (open) {
+      setCardMounted(true)
+      // next frame → flip to the shown state so the transition runs
+      const id = requestAnimationFrame(() => setCardShown(true))
+      return () => cancelAnimationFrame(id)
+    }
+    setCardShown(false)
+    const t = setTimeout(() => setCardMounted(false), 200)
+    return () => clearTimeout(t)
+  }, [open])
+
   // ── inset: expands inside the nearest positioned container ──
   if (mode === "inset") {
     return (
       <div className={cn("absolute z-10 flex flex-col w-[calc(100%-1.5rem)]", ANCHOR_POS[anchor], className)}>
-        {open ? (
-          <CardBody title={title} docHref={docHref} docLabel={docLabel} onClose={() => setOpen(false)}>
+        {cardMounted ? (
+          <CardBody
+            title={title}
+            docHref={docHref}
+            docLabel={docLabel}
+            onClose={() => setOpen(false)}
+            open={cardShown}
+            origin={ANCHOR_ORIGIN[anchor]}
+          >
             {children}
           </CardBody>
         ) : (
