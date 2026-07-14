@@ -49,6 +49,7 @@ export * from "./components/ui/help-expander"
 export * from "./components/ui/timeline"
 export * from "./components/ui/expandable-panel"
 export * from "./components/ui/stepper"
+export * from "./components/ui/section-card"
 
 // Brand textures + logo
 export * from "./textures"
