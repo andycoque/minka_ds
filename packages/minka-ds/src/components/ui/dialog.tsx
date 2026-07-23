@@ -7,6 +7,48 @@ import { Dialog as DialogPrimitive } from "radix-ui"
 import { cn } from "../../lib/utils"
 import { Button } from "./button"
 
+/**
+ * Shared enter/exit motion for every dialog — a soft dissolve mirrored in both
+ * directions (the intro/onboarding outro, run forward on open and backward on
+ * close). The backdrop dissolves; the card settles in / drifts up as it fades.
+ *
+ * Self-contained @keyframes (this project's Tailwind has no tw-animate utilities).
+ * They are injected ONCE into <head> at module load — NOT rendered inside the
+ * portal. If they lived in the portal, unmounting on close would remove the
+ * @keyframes before Radix's exit animation could play, so the close animation
+ * would be dropped in some paths. Living in <head>, they persist through the whole
+ * data-[state=closed] phase, so the exit always plays before unmount.
+ */
+const DIALOG_ENTER_EASE = "cubic-bezier(0.16, 1, 0.3, 1)"  // soft settle (matches intro-in)
+const DIALOG_EXIT_EASE   = "cubic-bezier(0.4, 0, 1, 1)"     // ease-in drift (matches intro-out)
+
+const DIALOG_MOTION_CSS = `
+  @keyframes ds-dialog-backdrop-in  { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes ds-dialog-backdrop-out { from { opacity: 1 } to { opacity: 0 } }
+  /* Transforms compose the -50%/-50% centering so the dialog stays centered while it settles/drifts. */
+  @keyframes ds-dialog-card-in  { from { opacity: 0; transform: translate(-50%, calc(-50% + 8px)) scale(0.97) } to { opacity: 1; transform: translate(-50%, -50%) scale(1) } }
+  @keyframes ds-dialog-card-out { from { opacity: 1; transform: translate(-50%, -50%) scale(1) } to { opacity: 0; transform: translate(-50%, calc(-50% - 10px)) scale(0.97) } }
+  /* Backdrop: fades in behind the card on open, and clears last on close. */
+  [data-slot="dialog-overlay"][data-state="open"]  { animation: ds-dialog-backdrop-in .45s ${DIALOG_ENTER_EASE} both }
+  [data-slot="dialog-overlay"][data-state="closed"] { animation: ds-dialog-backdrop-out .5s ease-out .1s both }
+  /* Card + content settle in on open; drift up + shrink out on close (mirror). */
+  [data-slot="dialog-content"][data-state="open"]  { animation: ds-dialog-card-in .5s ${DIALOG_ENTER_EASE} .06s both }
+  [data-slot="dialog-content"][data-state="closed"] { animation: ds-dialog-card-out .3s ${DIALOG_EXIT_EASE} both }
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot="dialog-overlay"][data-state],
+    [data-slot="dialog-content"][data-state] { animation: none !important }
+  }
+`
+
+// Inject the motion CSS once, at module load, into <head> so it never unmounts
+// with the portal. Guarded by a data attribute so repeated imports/HMR don't dupe.
+if (typeof document !== "undefined" && !document.getElementById("ds-dialog-motion")) {
+  const styleEl = document.createElement("style")
+  styleEl.id = "ds-dialog-motion"
+  styleEl.textContent = DIALOG_MOTION_CSS
+  document.head.appendChild(styleEl)
+}
+
 function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
@@ -39,7 +81,7 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 [z-index:var(--z-modal)] bg-[var(--color-bg-backdrop-blur)] backdrop-blur-sm data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 [z-index:var(--z-modal)] bg-[var(--color-bg-backdrop-blur)] backdrop-blur-sm",
         className
       )}
       {...props}
@@ -174,7 +216,7 @@ function DialogContent({
           // Anchor = the box, always centered. The attachment is absolutely
           // positioned relative to this wrapper's box, so its presence never
           // re-centers the dialog.
-          "fixed top-[50%] left-[50%] [z-index:var(--z-modal)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] outline-none duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+          "fixed top-[50%] left-[50%] [z-index:var(--z-modal)] w-full max-w-[calc(100%-2rem)] [transform:translate(-50%,-50%)] outline-none",
           hasPanel && placement === "side" ? "sm:max-w-2xl" : "sm:max-w-lg",
           className
         )}

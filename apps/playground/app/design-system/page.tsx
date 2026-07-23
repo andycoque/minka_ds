@@ -141,6 +141,53 @@ export default function DesignSystemPlayground() {
 
                 <Separator />
 
+                {/* Button on dark — the onDark prop renders any variant for a dark surface */}
+                <section className="space-y-3">
+                  <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Button on dark</h2>
+                  <p className="text-caption text-[var(--color-text-muted)]">
+                    Add <code>onDark</code> to render any variant correctly on a dark surface.
+                  </p>
+                  <div className="[border-radius:var(--radius-card)] bg-[var(--color-bg-inverted)] divide-y divide-white/10">
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-white/60 w-20 shrink-0">Variant</span>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Button onDark>Default</Button>
+                        <Button variant="secondary" onDark>Secondary</Button>
+                        <Button variant="outline" onDark>Outline</Button>
+                        <Button variant="ghost" onDark>Ghost</Button>
+                        <Button variant="destructive" onDark>Destructive</Button>
+                        <Button variant="link" onDark>Link</Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-white/60 w-20 shrink-0">Size</span>
+                      <div className="flex flex-wrap gap-2 items-end">
+                        <Button size="xs" onDark>XSmall</Button>
+                        <Button size="sm" onDark>Small</Button>
+                        <Button size="default" onDark>Default</Button>
+                        <Button size="lg" onDark>Large</Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-white/60 w-20 shrink-0">With icon</span>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Button onDark><Plus /> Create</Button>
+                        <Button variant="outline" onDark>Export <ChevronDown /></Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-3">
+                      <span className="text-caption text-white/60 w-20 shrink-0">Disabled</span>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Button onDark disabled>Default</Button>
+                        <Button variant="outline" onDark disabled>Outline</Button>
+                        <Button variant="ghost" onDark disabled>Ghost</Button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <Separator />
+
                 {/* Badge */}
                 <section className="space-y-3">
                   <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Badge</h2>

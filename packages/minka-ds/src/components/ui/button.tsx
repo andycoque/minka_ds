@@ -14,11 +14,11 @@ const buttonVariants = cva(
         destructive:
           "bg-[var(--color-action-destructive-default)] text-[var(--color-action-destructive-foreground)] hover:bg-[var(--color-action-destructive-hover)] focus-visible:ring-[var(--color-border-error)]/20",
         outline:
-          "border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] shadow-xs hover:bg-[var(--color-action-ghost-hover)] hover:text-[var(--color-text-default)]",
+          "border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] text-[var(--color-text-default)] shadow-xs hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-base)] hover:text-[var(--color-text-default)]",
         secondary:
           "bg-[var(--color-action-secondary-default)] text-[var(--color-action-secondary-foreground)] hover:bg-[var(--color-action-secondary-hover)]",
         ghost:
-          "hover:bg-[var(--color-action-ghost-hover)] hover:text-[var(--color-text-default)]",
+          "text-[var(--color-text-default)] hover:bg-[var(--color-action-ghost-hover)] hover:text-[var(--color-text-default)]",
         link: "text-[var(--color-text-link)] underline-offset-4 hover:underline hover:text-[var(--color-text-link-hover)]",
       },
       size: {
@@ -44,10 +44,16 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  onDark = false,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
+    /**
+     * Render the button on a dark surface. Applies the DS `.dark` token context to the
+     * button, so every variant resolves to the dark palette. Composes with all variants.
+     */
+    onDark?: boolean
   }) {
   const Comp = asChild ? Slot.Root : "button"
 
@@ -56,7 +62,7 @@ function Button({
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size }), onDark && "dark", className)}
       {...props}
     />
   )
