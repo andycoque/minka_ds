@@ -14,12 +14,18 @@ interface DateTimePickerProps {
   value?: DateTimeValue | null
   onChange: (value: DateTimeValue | null) => void
   className?: string
+  /**
+   * Days to disable, forwarded to the calendar (react-day-picker matcher).
+   * e.g. `{ before: new Date() }` to prevent picking a past date.
+   */
+  disabled?: React.ComponentProps<typeof Calendar>["disabled"]
 }
 
 export function DateTimePicker({
   value,
   onChange,
   className,
+  disabled,
 }: DateTimePickerProps) {
   function handleDaySelect(selected: Date | undefined) {
     if (!selected) { onChange(null); return }
@@ -41,6 +47,7 @@ export function DateTimePicker({
         captionLayout="label"
         selected={value?.date ?? undefined}
         onSelect={handleDaySelect}
+        disabled={disabled}
       />
       <div className="border-t border-[var(--color-border-default)] px-4 py-3">
         <div className="flex flex-col gap-1.5">
