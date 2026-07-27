@@ -134,6 +134,7 @@ function DialogContent({
   container,
   attachment,
   contentBlurred = false,
+  flow = false,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
@@ -147,6 +148,15 @@ function DialogContent({
   attachment?: React.ReactNode
   /** Blur + dim the content box (not the attachment) to shift focus to it. */
   contentBlurred?: boolean
+  /**
+   * Cap the dialog to the viewport and let a child manage its own scroll, instead
+   * of growing past the screen. Caps at calc(100dvh - 12.5rem) so a tall dialog never
+   * fills the viewport: it always leaves fixed clearance (top + bottom) for the
+   * attachment strip and breathing room. Children lay out as a flex column with
+   * min-h-0 so an inner `flex-1 overflow-y-auto` region scrolls. Short dialogs are
+   * unaffected (they shrink-wrap below the cap).
+   */
+  flow?: boolean
 }) {
   // Detect an optional DialogPanel child and split it out from the body.
   const childArray = React.Children.toArray(children)
@@ -187,6 +197,10 @@ function DialogContent({
             ? "flex flex-col sm:flex-row"
             : "flex flex-col"
           : "grid gap-4 p-5",
+        // flow: the box is a bounded flex child of the capped wrapper. min-h-0 lets it
+        // shrink; it can't exceed the wrapper's capped height, so short dialogs
+        // shrink-wrap while tall ones are capped and their inner region scrolls.
+        flow && "min-h-0",
         contentBlurred && "pointer-events-none blur-[2px] opacity-60"
       )}
     >
@@ -195,7 +209,7 @@ function DialogContent({
         ? React.cloneElement(panel, {}, panel.props.children, closeButton)
         : panel}
       {hasPanel ? (
-        <div data-slot="dialog-body" className="relative flex flex-1 flex-col gap-4 p-5">
+        <div data-slot="dialog-body" className={cn("relative flex flex-1 flex-col gap-4 p-5", flow && "min-h-0")}>
           {body}
         </div>
       ) : (
@@ -218,6 +232,16 @@ function DialogContent({
           // re-centers the dialog.
           "fixed top-[50%] left-[50%] [z-index:var(--z-modal)] w-full max-w-[calc(100%-2rem)] [transform:translate(-50%,-50%)] outline-none",
           hasPanel && placement === "side" ? "sm:max-w-2xl" : "sm:max-w-lg",
+          // flow: cap the height so the dialog never fills the viewport, and make this
+          // wrapper a bounded flex column so the cap actually cascades to the box
+          // (max-h-full / min-h-0 / flex-1 below need a definite parent height to
+          // resolve against — without `flex flex-col` here the box just grows to
+          // content and never scrolls/resizes). The 12.5rem reserve is split top +
+          // bottom (box is centered); at max height it leaves ~24px below the
+          // attachment strip so it never touches the screen edge: gap = reserve/2
+          // - (strip ~64px + mt-3 12px) = 100 - 76 = ~24px. dvh so mobile browser
+          // chrome doesn't clip.
+          flow && "flex flex-col max-h-[calc(100dvh-12.5rem)]",
           className
         )}
         {...props}
