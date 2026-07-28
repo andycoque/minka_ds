@@ -371,12 +371,16 @@ function SidebarSeparator({
 
 // Footer user block: avatar + name/role, with an optional trailing action
 // (e.g. a kebab dropdown trigger). Composed for the sidebar footer.
+// When `onClick` is set the row becomes an interactive button (pointer, hover
+// highlight, keyboard-accessible); the trailing `action` stops propagation so
+// clicking it never triggers the row's onClick.
 function SidebarUser({
   name,
   role,
   avatarSrc,
   avatarBackground,
   action,
+  onClick,
   className,
 }: {
   name: string
@@ -384,19 +388,47 @@ function SidebarUser({
   avatarSrc?: string
   avatarBackground?: string
   action?: React.ReactNode
+  onClick?: () => void
   className?: string
 }) {
+  const interactive = typeof onClick === "function"
   return (
     <div
       data-slot="sidebar-user"
-      className={cn("flex items-center gap-2.5 px-2 py-1.5", className)}
+      className={cn(
+        "flex items-center gap-2.5 px-2 py-1.5",
+        interactive &&
+          "cursor-pointer rounded-[var(--radius-button)] transition-colors hover:bg-[var(--color-action-ghost-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-border-focus)]",
+        className
+      )}
+      {...(interactive
+        ? {
+            role: "button",
+            tabIndex: 0,
+            onClick,
+            onKeyDown: (e: React.KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                onClick()
+              }
+            },
+          }
+        : {})}
     >
       <Avatar name={name} src={avatarSrc} background={avatarBackground} />
       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
         <span className="text-body-sm text-[var(--color-text-default)] truncate">{name}</span>
         {role && <span className="text-caption-light text-[var(--color-text-muted)] truncate">{role}</span>}
       </div>
-      {action}
+      {action != null && (
+        <span
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+          className="contents"
+        >
+          {action}
+        </span>
+      )}
     </div>
   )
 }
