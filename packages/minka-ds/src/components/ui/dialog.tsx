@@ -159,7 +159,16 @@ function DialogContent({
   flow?: boolean
 }) {
   // Detect an optional DialogPanel child and split it out from the body.
-  const childArray = React.Children.toArray(children)
+  // Flatten one level of fragments first, so a panel wrapped in a <>…</> (e.g.
+  // a Wizard `override` that renders a panel + body together) is still found and
+  // hoisted into the side column instead of rendering inline.
+  const flatten = (nodes: React.ReactNode): React.ReactNode[] =>
+    React.Children.toArray(nodes).flatMap(c =>
+      React.isValidElement(c) && c.type === React.Fragment
+        ? flatten((c.props as { children?: React.ReactNode }).children)
+        : [c]
+    )
+  const childArray = flatten(children)
   const panel = childArray.find(
     (c): c is React.ReactElement<{ placement?: PanelPlacement; children?: React.ReactNode }> =>
       React.isValidElement(c) && (c.type as { displayName?: string })?.displayName === "DialogPanel"

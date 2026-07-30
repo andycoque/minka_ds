@@ -304,9 +304,14 @@ export function Wizard({
 
             {/* Footer: hidden until the step's required fields are valid, then fades in
                 and sticks (glass) at the bottom of the column. Escape while hidden is
-                still available via the header X, backdrop click, and the discard strip. */}
+                still available via the header X, backdrop click, and the discard strip.
+
+                Actions stay right-aligned (the DialogFooter default). The "N of N"
+                counter, when present, is pushed to the left edge by its own mr-auto;
+                forcing justify-start here would collapse the buttons left on a
+                single-step wizard, where no counter renders. */}
             {stepValid && (
-              <DialogFooter className="ds-wizard-footer shrink-0 bg-[var(--color-bg-overlay)]/80 pt-4 backdrop-blur-md sm:items-center sm:justify-start" style={{ animation: "ds-wizard-footer-in .25s cubic-bezier(0.16,1,0.3,1) both" }}>
+              <DialogFooter className="ds-wizard-footer shrink-0 bg-[var(--color-bg-overlay)]/80 pt-4 backdrop-blur-md sm:items-center" style={{ animation: "ds-wizard-footer-in .25s cubic-bezier(0.16,1,0.3,1) both" }}>
                 {total > 1 && (
                   <span className="text-caption text-[var(--color-text-muted)] sm:mr-auto">
                     {display} of {total}
