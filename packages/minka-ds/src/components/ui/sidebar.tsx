@@ -708,7 +708,11 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
       data-slot="sidebar-menu-sub"
       data-sidebar="menu-sub"
       className={cn(
-        "ml-4 flex min-w-0 flex-col gap-1 px-2 py-0.5",
+        // mt-1 matches SidebarMenu's gap-1, so the first child sits the same
+        // distance below its parent button as menu items sit from each other. The
+        // sub-list is a sibling of the parent button inside SidebarMenuItem, so the
+        // menu's own gap does not apply between them.
+        "ml-4 mt-1 flex min-w-0 flex-col gap-1 px-2 pb-0.5",
         "group-data-[collapsible=icon]:hidden",
         className
       )}
