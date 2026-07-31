@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Info } from "lucide-react"
+import { ChevronDownIcon, Info } from "lucide-react"
 import { Badge } from "./badge"
 import { Alert, AlertTitle, AlertDescription } from "./alert"
 import { cn } from "../../lib/utils"
@@ -29,6 +29,17 @@ export interface TimelineItem {
   dayOffset?: number
   /** Failure reason, shown red inline when status is "failed". */
   detail?: string
+  /**
+   * Full record for this item, revealed by a chevron on the row. Rows without
+   * fields render exactly as before, with no chevron.
+   */
+  fields?: TimelineItemField[]
+}
+
+/** One labelled value inside an item's expandable record. */
+export interface TimelineItemField {
+  label: string
+  value: string
 }
 
 export interface TimelineMilestone {
@@ -118,6 +129,11 @@ function RailSeg({ top, bottom, height, dark }: { top: number; bottom?: number; 
 function ItemRow({ item, lineBelow, stubAbove = null, stubBelow = null }: { item: TimelineItem; lineBelow: LineBelow; stubAbove?: Stub; stubBelow?: Stub }) {
   const upcoming = item.status === "upcoming"
   const failed = item.status === "failed"
+  const [open, setOpen] = React.useState(false)
+  // Only rows that carry a record are expandable; the rest keep the plain layout,
+  // so nothing shifts on timelines whose items have no fields.
+  const expandable = !!item.fields?.length
+
   return (
     <div className="flex gap-2">
       <div className="relative shrink-0" style={{ width: RAIL_W }}>
@@ -127,17 +143,47 @@ function ItemRow({ item, lineBelow, stubAbove = null, stubBelow = null }: { item
         <span className={`absolute size-2.5 rounded-full ${DOT_CLASS[item.status]}`} style={{ left: RAIL_X, top: DOT_TOP, transform: "translate(-50%, -50%)" }} />
       </div>
 
-      {/* single line: timestamp (mono, hint) · meta · label */}
-      <div className={`flex flex-1 items-baseline gap-2 pb-4 text-body-sm ${upcoming ? "opacity-45" : ""}`}>
-        {item.timestamp && (
-          <span className="shrink-0 text-caption text-[var(--color-text-hint)] [font-family:var(--font-mono)]">
-            {item.timestamp}
-            {item.dayOffset != null && item.dayOffset > 0 && <span className="ml-0.5 align-super text-[0.7em]">+{item.dayOffset}</span>}
-          </span>
+      {/* Text column. The rail runs the full height of this column, so the expanded
+          record sits inside it and the connector flows past it unbroken. */}
+      <div className={`flex flex-1 flex-col pb-4 ${upcoming ? "opacity-45" : ""}`}>
+        {/* single line: timestamp (mono, hint) · meta · label */}
+        <div className="flex items-baseline gap-2 text-body-sm">
+          {item.timestamp && (
+            <span className="shrink-0 text-caption text-[var(--color-text-hint)] [font-family:var(--font-mono)]">
+              {item.timestamp}
+              {item.dayOffset != null && item.dayOffset > 0 && <span className="ml-0.5 align-super text-[0.7em]">+{item.dayOffset}</span>}
+            </span>
+          )}
+          {item.meta && <span className="text-[var(--color-text-muted)]">{item.meta} ·</span>}
+          <span className="text-[var(--color-text-default)]">{item.label}</span>
+          {failed && item.detail && <span className="text-[var(--color-feedback-error)]">· {item.detail}</span>}
+          {expandable && (
+            <button
+              type="button"
+              onClick={() => setOpen(o => !o)}
+              aria-expanded={open}
+              aria-label={open ? `Hide details for ${item.label}` : `Show details for ${item.label}`}
+              className="ml-auto inline-flex shrink-0 items-center gap-1 self-center [border-radius:var(--radius-button)] px-1.5 py-0.5 text-caption text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-bg-disabled)] hover:text-[var(--color-text-default)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-border-focus)]"
+            >
+              <ChevronDownIcon
+                className={`size-3.5 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+              />
+            </button>
+          )}
+        </div>
+
+        {expandable && open && (
+          <dl className="mt-2 grid grid-cols-[7rem_1fr] gap-x-3 gap-y-1.5 [border-radius:var(--radius-card)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-base)] px-3 py-2.5">
+            {item.fields!.map(f => (
+              <React.Fragment key={f.label}>
+                <dt className="text-caption text-[var(--color-text-muted)]">{f.label}</dt>
+                {/* Signer keys and LUIDs are long and must stay readable: mono, and
+                    wrapped rather than truncated so the value can be read in full. */}
+                <dd className="text-caption break-all text-[var(--color-text-default)] [font-family:var(--font-mono)]">{f.value}</dd>
+              </React.Fragment>
+            ))}
+          </dl>
         )}
-        {item.meta && <span className="text-[var(--color-text-muted)]">{item.meta} ·</span>}
-        <span className="text-[var(--color-text-default)]">{item.label}</span>
-        {failed && item.detail && <span className="text-[var(--color-feedback-error)]">· {item.detail}</span>}
       </div>
     </div>
   )
@@ -194,22 +240,36 @@ function MilestoneRow({ milestone, position, reached }: { milestone: TimelineMil
 }
 
 // ── Annotation row ────────────────────────────────────────────────────────────
-// A label (not an item — no dot): a DS Alert whose elbow corner sits beside it
-// and whose arm runs DOWN into the next item's dot. Two-layer like the rail.
-function AnnotationRow({ annotation, dark }: { annotation: TimelineAnnotation; dark: boolean }) {
+// A label (not an item — no dot): a DS Alert beside the rail, with the rail
+// continuing down into the next item's dot. Two-layer like the rail.
+//
+// `throughLine` picks the geometry. When the rail arrives from ABOVE (a milestone
+// or item precedes this annotation) it must pass straight through, unbroken — an
+// elbow there would read as the rail starting at the alert. Only when nothing
+// precedes it does the elbow's corner make sense, turning out of the alert and
+// down into the first item.
+function AnnotationRow({ annotation, dark, throughLine = false }: { annotation: TimelineAnnotation; dark: boolean; throughLine?: boolean }) {
   const elbowLayer = (w: number, c: string): React.CSSProperties => {
     const d = (STROKE - w) / 2
-    return {
+    const base: React.CSSProperties = {
       position: "absolute",
       left: RAIL_X,
-      width: ELBOW_REACH,
-      top: ANNOTATION_ANCHOR + d,
-      bottom: -(DOT_TOP + ANNOTATION_PB),
       transform: `translateX(-${w / 2}px)`,
       borderStyle: "solid",
       borderColor: "transparent",
       borderLeftWidth: w,
       borderLeftColor: c,
+    }
+    if (throughLine) {
+      // Straight segment spanning the full row: enters at the top edge, exits into
+      // the next dot, so the rail is continuous across the annotation.
+      return { ...base, width: 0, top: -DOT_TOP, bottom: -(DOT_TOP + ANNOTATION_PB) }
+    }
+    return {
+      ...base,
+      width: ELBOW_REACH,
+      top: ANNOTATION_ANCHOR + d,
+      bottom: -(DOT_TOP + ANNOTATION_PB),
       borderTopWidth: w,
       borderTopColor: c,
       borderTopLeftRadius: ELBOW_RADIUS - d,
@@ -284,7 +344,13 @@ function Timeline({ sections, truncateAtFailure = false, className }: TimelinePr
             )}
 
             {section.annotationBefore && (
-              <AnnotationRow annotation={section.annotationBefore} dark={stubColor(items[0]) === "dark"} />
+              <AnnotationRow
+                annotation={section.annotationBefore}
+                dark={stubColor(items[0]) === "dark"}
+                // A "top" milestone renders directly above, so the rail arrives from
+                // there and must run straight through rather than turning a corner.
+                throughLine={section.position === "top"}
+              />
             )}
 
             {items.map((item, i) => {
