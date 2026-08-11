@@ -45,6 +45,13 @@ export interface WizardProps {
   /** Primary action on the last step. */
   onFinish: () => void
   finishLabel?: React.ReactNode
+  /**
+   * Extra gate on the LAST step's action, ORed with that step's `valid`.
+   *
+   * Still useful where the final step is a Review that has no validity of its own but
+   * must not submit if an EARLIER step went invalid (participants, alias). Redundant
+   * when it merely repeats the last step's `valid` — pass one or the other.
+   */
   finishDisabled?: boolean
   /**
    * Called when Next is pressed on a step whose `valid` is false. Lets the consumer
@@ -175,9 +182,41 @@ export function Wizard({
     return () => { window.removeEventListener("resize", onResize); cancelAnimationFrame(raf) }
   }, [open, remeasure])
 
+  /**
+   * Steps whose end the operator has actually reached, so the footer can stop being
+   * something you scroll to and start being sticky.
+   *
+   * Per step and sticky for the dialog's lifetime: going Back and forward again must
+   * not demand a second read of a step you have already been through.
+   */
+  const [seenSteps, setSeenSteps] = React.useState<Set<number>>(new Set())
+
+  const markSeen = React.useCallback((index: number) => {
+    setSeenSteps(prev => (prev.has(index) ? prev : new Set(prev).add(index)))
+  }, [])
+
+  // A step that does not overflow is seen by definition — there is nothing to scroll,
+  // so withholding the footer would strand it forever.
+  React.useEffect(() => {
+    if (!open || overflowing) return
+    markSeen(step)
+  }, [open, overflowing, step, markSeen])
+
+  /** Reaching the bottom of the scroll region marks the step seen. */
+  const handleScroll = React.useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    // 4px of slack: fractional scroll heights mean scrollTop + clientHeight rarely
+    // equals scrollHeight exactly at the true bottom.
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 4) markSeen(step)
+  }, [step, markSeen])
+
   // Reset transient UI when the dialog closes.
   React.useEffect(() => {
-    if (!open) { setConfirmDiscard(false); setBodyH(null); setOverflowing(false); setDir("fwd") }
+    if (!open) {
+      setConfirmDiscard(false); setBodyH(null); setOverflowing(false); setDir("fwd")
+      setSeenSteps(new Set())
+    }
   }, [open])
 
   const total = steps.length - floor
@@ -186,13 +225,37 @@ export function Wizard({
   const current = steps[step]
   const stepValid = current?.valid ?? true
 
+  /**
+   * Whether the footer is pinned to the bottom of the column, or still sitting at the
+   * end of the form waiting to be scrolled to.
+   *
+   * On first view of an overflowing step the footer is DELIBERATELY not sticky: the
+   * operator reaches it by scrolling, which is what guarantees they have seen the
+   * whole form. After that it pins and stays pinned, even if they scroll back up or a
+   * field empties — re-earning it would be punishing the wrong person.
+   */
+  const footerSticky = seenSteps.has(step)
+
+  /**
+   * The forward action is gated by BOTH conditions, and is dimmed rather than hidden
+   * (aria-disabled, so the click still lands and the consumer can reveal errors).
+   *
+   * `finishDisabled` folds in here too: it and the last step's `valid` were two props
+   * expressing one idea, and the invite wizard was passing both.
+   */
+  const forwardBlocked = !stepValid || !footerSticky || (isLast && finishDisabled)
+
   function go(next: number) {
     setDir(next > step ? "fwd" : "back")
     prevStep.current = next
     onStepChange(next)
   }
   function handleNext() {
+    // Not reachable while the footer is inline (you cannot click what you have not
+    // scrolled to), but guarded anyway so a keyboard path cannot skip the gate.
+    if (!footerSticky) return
     if (!stepValid) { onNextBlocked?.(step); return }
+    if (isLast && finishDisabled) { onNextBlocked?.(step); return }
     if (isLast) onFinish()
     else go(step + 1)
   }
@@ -210,6 +273,45 @@ export function Wizard({
   }
 
   const showForm = !override
+
+  /**
+   * The footer, rendered in ONE of two positions depending on `footerSticky`:
+   * inline at the end of the scroll region (first view of an overflowing step, so it
+   * is reached by scrolling) or pinned below it (once seen). Declared once here
+   * because rendering it twice in the tree would remount it and restart its
+   * fade-in animation on every scroll.
+   */
+  const footerNode = (
+            <DialogFooter
+        className={cn(
+          "ds-wizard-footer shrink-0 bg-[var(--color-bg-overlay)]/80 pt-4 backdrop-blur-md sm:items-center",
+          !footerSticky && "px-1 pb-3",
+        )}
+        style={footerSticky ? { animation: "ds-wizard-footer-in .25s cubic-bezier(0.16,1,0.3,1) both" } : undefined}
+      >
+        {total > 1 && (
+          <span className="text-caption text-[var(--color-text-muted)] sm:mr-auto">
+            {display} of {total}
+          </span>
+        )}
+        {step > floor ? (
+          <Button variant="ghost" onClick={handleBack}>
+            <ArrowLeft className="size-4" />Back
+          </Button>
+        ) : (
+          <Button variant="ghost" onClick={requestClose}>Cancel</Button>
+        )}
+        {/* aria-disabled rather than disabled, so the click still lands and
+            onNextBlocked can reveal the step's field errors. */}
+        <Button
+          onClick={handleNext}
+          aria-disabled={forwardBlocked}
+          className={forwardBlocked ? "opacity-50 cursor-not-allowed" : ""}
+        >
+          {isLast ? finishLabel : "Next"}
+        </Button>
+      </DialogFooter>
+  )
 
   return (
     <Dialog
@@ -285,7 +387,21 @@ export function Wizard({
                 content (smooth step resize). Overflowing -> fixed by flex-1 and it
                 scrolls. overflow-x-hidden prevents any horizontal scrollbar; the p-1
                 (no negative margin) gives focus rings room without spilling width. */}
-            <div ref={scrollCbRef} className="ds-scroll min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
+            {/* mask-image fades the last 40px into the dialog while the step still has
+                content below, so "there is more" is visible rather than left to the
+                scrollbar. Same treatment as the reports catalog. Dropped once the step
+                has been seen — a permanent haze over a form you have read is noise.
+                A mask, not an overlay: an overlay would need to match the dialog
+                background and would sit over the fields swallowing clicks. */}
+            <div
+              ref={scrollCbRef}
+              onScroll={handleScroll}
+              className={cn(
+                "ds-scroll min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden",
+                overflowing && !footerSticky &&
+                  "[mask-image:linear-gradient(to_bottom,black_calc(100%-40px),transparent)]",
+              )}
+            >
               <div
                 className={cn("ds-wizard-body", !overflowing && "overflow-hidden transition-[height] duration-[380ms] ease-[cubic-bezier(0.4,0,0.2,1)]")}
                 style={{ height: !overflowing && bodyH != null ? bodyH : undefined }}
@@ -300,43 +416,13 @@ export function Wizard({
                   </div>
                 </div>
               </div>
+              {/* Inline position: the footer lives at the END of the scrollable content
+                  on first view, so scrolling to it IS the act of reading the form. */}
+              {!footerSticky ? <div className="px-1 pb-1">{footerNode}</div> : null}
             </div>
 
-            {/* Footer: hidden until the step's required fields are valid, then fades in
-                and sticks (glass) at the bottom of the column. Escape while hidden is
-                still available via the header X, backdrop click, and the discard strip.
-
-                Actions stay right-aligned (the DialogFooter default). The "N of N"
-                counter, when present, is pushed to the left edge by its own mr-auto;
-                forcing justify-start here would collapse the buttons left on a
-                single-step wizard, where no counter renders. */}
-            {stepValid && (
-              <DialogFooter className="ds-wizard-footer shrink-0 bg-[var(--color-bg-overlay)]/80 pt-4 backdrop-blur-md sm:items-center" style={{ animation: "ds-wizard-footer-in .25s cubic-bezier(0.16,1,0.3,1) both" }}>
-                {total > 1 && (
-                  <span className="text-caption text-[var(--color-text-muted)] sm:mr-auto">
-                    {display} of {total}
-                  </span>
-                )}
-                {step > floor ? (
-                  <Button variant="ghost" onClick={handleBack}>
-                    <ArrowLeft className="size-4" />Back
-                  </Button>
-                ) : (
-                  <Button variant="ghost" onClick={requestClose}>Cancel</Button>
-                )}
-                {isLast ? (
-                  <Button
-                    onClick={onFinish}
-                    aria-disabled={finishDisabled}
-                    className={finishDisabled ? "opacity-50 cursor-not-allowed" : ""}
-                  >
-                    {finishLabel}
-                  </Button>
-                ) : (
-                  <Button onClick={handleNext}>Next</Button>
-                )}
-              </DialogFooter>
-            )}
+            {/* Sticky position: pinned below the scroll region once the step has been seen. */}
+            {footerSticky ? footerNode : null}
           </div>
         )}
       </DialogContent>
