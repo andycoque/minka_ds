@@ -15,6 +15,7 @@ import { cn } from "../../lib/utils"
 import { Button } from "./button"
 import { Calendar } from "./calendar"
 import { Input } from "./input"
+import { TimeField } from "./time-field"
 import { Tabs, TabsList, TabsTrigger } from "./tabs"
 import { DateTimeRangePicker, type DateTimeRange } from "./date-time-range-picker"
 
@@ -449,17 +450,16 @@ function FilterCombobox({
               />
               <div className="p-2 flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Input
-                    type="time"
+                  {/* TimeField for a guaranteed 24-hour clock; see date-time-picker. */}
+                  <TimeField
                     value={hoursInput}
-                    onChange={e => setHoursInput(e.target.value)}
+                    onChange={setHoursInput}
                     className="flex-1"
                   />
                   <span className="text-body-sm text-[var(--color-text-muted)] shrink-0">–</span>
-                  <Input
-                    type="time"
+                  <TimeField
                     value={hoursInputTo}
-                    onChange={e => setHoursInputTo(e.target.value)}
+                    onChange={setHoursInputTo}
                     className="flex-1"
                   />
                 </div>

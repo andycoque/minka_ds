@@ -3,7 +3,7 @@
 import * as React from "react"
 import type { DateRange } from "react-day-picker"
 import { Calendar } from "./calendar"
-import { Input } from "./input"
+import { TimeField } from "./time-field"
 import { cn } from "../../lib/utils"
 
 export interface DateTimeRange {
@@ -62,14 +62,14 @@ export function DateTimeRangePicker({
     onChange({ from: day, to: day, startTime, endTime })
   }
 
-  function handleStartTime(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleStartTime(startTime: string) {
     if (!value?.from) return
-    onChange({ ...value, startTime: e.target.value })
+    onChange({ ...value, startTime })
   }
 
-  function handleEndTime(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleEndTime(endTime: string) {
     if (!value?.from) return
-    onChange({ ...value, endTime: e.target.value })
+    onChange({ ...value, endTime })
   }
 
   return (
@@ -97,8 +97,8 @@ export function DateTimeRangePicker({
       <div className="border-t border-[var(--color-border-default)] px-4 py-3 flex flex-col gap-3">
         <div className="flex flex-col gap-1.5">
           <label className="text-body-sm">Start time</label>
-          <Input
-            type="time"
+          {/* TimeField for a guaranteed 24-hour clock; see date-time-picker. */}
+          <TimeField
             value={value?.startTime ?? ""}
             onChange={handleStartTime}
             disabled={!value?.from}
@@ -106,8 +106,7 @@ export function DateTimeRangePicker({
         </div>
         <div className="flex flex-col gap-1.5">
           <label className="text-body-sm">End time</label>
-          <Input
-            type="time"
+          <TimeField
             value={value?.endTime ?? ""}
             onChange={handleEndTime}
             disabled={!value?.from}

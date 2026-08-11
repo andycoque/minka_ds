@@ -2,13 +2,17 @@
 
 import * as React from "react"
 import { Calendar } from "./calendar"
-import { Input } from "./input"
+import { TimeField } from "./time-field"
 import { cn } from "../../lib/utils"
 
 export interface DateTimeValue {
   date: Date | null
+  /** "HH:MM", 24-hour. Empty only before a date has been chosen. */
   time: string
 }
+
+/** Applied when a date is picked with no time yet, so the field is never empty. */
+const DEFAULT_TIME = "00:00"
 
 interface DateTimePickerProps {
   value?: DateTimeValue | null
@@ -29,12 +33,16 @@ export function DateTimePicker({
 }: DateTimePickerProps) {
   function handleDaySelect(selected: Date | undefined) {
     if (!selected) { onChange(null); return }
-    onChange({ date: selected, time: value?.time ?? "" })
+    // Default the time to midnight rather than leaving it empty. An empty
+    // `type="time"` renders the browser's "--:-- --", which reads as broken next to a
+    // chosen date and gives nothing to edit from; "00:00" is both a real value and the
+    // start-of-day most callers already assume when no time is given.
+    onChange({ date: selected, time: value?.time || DEFAULT_TIME })
   }
 
-  function handleTime(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleTimeValue(time: string) {
     if (!value?.date) return
-    onChange({ ...value, time: e.target.value })
+    onChange({ ...value, time })
   }
 
   return (
@@ -52,10 +60,13 @@ export function DateTimePicker({
       <div className="border-t border-[var(--color-border-default)] px-4 py-3">
         <div className="flex flex-col gap-1.5">
           <label className="text-body-sm">Time</label>
-          <Input
-            type="time"
+          {/* TimeField, not <input type="time">: that control shows AM/PM whenever the
+              browser reads the locale as 12-hour, which it takes from OS settings and
+              which a per-input lang attribute does not override. TimeField renders the
+              text itself, so "14:30" is guaranteed. */}
+          <TimeField
             value={value?.time ?? ""}
-            onChange={handleTime}
+            onChange={handleTimeValue}
             disabled={!value?.date}
           />
         </div>
