@@ -100,12 +100,22 @@ function ActionCell({ children, className }: ActionCellProps) {
 }
 
 // ── StatusCell ────────────────────────────────────────────────────────────────
-// Dot + label status indicator. Use instead of badges for table status columns.
+// Dot + label status indicator. The canonical way to show a status ANYWHERE — table
+// columns and detail-page headers alike. Never a Badge: a badge reads as a label you
+// applied to the thing, where a status is a state the thing is in.
 
 type StatusCellVariant = "success" | "warning" | "error" | "neutral"
 
+/**
+ * `default` is the table-column size. `lg` is for a detail-page identity header, where
+ * the status sits beside a heading-4 title and the small size read as an afterthought
+ * next to it.
+ */
+type StatusCellSize = "default" | "lg"
+
 interface StatusCellProps {
   variant: StatusCellVariant
+  size?: StatusCellSize
   children: React.ReactNode
   className?: string
 }
@@ -124,10 +134,18 @@ const STATUS_TEXT: Record<StatusCellVariant, string> = {
   neutral: "text-[var(--color-text-disabled)]",
 }
 
-function StatusCell({ variant, children, className }: StatusCellProps) {
+function StatusCell({ variant, size = "default", children, className }: StatusCellProps) {
+  const lg = size === "lg"
   return (
-    <span className={cn("inline-flex items-center gap-1.5 text-body-sm", STATUS_TEXT[variant], className)}>
-      <span className={cn("size-1.5 rounded-full shrink-0", STATUS_DOT[variant])} />
+    <span
+      className={cn(
+        "inline-flex items-center",
+        lg ? "gap-2 text-body" : "gap-1.5 text-body-sm",
+        STATUS_TEXT[variant],
+        className,
+      )}
+    >
+      <span className={cn("rounded-full shrink-0", lg ? "size-2" : "size-1.5", STATUS_DOT[variant])} />
       {children}
     </span>
   )
@@ -142,4 +160,5 @@ export type {
   ActionCellProps,
   StatusCellProps,
   StatusCellVariant,
+  StatusCellSize,
 }
