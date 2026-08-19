@@ -1,0 +1,69 @@
+---
+title: Switch
+description: Turns a setting on and leaves it that way. Takes effect the moment it changes.
+tags: component, reference
+status: stable
+---
+
+import { Button, Label, Switch } from 'minka-ds'
+import { SwitchAnatomyDemo, SwitchStatesDemo } from '@/components/docs/demos/form-states'
+
+## Anatomy
+
+<SwitchAnatomyDemo />
+
+A switch sits to the **right** of its label with the pair justified apart, because
+the reader scans setting names down the left edge and states down the right.
+
+## States
+
+<SwitchStatesDemo />
+
+## Use something else when
+
+- **The answer is submitted with a form.** `Checkbox`. A switch that only takes
+  effect after pressing Save is lying about being immediate.
+- **The change is expensive or hard to undo.** A `Button` plus a confirmation, so
+  there is somewhere to explain the consequence.
+- **There are more than two states.** `Tabs` with `variant="subtle"` for a
+  segmented control, or `Select`.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<span className="flex items-center gap-3"><Label htmlFor="sw-a">Notify on failure</Label><Switch id="sw-a" defaultChecked /></span>}>
+      Name the setting, so the label reads the same whichever way the switch is
+      thrown.
+    </Do>
+    <Dont example={<span className="flex items-center gap-3"><Label htmlFor="sw-b">Turn on notifications</Label><Switch id="sw-b" /></span>}>
+      Write the label as an instruction. It contradicts itself once the switch is
+      already on.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<span className="flex items-center gap-3"><Label htmlFor="sw-c">Single use</Label><Switch id="sw-c" /></span>}>
+      Let the switch be the whole interaction. Flipping it is the change.
+    </Do>
+    <Dont example={<span className="flex flex-col items-start gap-2"><span className="flex items-center gap-3"><Label htmlFor="sw-d">Single use</Label><Switch id="sw-d" /></span><Button size="sm">Save</Button></span>}>
+      Put a switch behind a Save. The reader has already been told it took effect.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="checked" type="boolean">
+    Controlled state. Pair with `onCheckedChange`.
+  </Prop>
+  <Prop name="onCheckedChange" type="(checked: boolean) => void">
+    Fires on change. Do the work here rather than deferring to a Save.
+  </Prop>
+  <Prop name="defaultChecked" type="boolean" default="false">
+    Uncontrolled starting state.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Removes pointer events and drops opacity.
+  </Prop>
+</PropsTable>

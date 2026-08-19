@@ -1,0 +1,393 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Docs stylesheet — /docs only
+
+   This is a SECOND CSS entry, separate from app/globals.css. The docs route
+   group imports this one; every other playground page keeps globals.css.
+
+   Why they can coexist: every Fumadocs variable is namespaced `--color-fd-*`
+   and every Fumadocs utility is `fd-*` prefixed, so there is no collision
+   with our `--color-text-*` / `--color-border-*` semantic layer. Verified
+   against fumadocs-ui 16.6.9 — if a future version drops the prefix, this
+   file is where it will break.
+
+   Layer order matters. Fumadocs preset first, our tokens second, the
+   fd-* → our-token mapping last, so our values win.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/* Scan the DS package source so utility classes used only inside DS
+   components are generated (Tailwind v4 skips node_modules by default). */
+@source "../../../packages/minka-ds/src";
+/* Scan MDX content so classes written in docs pages are generated too. */
+@source "./../content";
+@source "../../../node_modules/fumadocs-ui/dist";
+
+/* Primitives — raw scale values, source of truth */
+@import "../tokens/primitives.css";
+@import "../tokens/gradients.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ── Semantic layer ────────────────────────────────────────────────────────
+   The SAME file globals.css imports, not a copy. Docs pages render real DS
+   components, so they need the identical token layer — a component shown here
+   must look exactly like the component in the product.
+   ─────────────────────────────────────────────────────────────────────── */
+@import "./_semantic-layer.css";
+
+/* ── Fumadocs chrome → Minka tokens ───────────────────────────────────────
+   Maps the docs shell (sidebar, nav, search, code blocks) onto our semantic
+   layer so the site reads as Minka rather than default Fumadocs.
+   ─────────────────────────────────────────────────────────────────────── */
+:root {
+  --color-fd-background:         var(--color-bg-raised);
+  --color-fd-foreground:         var(--color-text-default);
+  --color-fd-muted:              var(--color-bg-base);
+  --color-fd-muted-foreground:   var(--color-text-muted);
+  --color-fd-border:             var(--color-border-default);
+
+  --color-fd-card:               var(--color-bg-raised);
+  --color-fd-card-foreground:    var(--color-text-default);
+  --color-fd-popover:            var(--color-bg-raised);
+  --color-fd-popover-foreground: var(--color-text-default);
+
+  --color-fd-primary:            var(--color-action-primary-default);
+  --color-fd-primary-foreground: var(--color-action-primary-foreground);
+  --color-fd-secondary:            var(--color-action-secondary-default);
+  --color-fd-secondary-foreground: var(--color-action-secondary-foreground);
+  /* Sidebar links hover with `bg-fd-accent/50`. Mapped to ghost-hover this
+     resolved to a very light neutral at half opacity, which was invisible, so
+     the nav did not read as clickable. bg-disabled is a step stronger and still
+     quiet enough for a hover. */
+  --color-fd-accent:             var(--color-bg-disabled);
+  --color-fd-accent-foreground:  var(--color-text-default);
+
+  --color-fd-ring:               var(--color-border-focus);
+  --color-fd-overlay:            var(--color-bg-backdrop);
+
+  --color-fd-success:            var(--color-text-success);
+  --color-fd-error:              var(--color-text-error);
+  --color-fd-warning:            var(--color-text-warning);
+  --color-fd-info:               var(--color-text-info);
+}
+
+/* Docs typography uses our type scale, not Fumadocs' defaults. */
+#nd-docs-layout,
+#nd-page {
+  font-family: var(--font-sans);
+}
+
+/* ── Playground stage ─────────────────────────────────────────────────────
+   A very low-contrast texture so the specimen sits on a surface rather than
+   floating in flat white. Written here rather than as Tailwind arbitrary
+   values because a multi-layer background-image in a class string is the
+   exact shape that silently fails to compile.
+
+   DOTS, not lines. At a 4px pitch a 1px line grid is a quarter ink by area and
+   stops reading as a grid at all — it turns into a flat grey wash. A 1px dot on
+   the same pitch is a sixteenth, so the pattern stays legible as texture while
+   going much dimmer than the 16px line grid it replaces.
+   ─────────────────────────────────────────────────────────────────────── */
+.ds-playground-stage {
+  background-color: var(--color-bg-raised);
+  background-image: radial-gradient(
+    circle at center,
+    color-mix(in oklab, var(--color-border-default) 40%, transparent) 0.5px,
+    transparent 0.5px
+  );
+  background-size: 4px 4px;
+  background-position: center center;
+  /* A softer corner than --radius-card, so the stage reads as a surface the
+     specimen sits on rather than as another card in the page's card stack.
+     --radius-2xl (1.25rem) is the scale step nearest 3x the card radius. */
+  border-radius: var(--primitive-radius-2xl);
+}
+
+/* Dark stage, for a playground with an on-dark toggle. The `.dark` class is on
+   the panel itself, so `--color-bg-*` and `--color-border-*` have already
+   resolved to the dark palette by the time this applies; only the ground needs
+   restating, because the panel is a dark island on a light page rather than a
+   page that has gone dark. */
+.ds-playground-stage.dark {
+  background-color: var(--color-bg-base);
+}
+
+/* ── Inline code ──────────────────────────────────────────────────────────
+   A light tint plus the mono face, so a prop or value reads as a literal
+   without becoming a bar of ink in the middle of a sentence. Matches the `Code`
+   component used inside not-prose regions, so the same prop looks the same
+   whether it lands in a paragraph or in a panel.
+
+   `:not(pre code)` keeps fenced blocks on their own treatment; they are already
+   a dark surface and would double up.
+
+   0.85em rather than 1em because the mono face carries a larger x-height than
+   the sans, so equal em values make code read bigger than its context.
+   ─────────────────────────────────────────────────────────────────────── */
+.prose code:not(pre code):not(.not-prose *) {
+  background-color: var(--color-bg-disabled);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-default);
+  padding: 0.05em 0.35em;
+  border-radius: var(--primitive-radius-xs);
+  font-size: 0.85em;
+  font-weight: var(--primitive-font-weight-500);
+  /* Own leading, so the chip height comes from the chip rather than from the
+     line height of the paragraph it sits in. */
+  line-height: 1.45;
+  white-space: nowrap;
+  /* A chip is taller than the text around it, because it adds a border and
+     padding above its glyphs. Inline-block plus a small negative offset pulls
+     its glyphs back onto the surrounding baseline instead of riding high, and
+     keeps the line box from growing where a chip appears mid-paragraph. */
+  display: inline-block;
+  vertical-align: baseline;
+  position: relative;
+  top: 0.08em;
+}
+
+/* Tailwind Typography adds these around inline code; they would show as stray
+   backtick glyphs. */
+.prose code:not(pre code):not(.not-prose *)::before,
+.prose code:not(pre code):not(.not-prose *)::after {
+  content: none;
+}
+
+/* A code span inside a link keeps the link colour, so it still reads as a link. */
+.prose a code:not(pre code):not(.not-prose *) {
+  color: var(--color-text-link);
+}
+
+/* ── Code block copy button ───────────────────────────────────────────────
+   Fumadocs already ships a working copy button (clipboard icon that swaps to a
+   check), but it renders as a bare icon with no affordance until hover, so it
+   reads as decoration rather than a control. Given a border, a ground and a
+   pointer it reads as the button it is.
+   ─────────────────────────────────────────────────────────────────────── */
+#nd-page figure button[aria-label*="opy" i],
+#nd-page pre ~ button,
+#nd-page figure > button {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--primitive-radius-xs);
+  background-color: var(--color-bg-raised);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 1;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+#nd-page figure button[aria-label*="opy" i]:hover,
+#nd-page pre ~ button:hover,
+#nd-page figure > button:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text-default);
+}
+
+/* ── Docs panel spacing ───────────────────────────────────────────────────
+   Every docs component sets `not-prose` to keep its own layout, which also opts
+   it out of the prose vertical rhythm. Two adjacent panels then sat flush
+   against each other with no gap at all.
+
+   `:where()` keeps specificity at zero so a component can still override it.
+   ─────────────────────────────────────────────────────────────────────── */
+#nd-page .prose > :where(.not-prose) {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Inline code inside docs panels ───────────────────────────────────────
+   The `:not(.not-prose *)` guard above exists to keep the prose rules off the
+   PropsTable, but it also excluded backticked code written in MDX that lands
+   inside a panel: a Do / Don't statement, an Anatomy part. Those rendered as
+   bare mono with no chip.
+
+   `.ds-panel-copy` is set on the elements that hold authored copy inside a
+   panel, so the chip follows the copy rather than the panel, and the PropsTable
+   still keeps its own treatment.
+   ─────────────────────────────────────────────────────────────────────── */
+.ds-panel-copy code {
+  background-color: var(--color-bg-disabled);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--primitive-radius-xs);
+  color: var(--color-text-default);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: var(--primitive-font-weight-500);
+  line-height: 1.45;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: baseline;
+  position: relative;
+  top: 0.08em;
+  padding: 0.05em 0.35em;
+}
+
+/* ── Headings ─────────────────────────────────────────────────────────────
+   Serif is reserved for the PAGE title, which names the thing the whole page is
+   about. Section headings inside the page stay on the UI face: they are
+   navigation through the page rather than a title for it, and a column of serif
+   h2s made the page read as an essay rather than a reference.
+   ─────────────────────────────────────────────────────────────────────── */
+#nd-page h1 {
+  font-family: var(--font-serif);
+  font-weight: var(--primitive-font-weight-400);
+  letter-spacing: var(--primitive-letter-spacing-normal);
+  font-size: var(--primitive-font-size-4xl);
+  line-height: var(--primitive-line-height-tight);
+}
+
+/* ── Body copy ────────────────────────────────────────────────────────────
+   Fumadocs sets prose at 16px. One step down to 15px reads better at this
+   measure and brings running text closer to the 14px used inside the panels,
+   so moving between prose and a table is not a size jump.
+   ─────────────────────────────────────────────────────────────────────── */
+#nd-page .prose {
+  font-size: 0.9375rem;
+}
+
+/* ── Tables ───────────────────────────────────────────────────────────────
+   ONE type and colour scale for every table on the site: the markdown tables
+   here, and the PropsTable / Anatomy components which set the same values in
+   Tailwind. Header 12px muted, cell 14px muted, first column 14px default.
+   Before this each of the three picked its own pairing, which is what made the
+   tables look almost-but-not-quite alike.
+
+   Every selector carries `:not(.not-prose *)`. Without it these rules also hit
+   the PropsTable, which brings its own bordered wrapper, so the table got a
+   second border inside the first. Fumadocs' own prose rules carry the same
+   guard; mine has to as well.
+
+   `separate`, not `collapse`: overflow:hidden does not clip a table's own
+   children, so with a collapsed border the square-cornered header band bleeds
+   past the rounded panel corner and reads as a white outline. Separate borders
+   let the radius apply, and the header cells carry the rule themselves.
+   ─────────────────────────────────────────────────────────────────────── */
+.prose table:not(.not-prose *) {
+  background-color: var(--color-bg-raised);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: var(--primitive-font-size-sm);
+}
+
+.prose table:not(.not-prose *) thead tr {
+  background-color: var(--color-bg-base);
+}
+
+.prose table:not(.not-prose *) th,
+.prose table:not(.not-prose *) td {
+  border: 0;
+  padding: 0.5rem 0.875rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose table:not(.not-prose *) th {
+  border-bottom: 1px solid var(--color-border-default);
+  font-size: var(--primitive-font-size-xs);
+  font-weight: var(--primitive-font-weight-400);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* Round the header band's own outer corners so it follows the panel radius. */
+.prose table:not(.not-prose *) th:first-child {
+  border-top-left-radius: calc(var(--radius-card) - 1px);
+}
+.prose table:not(.not-prose *) th:last-child {
+  border-top-right-radius: calc(var(--radius-card) - 1px);
+}
+
+/* Weight 500, not 400. The brand face is Book at 400, which reads thin at 14px
+   in a dense table; 500 is the step that makes cell copy feel set rather than
+   faint, without becoming a second heading weight. */
+.prose table:not(.not-prose *) td {
+  color: var(--color-text-muted);
+  font-weight: var(--primitive-font-weight-500);
+}
+
+/* First column names the thing, so it reads as the row's subject rather than as
+   more data. Medium weight, not bold: it is a label, not a heading. */
+.prose table:not(.not-prose *) td:first-child {
+  color: var(--color-text-default);
+  font-weight: var(--primitive-font-weight-500);
+  white-space: nowrap;
+}
+
+/* ── Page footer navigation ───────────────────────────────────────────────
+   The previous / next cards ship with a bare `border` and no colour, so they
+   inherited a near-invisible default and read as static text. Given a real
+   border, a white ground and a hover that moves, they read as the navigation
+   they are.
+   ─────────────────────────────────────────────────────────────────────── */
+#nd-page a[href^="/docs"]:has(> div > svg.lucide-chevron-right),
+#nd-page a[href^="/docs"]:has(> div > svg.lucide-chevron-left) {
+  border-color: var(--color-border-default);
+  background-color: var(--color-bg-raised);
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+#nd-page a[href^="/docs"]:has(> div > svg.lucide-chevron-right):hover,
+#nd-page a[href^="/docs"]:has(> div > svg.lucide-chevron-left):hover {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-bg-base);
+}
+
+/* ── Sidebar surface ──────────────────────────────────────────────────────
+   Fumadocs paints the sidebar with `bg-fd-card`, the same variable its
+   callouts, code blocks and cards use. Remapping `--color-fd-card` would tint
+   all of those too, so the sidebar is targeted directly instead: grey panel,
+   white content, which is the separation the studio sidebar has.
+   ─────────────────────────────────────────────────────────────────────── */
+#nd-sidebar {
+  background-color: var(--color-bg-base);
+}
+
+/* Category headers are `<p>`, not links, but they shipped at the same size and
+   weight as the links beside them, so they read as clickable. Smaller, uppercase
+   and muted says "this names a group" rather than "this goes somewhere". */
+#nd-sidebar p {
+  font-size: 0.6875rem;
+  font-weight: var(--primitive-font-weight-500);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-hint);
+  cursor: default;
+}
+
+/* Sidebar links get a pointer and a legible resting colour. They shipped at
+   muted with an almost-invisible hover, which read as static text rather than
+   navigation. */
+#nd-sidebar a {
+  cursor: pointer;
+}
+#nd-sidebar a[data-active="false"] {
+  color: var(--color-text-default);
+}
+#nd-sidebar a[data-active="false"]:hover {
+  color: var(--color-text-default);
+}
+
+/* The search field ships as `bg-fd-secondary/50`, which was a tint against
+   Fumadocs' white sidebar. Now the sidebar is grey it reads as grey-on-grey, so
+   the field goes white to read as an input you can type into.
+
+   `!important` because `bg-fd-secondary/50` and `hover:bg-fd-accent` are utility
+   classes in a later layer, so a plain property declaration loses to them however
+   specific the selector is. This is the one place on the page where overriding a
+   shipped utility is the only option. */
+#nd-sidebar button[data-search] {
+  background-color: var(--color-bg-raised) !important;
+  border-color: var(--color-border-default);
+}
+#nd-sidebar button[data-search]:hover {
+  background-color: var(--color-bg-raised) !important;
+  border-color: var(--color-border-strong);
+}

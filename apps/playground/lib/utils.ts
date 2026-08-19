@@ -21,6 +21,14 @@ const twMerge = extendTailwindMerge({
             "caption-light", "caption-sm-light",
             "overline",
             "code",
+            "display-serif",
+            // Serif variants. Missing from this list meant `cn()` silently
+            // dropped every one of them whenever a text-[color] sat on the same
+            // element, so a serif heading rendered in the UI face with no error.
+            "heading-1-serif", "heading-2-serif", "heading-3-serif", "heading-4-serif",
+            "heading-1-lg-serif", "heading-2-lg-serif", "heading-3-lg-serif", "heading-4-lg-serif",
+            "body-xl-serif", "body-lg-serif", "body-serif", "body-sm-serif", "body-sm-lg-serif",
+            "caption-lg-serif", "caption-serif", "caption-sm-lg-serif", "caption-sm-serif",
           ],
         },
       ],

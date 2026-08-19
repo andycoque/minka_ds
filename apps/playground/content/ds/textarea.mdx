@@ -1,0 +1,79 @@
+---
+title: Textarea
+description: A multi-line text field that grows with its content.
+tags: component, reference
+status: stable
+---
+
+import { Label, Textarea } from 'minka-ds'
+import { TextareaStatesDemo } from '@/components/docs/demos/form-states'
+
+## Anatomy
+
+The same three parts as `Input`: a bound `Label`, the field, and a line of help or
+error text.
+
+<Anatomy>
+  <Part name="Label">
+    Bound with `htmlFor`.
+  </Part>
+  <Part name="Textarea">
+    The field. Grows with its content via `field-sizing-content`, from a
+    four-line minimum.
+  </Part>
+  <Part name="Help text" optional>
+    One line under the field. Becomes the error message when invalid.
+  </Part>
+</Anatomy>
+
+## States
+
+<TextareaStatesDemo />
+
+The field grows as it fills rather than scrolling inside a fixed box, so the
+reader can see everything they have written. It does not shrink below its
+four-line minimum.
+
+## Use something else when
+
+- **The value fits on one line.** `Input`. A textarea for a name promises more
+  room than the value needs.
+- **The value comes from a known set.** `Select` or `Combobox`.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<div className="w-full max-w-56 space-y-1.5"><Label htmlFor="ta-a">Reason</Label><Textarea id="ta-a" placeholder="Explain what the operator should fix." /></div>}>
+      Use a textarea where the answer is a sentence someone writes.
+    </Do>
+    <Dont example={<div className="w-full max-w-56 space-y-1.5"><Label htmlFor="ta-b">Bank code</Label><Textarea id="ta-b" placeholder="007" /></div>}>
+      Use a textarea for a short fixed value. The size of the box is a promise
+      about the length of the answer.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<p className="text-caption text-[var(--color-text-muted)]">Shown to the participant who submitted the request.</p>}>
+      Say who will read it, when the text is going somewhere.
+    </Do>
+    <Dont example={<p className="text-caption text-[var(--color-text-muted)]">Enter a reason</p>}>
+      Restate the label as help text.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+`Textarea` takes every attribute of a native `textarea`.
+
+<PropsTable>
+  <Prop name="aria-invalid" type="boolean">
+    Draws the error border and ring. Pair it with a message in the help line.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Removes pointer events and drops opacity.
+  </Prop>
+  <Prop name="rows" type="number">
+    Sets the starting height. The field still grows past it.
+  </Prop>
+</PropsTable>

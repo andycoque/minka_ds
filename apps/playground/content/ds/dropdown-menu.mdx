@@ -1,0 +1,62 @@
+---
+title: Dropdown menu
+description: A list of actions on one record, opened from a control rather than shown on the page.
+tags: component, reference
+status: stable
+---
+
+import { DropdownMenuDemo } from '@/components/docs/demos/overlay-demos'
+
+## Anatomy
+
+<DropdownMenuDemo />
+
+In a table this is the kebab in an `ActionCell`, which is where most of them live.
+The menu handles roving focus and type-ahead, so arrow keys and typing the first
+letter both work without anything extra.
+
+## Use something else when
+
+- **There are two actions and room for both.** Show them. A menu that hides two
+  buttons costs a click and reveals nothing.
+- **It is a value being chosen, not an action performed.** `Select` for a short
+  list, `Combobox` when it needs searching. A menu does something; a select sets
+  something.
+- **It is a single destructive action.** A `destructive` button with a
+  confirmation, so the consequence is visible before the click rather than after
+  it.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Put destructive items last, under a `DropdownMenuSeparator`.
+    </Do>
+    <Dont>
+      Mix a delete in among ordinary actions, where a mis-click lands on it.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Label items with the verb: "Assign wallets", "Suspend".
+    </Do>
+    <Dont>
+      Label them with the object alone. "Wallets" does not say what happens.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="side" type="'top' | 'right' | 'bottom' | 'left'" default="'bottom'">
+    Preferred side. Flips when there is no room.
+  </Prop>
+  <Prop name="align" type="'start' | 'center' | 'end'" default="'center'">
+    Alignment along that side. `end` for a kebab at the right edge of a row.
+  </Prop>
+  <Prop name="DropdownMenuItem disabled" type="boolean" default="false">
+    Dims and skips it in keyboard navigation.
+  </Prop>
+</PropsTable>

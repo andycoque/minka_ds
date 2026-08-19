@@ -1,0 +1,66 @@
+---
+title: Alert
+description: A standing message about the record on screen. Not feedback on something you just did.
+tags: component, reference
+status: stable
+---
+
+import { AlertDemo } from '@/components/docs/demos/surface-demos'
+
+## Anatomy
+
+<AlertDemo />
+
+## Variants
+
+Five, and the choice is about what the reader should do rather than how bad the
+news is. `warning` is the one that earns its keep: an expiring API key, a bridge
+whose retries are running down, a participant registered but not yet funded.
+
+`default` carries no colour, for a message that is neither good nor bad.
+
+## Use something else when
+
+- **It is feedback on an action just taken.** `toast`. An alert persists because
+  the condition persists; a toast passes because the moment does.
+- **It blocks the reader.** `Dialog`. An alert sits on the page and can be ignored,
+  which is wrong if the next step depends on it.
+- **It is a field-level error.** The help line under the field, plus
+  `aria-invalid`. An alert at the top of a form makes the reader hunt for which
+  field is wrong.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Title the condition and put the remedy in the description: "This key expires
+      in 9 days", then what to do about it.
+    </Do>
+    <Dont>
+      Title it "Warning". The variant already carries that, so the line is spent
+      saying nothing.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Put the action in the alert when there is one, e.g. a Rotate button beside
+      the text.
+    </Do>
+    <Dont>
+      Describe a problem and leave the reader to find the fix somewhere else on the
+      page.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="variant" type="'default' | 'info' | 'success' | 'warning' | 'error'" default="'default'">
+    What the reader should do about it.
+  </Prop>
+  <Prop name="children" type="ReactNode">
+    An optional icon, then `AlertTitle` and `AlertDescription`.
+  </Prop>
+</PropsTable>

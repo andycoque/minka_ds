@@ -1,0 +1,73 @@
+---
+title: Popover
+description: A small surface anchored to a control, for a secondary input or detail that would crowd the page.
+tags: component, reference
+status: stable
+---
+
+import { PopoverDemo } from '@/components/docs/demos/overlay-demos'
+
+## Anatomy
+
+<PopoverDemo />
+
+`side` and `align` place it, but they are a preference rather than an
+instruction: the content flips and shifts to stay on screen, so a popover near
+the bottom of the page opens upward whatever you asked for.
+
+## Motion
+
+<MotionSpec
+  duration="150ms"
+  easing="ease"
+  properties="opacity, transform (scale 0.95 → 1, slide 8px from the trigger side)"
+  note={<>Nothing sets a duration here: these are tw-animate-css utilities and 150ms ease is that library's default. The slide direction follows the RESOLVED side rather than the requested one, so a popover that flipped near a screen edge still animates from where it actually is. Tooltip and DropdownMenu use the same four classes, so the three read as one family.</>}
+>
+  <PopoverDemo />
+</MotionSpec>
+
+## Use something else when
+
+- **It is a list of actions.** `DropdownMenu`, which handles roving focus and
+  keyboard selection.
+- **It is one line explaining a control.** `Tooltip`.
+- **It needs a decision before the reader continues.** `Dialog`. A popover
+  dismisses when you click away, so it cannot hold anything that must be
+  answered.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Keep it to one job: a short form, a filter, a piece of detail.
+    </Do>
+    <Dont>
+      Put a multi-step flow in a popover. There is no room and nothing anchors
+      the reader if it closes.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Anchor it to the control it belongs to, so the connection is obvious.
+    </Do>
+    <Dont>
+      Open it far from its trigger. A floating surface with no visible source
+      reads as an error.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="side" type="'top' | 'right' | 'bottom' | 'left'" default="'bottom'">
+    Preferred side. Flips when there is no room.
+  </Prop>
+  <Prop name="align" type="'start' | 'center' | 'end'" default="'center'">
+    Alignment along that side.
+  </Prop>
+  <Prop name="open / onOpenChange" type="boolean / (open: boolean) => void">
+    Controlled pair. Omit both to let the trigger manage it.
+  </Prop>
+</PropsTable>

@@ -1,0 +1,50 @@
+---
+title: Separator
+description: A rule between two groups that space alone cannot separate.
+tags: component, reference
+status: stable
+---
+
+import { SeparatorDemo } from '@/components/docs/demos/surface-demos'
+
+## Anatomy
+
+<SeparatorDemo />
+
+The vertical orientation needs a height from its parent, so it goes inside a row
+with a set height rather than standing alone.
+
+## Use something else when
+
+- **Space would do.** It usually would. A rule between every row of a list turns a
+  set of records into a grid of boxes; the docs pages here dropped theirs for that
+  reason.
+- **The groups have names.** A heading separates better than a line, and says what
+  the groups are.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Use one rule between two genuinely different kinds of content, e.g. a header
+      row and the rows under it.
+    </Do>
+    <Dont>
+      Put a rule between every peer in a list. Padding separates peers; a rule
+      between each one says they are unrelated.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="orientation" type="'horizontal' | 'vertical'" default="'horizontal'">
+    Vertical needs a height on the parent row.
+  </Prop>
+  <Prop name="decorative" type="boolean" default="true">
+    Hides it from assistive tech. Set `false` only when the rule carries meaning
+    nothing else conveys.
+  </Prop>
+</PropsTable>

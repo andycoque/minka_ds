@@ -574,7 +574,7 @@ export default function DesignSystemPlayground() {
                 {/* Input Group */}
                 <section className="space-y-3">
                   <h2 className="text-label text-[var(--color-text-muted)] uppercase tracking-widest">Input Group</h2>
-                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: InputGroup · InputGroupAddon · InputGroupButton · InputGroupText · InputGroupInput · InputGroupTextarea</p>
+                  <p className="text-caption text-[var(--color-text-hint)]">Anatomy: InputGroup · InputGroupAddon · InputGroupButton · InputGroupText · InputGroupInput</p>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <p className="text-caption text-[var(--color-text-muted)]">With icon addon</p>

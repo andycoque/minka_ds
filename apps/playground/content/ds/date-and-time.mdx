@@ -1,0 +1,114 @@
+---
+title: Date and time
+description: Three components for a moment, a period and a time of day. All 24-hour, always.
+tags: component, reference
+status: stable
+---
+
+import { DateTimeDemo } from '@/components/docs/demos/batch4-demos'
+
+## Anatomy
+
+<DateTimeDemo />
+
+## Variants
+
+Pick by what the value is.
+
+| Component | Value | For |
+| --- | --- | --- |
+| `DateTimePicker` | `{ date, time }` | One moment: an expiry, a cut-off |
+| `DateTimeRangePicker` | `{ from, to, startTime, endTime }` | A period: a report, a filter |
+| `TimeField` | `"HH:MM"` | A time of day with no date |
+
+The range picker takes the whole range as one object, so it is never half-set. The
+point picker fills `00:00` when a date is chosen with no time yet, for the same
+reason: a field that shows a date and a blank time reads as broken.
+
+### TimeField exists for one reason
+
+`<input type="time">` renders AM/PM whenever the browser reads the locale as
+12-hour, and it takes that from the operating system rather than the page. Setting
+`lang="en-GB"` on the input does not change it in Chrome.
+
+A ledger cannot show 12-hour times. `TimeField` is a text input that formats as you
+type, so `1430` becomes `14:30` and `2400` clamps to `23:00`, and it is 24-hour on
+every machine.
+
+## Use something else when
+
+- **The value is a date typed from a document.** Still these. A typed date in a
+  plain `Input` cannot be validated as it is entered.
+- **The reader is filtering a list.** `SearchBar` with a `datetime` category, which
+  renders the range picker inside the filter builder and keeps it in the URL.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Pass `maxRangeDays` when the query behind the field has a limit.
+    </Do>
+    <Dont>
+      Accept any range and reject it after submitting. The limit is a property of
+      the field, not of the response.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Say which timezone the value is in, next to the field or in the record.
+    </Do>
+    <Dont>
+      Show a range with no zone. On a multi-zone ledger it invites the wrong
+      conclusion about which day's rows are included.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Use `TimeField` for every time entry, including inside your own composition.
+    </Do>
+    <Dont>
+      Reach for `<input type="time">`. It will show AM/PM on someone's machine and
+      you will not see it on yours.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+### DateTimePicker
+
+<PropsTable>
+  <Prop name="value / onChange" type="DateTimeValue | null / (value) => void">
+    `{ date: Date | null, time: string }`.
+  </Prop>
+  <Prop name="disabled" type="Matcher">
+    Days to block, forwarded to the calendar. E.g. `{ before: new Date() }`.
+  </Prop>
+</PropsTable>
+
+### DateTimeRangePicker
+
+<PropsTable>
+  <Prop name="value / onChange" type="DateTimeRange | null / (value) => void">
+    `{ from, to, startTime, endTime }`.
+  </Prop>
+  <Prop name="maxRangeDays" type="number">
+    Caps the span. A limit on duration, not on staying inside one calendar day: a
+    24-hour cap still allows 8pm to 8am the next morning.
+  </Prop>
+</PropsTable>
+
+### TimeField
+
+<PropsTable>
+  <Prop name="value / onChange" type="string / (value: string) => void">
+    `HH:MM`, 24-hour.
+  </Prop>
+  <Prop name="placeholder" type="string" default="'00:00'">
+    Shown when empty.
+  </Prop>
+  <Prop name="aria-invalid" type="boolean">
+    Draws the error border, as on `Input`.
+  </Prop>
+</PropsTable>

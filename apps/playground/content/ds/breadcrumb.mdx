@@ -1,0 +1,63 @@
+---
+title: Breadcrumb
+description: Where the current page sits. Paired with a Back button, not instead of one.
+tags: component, reference
+status: stable
+---
+
+import { BreadcrumbDemo } from '@/components/docs/demos/batch4-demos'
+
+## Anatomy
+
+<BreadcrumbDemo />
+
+Every detail page in the product puts this in a nav row beside a Back button. The
+two are not redundant: Back is one step, the breadcrumb is the path, and a reader
+deep in a record wants both.
+
+The last item is a `BreadcrumbPage`, not a `BreadcrumbLink`. It is where you already
+are, so linking it would be a link to nothing.
+
+## Use something else when
+
+- **The hierarchy is one level deep.** A Back button alone. A two-item breadcrumb
+  says less than the button beside it.
+- **The items are siblings rather than ancestors.** `Tabs`. A breadcrumb claims
+  containment.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Name the record in the last item, so the trail ends on something specific.
+    </Do>
+    <Dont>
+      End on the section name. The reader can see the section; they want to know
+      which record.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Let `BreadcrumbSeparator` draw the divider.
+    </Do>
+    <Dont>
+      Type a slash between items. It will not match, and it will not collapse on
+      narrow screens.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="BreadcrumbLink" type="component">
+    An ancestor. Takes `href`, or `onClick` for a client-side push.
+  </Prop>
+  <Prop name="BreadcrumbPage" type="component">
+    The current page. Not a link.
+  </Prop>
+  <Prop name="BreadcrumbEllipsis" type="component">
+    Stands in for collapsed middle levels on a deep trail.
+  </Prop>
+</PropsTable>

@@ -1,0 +1,73 @@
+---
+title: Help expander
+description: An explanation the reader can open, for context that would crowd the page if it were always visible.
+tags: component, reference
+status: stable
+---
+
+import { HelpExpanderDemo } from '@/components/docs/demos/batch4-demos'
+
+## Anatomy
+
+<HelpExpanderDemo />
+
+The default trigger is a circular question mark beside a heading, which is where all
+seven studio usages put it.
+
+## Variants
+
+Two modes, and the choice is about what is around the trigger.
+
+`popover` floats the card beside the trigger and is portaled, so it works anywhere,
+including inside a dialog or a table cell. Use it unless you have a reason not to.
+
+`inset` expands the card inside the nearest positioned container and frosts what is
+behind it. It suits a panel with empty space to fill, where a floating card would
+cover content the reader still wants.
+
+## Use something else when
+
+- **It is one line.** `Tooltip`. Opening a card to read six words is a poor trade.
+- **The reader needs it to finish the task.** Put it on the page. Anything behind a
+  trigger is optional by construction.
+- **It is a whole section that collapses.** `ExpandablePanel`.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Explain a concept the reader might not share: what quorum means, why a
+      period has a limit.
+    </Do>
+    <Dont>
+      Restate the label. If the field name needs explaining, fix the field name.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Keep `popover` unless the surrounding panel has space that wants filling.
+    </Do>
+    <Dont>
+      Use `inset` inside a dialog or a table. It needs a positioned container with
+      room, and neither reliably has one.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="title" type="string">
+    The card heading.
+  </Prop>
+  <Prop name="children" type="ReactNode">
+    The explanation.
+  </Prop>
+  <Prop name="mode" type="'popover' | 'inset'" default="'popover'">
+    See [Variants](#variants).
+  </Prop>
+  <Prop name="trigger" type="{ icon?: ReactNode; label?: string }">
+    Overrides the default question mark. A `label` makes it a text trigger.
+  </Prop>
+</PropsTable>

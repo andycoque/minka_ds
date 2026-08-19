@@ -1,0 +1,148 @@
+---
+title: Button
+description: Triggers an action. The variant carries how much attention the action deserves, not how important the surrounding content is.
+tags: component, reference
+status: stable
+---
+
+import { Button } from 'minka-ds'
+import { Plus, Trash2 } from 'lucide-react'
+import { ButtonAnatomyDemo } from '@/components/docs/demos/button-anatomy'
+import { ButtonVariantsDemo } from '@/components/docs/demos/button-variants'
+import { ButtonSizesDemo } from '@/components/docs/demos/button-sizes'
+
+## Anatomy
+
+A label, optionally with one icon.
+
+<ButtonAnatomyDemo />
+
+A leading icon speeds recognition of a frequent action. A trailing icon means
+direction: an arrow that continues, a chevron that opens.
+
+## Variants
+
+The variant carries how much attention the action deserves on this surface, not
+how important the feature is in general. Shown together because the choice is
+always relative to the buttons beside it.
+
+<ButtonVariantsDemo />
+
+One `default` per view, on the action that view exists to perform. Everything else
+steps down from there.
+
+`destructive` is for an action that cannot be undone, which usually means it lives
+inside a confirmation dialog rather than on the page behind it.
+
+## Sizes
+
+`default` unless the surface says otherwise. `sm` in toolbars and table rows, `lg`
+where a single action carries the screen, `xs` inside dense controls like a filter
+chip.
+
+<ButtonSizesDemo />
+
+Icon sizes pair with the label sizes, so an `icon-sm` sits level with a `sm`
+beside it. Adding an icon tightens horizontal padding at every size.
+
+### Size scale
+
+A size steps its height, padding, type and icon together. That combination is why
+`xs` works inside a filter chip and `lg` does not.
+
+| Size | Height | Type | Icon |
+| --- | --- | --- | --- |
+| `xs` | 1.5rem (24px) | `text-caption` | 0.75rem (12px) |
+| `sm` | 2rem (32px) | `text-label` | 1rem (16px) |
+| `default` | 2.25rem (36px) | `text-label` | 1rem (16px) |
+| `lg` | 2.5rem (40px) | `text-label` | 1rem (16px) |
+| `icon-xs` | 1.5rem (24px) | — | 0.75rem (12px) |
+| `icon-sm` | 2rem (32px) | — | 1rem (16px) |
+| `icon` | 2.25rem (36px) | — | 1rem (16px) |
+| `icon-lg` | 2.5rem (40px) | — | 1rem (16px) |
+
+Rem is the unit throughout the design system, so these are the real values and the
+pixels are the aside.
+
+## Use something else when
+
+- **The action navigates somewhere.** Use a link. A button that changes the URL
+  breaks middle-click, cmd-click and copy-link-address. `variant="link"` styles a
+  button as a link without making it one; if the destination is a URL, pass an
+  anchor via `asChild`.
+- **The control toggles state.** `Switch` for a setting that applies immediately,
+  `Checkbox` inside a form that is submitted.
+- **There are several related actions.** `ButtonGroup` so they read as one
+  control, or `DropdownMenu` when only the primary action needs to be visible.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<span className="flex items-center gap-2"><Button>Save changes</Button><Button variant="ghost">Cancel</Button></span>}>
+      Give the view one primary action and step the rest down.
+    </Do>
+    <Dont example={<span className="flex items-center gap-2"><Button>Save changes</Button><Button>Cancel</Button></span>}>
+      Use `default` for more than one action in the same view. Two primaries
+      cancel each other out.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<Button variant="ghost">Cancel</Button>}>
+      Use `ghost` for the action that declines or backs out.
+    </Do>
+    <Dont example={<Button variant="destructive">Cancel</Button>}>
+      Use `destructive` for "cancel". Cancelling destroys nothing.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<Button size="icon" aria-label="Delete"><Trash2 /></Button>}>
+      Give every icon-only button an `aria-label`.
+    </Do>
+    <Dont example={<Button size="icon"><Trash2 /></Button>}>
+      Ship an icon-only button with no accessible name. It is announced as
+      "button".
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<Button><Plus />Create bridge</Button>}>
+      Label the button with the verb the reader is performing.
+    </Do>
+    <Dont example={<Button>OK</Button>}>
+      Use "OK" or "Submit". They name the mechanism, not the outcome.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<Button disabled>Generating…</Button>}>
+      Swap the label while an action is in flight, so the reader knows which one
+      they are waiting on. There is no `loading` prop.
+    </Do>
+    <Dont example={<Button disabled>Generate report</Button>}>
+      Disable a button with no explanation. Say why it is unavailable, or say what
+      it is doing.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="variant" type="'default' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'link'" default="'default'">
+    How much attention the action deserves. See [Variants](#variants).
+  </Prop>
+  <Prop name="size" type="'xs' | 'sm' | 'default' | 'lg' | 'icon-xs' | 'icon-sm' | 'icon' | 'icon-lg'" default="'default'">
+    The `icon*` values render a square button and expect no text child. The
+    [size scale](#size-scale) under Sizes lists what each one resolves to.
+  </Prop>
+  <Prop name="onDark" type="boolean" default="false">
+    Resolves every variant to the dark palette, for a button on an inverted
+    panel.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="false">
+    Renders the child element instead of a `button`, keeping the styling. Pass an
+    anchor to get a link that looks like a button.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Removes pointer events and drops opacity.
+  </Prop>
+</PropsTable>

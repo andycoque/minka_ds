@@ -1,0 +1,141 @@
+---
+title: Table cells
+description: What goes inside a table cell. Pick by what the value is, not by how you want it to look.
+tags: component, reference
+status: stable
+---
+
+import { Badge, Button, DataCell, AmountCell, StatusCell, BadgeCell, ActionCell } from 'minka-ds'
+import { MoreHorizontal } from 'lucide-react'
+import { CellsAnatomyDemo } from '@/components/docs/demos/cells-anatomy'
+
+## Purpose
+
+These are the contents of a table cell, not the cell itself. `TableCell` owns the
+padding and borders, and one of these owns what sits inside it. Picking the right
+one is what keeps two tables built by two people looking like the same table.
+
+Pick by what the value **is**:
+
+<Anatomy>
+  <Part name="DataCell">
+    A single-line plain value. The default, and what most columns want.
+  </Part>
+  <Part name="AmountCell">
+    A numeric or currency value. Corrects the gap the typeface leaves after `$`.
+  </Part>
+  <Part name="StatusCell">
+    A state the row is in. Dot plus label.
+  </Part>
+  <Part name="BadgeCell">
+    A wrapper for one or more `Badge`s.
+  </Part>
+  <Part name="ActionCell">
+    A wrapper for the row's action buttons.
+  </Part>
+</Anatomy>
+
+## Variants
+
+One panel, one chip per primitive. Each shows the primitive across the values a
+real column has to hold: a long one, a short one, an empty one.
+
+<CellsAnatomyDemo />
+
+`AmountCell` corrects the gap the typeface leaves after `$`. Amount columns are
+right-aligned on the column itself, not by the component, so set the alignment on
+the header and cell and the digits line up down the column.
+
+`ActionCell` takes `w-full justify-end`, because an action column sits against the
+edge of the table rather than against its header.
+
+An empty value is a dash in hint colour, never a blank cell. A blank reads as a
+rendering failure; a dash says there is nothing there.
+
+Cells have no interactive states of their own. Hover and selection belong to the
+row, and `DataTable` owns those.
+
+### StatusCell beyond the table
+
+`StatusCell` is the only one of these that leaves the table. It is the canonical
+status renderer in a table column, in a card summary, and in a filter chip, all at
+the default size.
+
+The one place you do **not** reach for it is a detail-page identity header. That is
+`DetailHeader`'s job: pass it a `status` and it renders the larger size itself, so
+`size="lg"` is not a choice a consumer makes.
+
+## Use something else when
+
+- **The value is two lines.** Do not stack them in a cell. Give each piece its own
+  column, or put the qualifier on the same baseline in a muted colour. `TextStack`
+  exists for **list items**, a ledger switcher or a selector row, and is not a cell
+  primitive.
+- **The status titles a detail page.** `DetailHeader`.
+- **The cell is a link.** It is not. Make the row navigate instead, so the whole
+  row is the target rather than a few words inside it.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<StatusCell variant="success">Active</StatusCell>}>
+      Use `StatusCell` for a status, in a column, a card summary or a filter chip.
+    </Do>
+    <Dont example={<Badge variant="success">Active</Badge>}>
+      Use a `Badge` for a status. A badge reads as a label someone applied to the
+      thing, where a status is a state the thing is in.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<DataCell>MOL-9291-596C-85DB</DataCell>}>
+      Keep identifiers in the regular sans face, the same size as the rest of the
+      row.
+    </Do>
+    {/* `font-mono` here has to be written as a style attribute rather than a class.
+        `cn()` treats `text-body-sm` and `font-mono` as one conflict group, so the
+        class version silently lost and both examples rendered identically. */}
+    <Dont example={<span className="text-body-sm text-[var(--color-text-default)]" style={{ fontFamily: "var(--font-mono)" }}>MOL-9291-596C-85DB</span>}>
+      Set identifiers in monospace. It reads as code rather than as data, and a
+      column of it makes the table noisier without making it more scannable.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<span className="flex items-baseline gap-1.5"><span className="text-body-sm text-[var(--color-text-default)]">sg-01</span><span className="text-body-sm text-[var(--color-text-muted)]">Davivienda</span></span>}>
+      Put a row's identifier and its qualifier on one baseline, both at the same
+      size, the qualifier muted.
+    </Do>
+    <Dont example={<span className="flex flex-col gap-0.5"><span className="text-caption-light text-[var(--color-text-default)]">sg-01</span><span className="text-caption-sm-light text-[var(--color-text-muted)]">Davivienda</span></span>}>
+      Stack two lines inside a cell. It breaks the row rhythm, and the second line
+      is never as scannable as a column.
+    </Dont>
+  </Rule>
+  {/* No side-by-side specimen for this one. What AmountCell adds is a 0.05em
+      negative margin on the `$`, which is invisible at one line and only shows as
+      a ragged edge down a column of figures. A Do/Don't pair would have shown two
+      identical strings and asked the reader to spot a difference that is not
+      there. */}
+  <Rule>
+    <Do example={<span className="flex flex-col items-end gap-1"><AmountCell>$1,250,000.00</AmountCell><AmountCell>$47.00</AmountCell><AmountCell>$980,415.20</AmountCell></span>}>
+      Use `AmountCell` for money and right-align the column, so the digits line up
+      down the page.
+    </Do>
+    <Dont example={<span className="flex flex-col items-start gap-1"><DataCell>$1,250,000.00</DataCell><DataCell>$47.00</DataCell><DataCell>$980,415.20</DataCell></span>}>
+      Use `DataCell` and leave the column left-aligned. The decimal points stop
+      lining up, which is what makes a figure comparable to the one above it.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="StatusCell variant" type="'success' | 'warning' | 'error' | 'neutral'">
+    Required. Only `success` colours its label; the others carry meaning in the
+    dot. There is no `destructive`: a rejected record is `error`.
+  </Prop>
+  <Prop name="children" type="ReactNode">
+    `DataCell`, `AmountCell`, `BadgeCell` and `ActionCell` take their content as
+    children and accept `className`.
+  </Prop>
+</PropsTable>

@@ -1,0 +1,104 @@
+---
+title: Search bar
+description: A query field that also renders the filter builder. The way filtering is done in this product.
+tags: component, reference
+status: stable
+---
+
+import { SearchBarDemo } from '@/components/docs/demos/batch4-demos'
+
+## Anatomy
+
+<SearchBarDemo />
+
+Pass `filterCategories` and the field grows a filter builder: a control to add a
+filter, and a chip row under the field for what is applied. That builder is
+`FilterCombobox`, which has no page of its own because nothing renders it
+directly. Eight studio views reach it this way.
+
+Each category carries a `type`, and the type decides the editor the reader gets:
+
+| `type` | Editor |
+| --- | --- |
+| `list` | Pick from `values` |
+| `datetime` | A range with times, capped by `maxRangeDays` |
+| `date` | A range without times |
+| `amount` | Exact, or a minimum and maximum |
+| `hours` | A time window within a day |
+| `text` | Free text with is / is not / matches |
+
+## Sizes
+
+`default` for a list page, where the field is the primary control. `sm` where the
+field sits in a toolbar beside other controls.
+
+## Use something else when
+
+- **The list is short enough to scan.** Nothing. A filter bar over twelve rows is
+  furniture.
+- **The reader is picking a value, not narrowing a set.** `Combobox`.
+- **It is a command palette rather than a filter.** A `Dialog` with its own input,
+  which is how the transactions palette works.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Keep the query and the filters in the URL, so a filtered view can be shared
+      and survives a refresh.
+    </Do>
+    <Dont>
+      Hold them in component state only. The reader loses their work on reload and
+      cannot send anyone the view.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Give `datetime` categories a `maxRangeDays` when the query behind them has a
+      limit, so the constraint is visible while choosing.
+    </Do>
+    <Dont>
+      Let the reader pick a range you will reject afterwards.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Pass `filterValueLabel` when a raw value reads badly as a chip, e.g. a date
+      range or an amount bound.
+    </Do>
+    <Dont>
+      Let a chip show a serialised object.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="value / onChange" type="string / (value: string) => void">
+    The query. Controlled.
+  </Prop>
+  <Prop name="filterCategories" type="FilterCategory[]">
+    What can be filtered on. Presence of this prop is what turns on the builder.
+  </Prop>
+  <Prop name="activeFilters" type="Record<string, CategoryValue[]>">
+    What is applied, keyed by category id.
+  </Prop>
+  <Prop name="onApplyFilter / onRemoveFilter / onClearFilters" type="callbacks">
+    The three mutations. The component renders the chips; you own the state.
+  </Prop>
+  <Prop name="filterValueLabel" type="(categoryId, value) => string">
+    Formats a value for its chip.
+  </Prop>
+  <Prop name="alwaysShowFilterBar" type="boolean" default="false">
+    Keeps the chip row present when nothing is applied, so the layout does not
+    shift on the first filter.
+  </Prop>
+  <Prop name="size" type="'default' | 'sm'" default="'default'">
+    See [Sizes](#sizes).
+  </Prop>
+  <Prop name="kbdHint" type="ReactNode">
+    A `Kbd` in the field, for the shortcut that focuses it.
+  </Prop>
+</PropsTable>
