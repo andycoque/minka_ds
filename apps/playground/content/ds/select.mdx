@@ -1,0 +1,87 @@
+---
+title: Select
+description: Picks one value from a short list of known options.
+tags: component, reference
+status: stable
+---
+
+import { SelectDemo } from '@/components/docs/demos/choice-demos'
+
+## Anatomy
+
+<SelectDemo />
+
+`SelectValue` renders the chosen label, not the stored value, so a `SelectItem`
+with `value="es-CO"` and the child "Español (Colombia)" shows the sentence and
+stores the code.
+
+## States
+
+The trigger carries the same focus ring and disabled treatment as `Input`, so a
+select sitting in a form row reads as a sibling of the fields around it rather
+than as a different kind of control.
+
+## Motion
+
+<MotionSpec
+  duration="150ms"
+  easing="ease"
+  properties="opacity, transform (scale 0.95 → 1, slide 8px)"
+  note={<>The same tw-animate-css defaults as Popover and DropdownMenu. The list slides from the side it resolved to, so a select near the bottom of the page opens upward and animates from below.</>}
+>
+  <SelectDemo />
+</MotionSpec>
+
+## Use something else when
+
+- **The list is long enough to scan.** `Combobox`, which can be searched. A
+  select past roughly ten options becomes a scroll hunt.
+- **More than one value can be chosen.** `Combobox` with `multiple`.
+- **There are two or three options and room to show them.** `Tabs` with
+  `variant="subtle"` as a segmented control, so the choices are visible without a
+  click.
+- **The options are actions rather than values.** `DropdownMenu`.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Give it a `placeholder` when nothing is chosen yet, so the empty state says
+      what the field wants.
+    </Do>
+    <Dont>
+      Preselect the first option to avoid an empty state. That records a choice
+      the reader never made.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Write item labels as the reader would say them.
+    </Do>
+    <Dont>
+      Show the stored code. `SelectItem` already keeps `value` separate from the
+      label for exactly this reason.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="value / onValueChange" type="string / (value: string) => void">
+    Controlled pair.
+  </Prop>
+  <Prop name="defaultValue" type="string">
+    Uncontrolled starting value.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Dims the trigger and blocks opening.
+  </Prop>
+  <Prop name="SelectValue placeholder" type="ReactNode">
+    Shown until something is chosen.
+  </Prop>
+  <Prop name="SelectItem value" type="string">
+    What gets stored. The children are what the reader sees.
+  </Prop>
+</PropsTable>

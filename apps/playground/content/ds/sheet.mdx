@@ -1,0 +1,71 @@
+---
+title: Sheet
+description: A panel that slides from an edge, for detail beside the page rather than a decision over it.
+tags: component, reference
+status: stable
+---
+
+import { SheetDemo } from '@/components/docs/demos/overlay-demos'
+
+## Anatomy
+
+<SheetDemo />
+
+`right` is the default and the one to use. The other three exist because the
+underlying primitive offers them, not because the product has a case for them:
+`bottom` is a mobile idiom this console does not use, and `left` collides with the
+navigation sidebar.
+
+## Motion
+
+<MotionSpec
+  duration="500ms in, 300ms out"
+  easing="ease-in-out"
+  properties="opacity, transform (slide from the chosen edge)"
+  note={<>Slower than a dialog, and deliberately so: a sheet travels the width of the panel rather than settling in place, and at dialog speed that distance reads as a jolt.</>}
+>
+  <SheetDemo />
+</MotionSpec>
+
+## Use something else when
+
+- **The reader has to answer before continuing.** `Dialog`. A sheet leaves the
+  page usable behind it, which is the opposite of a decision point.
+- **The detail deserves a URL.** A detail page. Anything worth linking to or
+  reloading should not live in a panel that closes.
+- **It is a short form on one record.** `Dialog`, which centres the attention it
+  is asking for.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Use a sheet for detail the reader compares against the list behind it.
+    </Do>
+    <Dont>
+      Use one for a confirmation. Nothing about a sheet says the page is blocked,
+      because it is not.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Keep `side="right"`, so every sheet in the product arrives from the same
+      edge.
+    </Do>
+    <Dont>
+      Vary the side per screen. The direction becomes noise rather than meaning.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="side" type="'right' | 'left' | 'top' | 'bottom'" default="'right'">
+    Which edge it comes from. Use the default.
+  </Prop>
+  <Prop name="open / onOpenChange" type="boolean / (open: boolean) => void">
+    Controlled pair. Omit both to let `SheetTrigger` manage it.
+  </Prop>
+</PropsTable>

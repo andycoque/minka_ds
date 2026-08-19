@@ -1,0 +1,123 @@
+---
+title: Input
+description: A single-line text field. Always paired with a Label, and always the width of the value it expects.
+tags: component, reference
+status: stable
+---
+
+import { Input, Label, Textarea } from 'minka-ds'
+import { InputAnatomyDemo } from '@/components/docs/demos/input-anatomy'
+import { InputStatesDemo } from '@/components/docs/demos/input-states'
+
+## Anatomy
+
+A field, a `Label` bound to it, and a line of help or error text under it.
+
+Everything past Plain is an `InputGroup`, not an `Input`. A bare `Input` has no
+slot for an icon, an affix or a trailing button, so anything with furniture around
+the field is an `InputGroup` wrapping an `InputGroupInput`. The slots are
+`InputGroupAddon` for an icon or short string at an edge, `InputGroupText` for a
+longer affix that reads as part of the value, and `InputGroupButton` for a control
+inside the field.
+
+<InputAnatomyDemo />
+
+**Password is a composition, not a component.** An `InputGroup`, an input whose
+`type` swaps between `password` and `text`, and a reveal button in a trailing
+addon. Copy it from the panel rather than rebuilding it.
+
+Every composition in the panel is taken from product code, so what you see is what
+is already in use.
+
+## States
+
+Input has no variants. Its appearance changes by condition rather than by a prop
+you pick, so this is the panel that matters.
+
+<InputStatesDemo />
+
+`aria-invalid` draws the error border and ring. Set it from a touched-and-failed
+check rather than on every keystroke, so a field does not turn red while it is
+still being typed into.
+
+Focus is keyboard-only by design. Tab into the field above to see the ring;
+clicking does not leave it ringed.
+
+## Use something else when
+
+- **The value is longer than a line.** `Textarea`, which grows with its content.
+- **The value comes from a known set.** `Select` for a short list, `Combobox` when
+  it needs searching.
+- **The value is a date or a time.** `DateTimePicker`, `DateTimeRangePicker` or
+  `TimeField`. A typed date in a text field cannot be validated as you go.
+- **The field needs a prefix, suffix or an inline button.** Still `Input`, wrapped:
+  see [Anatomy](#anatomy). `InputGroup` has no page of its own because it is never
+  used without a field inside it.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<div className="w-full max-w-52 space-y-1.5"><Label htmlFor="dd-a">Bank code</Label><Input id="dd-a" placeholder="007" /></div>}>
+      Pair every field with a visible `Label`, bound by `htmlFor`.
+    </Do>
+    <Dont example={<div className="w-full max-w-52"><Input placeholder="Bank code" /></div>}>
+      Use the placeholder as the label. It disappears the moment someone types,
+      and it is not announced as a name.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<div className="w-full max-w-52 space-y-1.5"><Label htmlFor="dd-b">Bank code</Label><Input id="dd-b" placeholder="007" /></div>}>
+      Size the field to the value it expects. A three-digit code does not need a
+      full-width field.
+    </Do>
+    <Dont example={<div className="w-full space-y-1.5"><Label htmlFor="dd-c">Bank code</Label><Input id="dd-c" placeholder="007" /></div>}>
+      Stretch every field to the container. Width is a hint about the value, and
+      a uniform grid throws that hint away.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<p className="text-caption text-[var(--color-feedback-error)]">No participant matches that name.</p>}>
+      Say what went wrong and what to do about it.
+    </Do>
+    <Dont example={<p className="text-caption text-[var(--color-feedback-error)]">Invalid input</p>}>
+      Report that something is invalid without saying which part or why.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+`Input` takes every attribute of a native `input`. The ones worth naming:
+
+<PropsTable>
+  <Prop name="type" type="string" default="'text'">
+    Standard attribute. Use `email`, `tel` and `number` so mobile keyboards
+    match, but validate on your own terms rather than relying on the browser.
+  </Prop>
+  <Prop name="aria-invalid" type="boolean">
+    Draws the error border and ring. Pair it with a message in the help line.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Removes pointer events and drops opacity. A bound `Label` dims with it.
+  </Prop>
+  <Prop name="placeholder" type="string">
+    An example value. Never the label.
+  </Prop>
+</PropsTable>
+
+### InputGroup
+
+<PropsTable>
+  <Prop name="InputGroupAddon align" type="'inline-start' | 'inline-end'" default="'inline-start'">
+    Which edge of the field the addon sits at.
+  </Prop>
+  <Prop name="InputGroupInput" type="component">
+    Replaces `Input` inside a group. Same attributes, without the standalone
+    border, so the group draws one field rather than a box inside a box.
+  </Prop>
+  <Prop name="InputGroupButton" type="component">
+    A button sized to sit inside the field. Use it in an addon rather than dropping
+    a plain `Button` in, which will not fit the row.
+  </Prop>
+</PropsTable>

@@ -1,0 +1,84 @@
+---
+title: Stat card
+description: One figure with its label, at the top of a list. Three types, picked by what the figure is.
+tags: component, reference
+status: stable
+---
+
+import { StatCardDemo } from '@/components/docs/demos/surface-demos'
+
+## Anatomy
+
+<StatCardDemo />
+
+## Variants
+
+`type` is a discriminated union, so the props change with it rather than every
+card carrying every field.
+
+| Type | For | Value |
+| --- | --- | --- |
+| `count` | A number of things | `number \| null` |
+| `amount` | Money | `string \| number \| null`, plus `unit` |
+| `status` | A state, not a figure | `status` string plus `color` |
+
+`count` is the default and needs no `type`.
+
+A `null` value renders a dash, not a zero. The distinction matters on a ledger:
+zero transactions is a fact, and not knowing yet is not.
+
+## Use something else when
+
+- **The figure needs a trend line.** A chart. A stat card carries a single
+  `percent` against the previous period and nothing more.
+- **It is a state rather than a summary.** `type="status"` covers the card case;
+  in a table row or a card summary it is `StatusCell`.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Give the card an `onClick` when the figure corresponds to a filter, so the
+      reader can act on what they just read.
+    </Do>
+    <Dont>
+      Make a card clickable when nothing happens. It becomes a button that lies.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Pass `unit` for money, so the currency sits beside the figure.
+    </Do>
+    <Dont>
+      Bake the currency into the value string. It then scales with the number and
+      competes with it.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="type" type="'count' | 'amount' | 'status'" default="'count'">
+    Picks the shape of the rest of the props.
+  </Prop>
+  <Prop name="label" type="string">
+    What the figure is. Required on all three types.
+  </Prop>
+  <Prop name="value" type="number | string | null">
+    `count` and `amount`. `null` renders a dash.
+  </Prop>
+  <Prop name="unit" type="string">
+    `amount` only. The currency code.
+  </Prop>
+  <Prop name="percent" type="number">
+    Change against the previous period. Signed.
+  </Prop>
+  <Prop name="status / color" type="string / 'success' | 'error' | 'muted'">
+    `status` only.
+  </Prop>
+  <Prop name="onClick" type="() => void">
+    Makes the card a button.
+  </Prop>
+</PropsTable>

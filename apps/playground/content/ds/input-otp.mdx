@@ -1,0 +1,94 @@
+---
+title: Input OTP
+description: A one-time code, one digit per box. Submits itself when the last box fills.
+tags: component, reference
+status: stable
+---
+
+import { InputOTPDemo } from '@/components/docs/demos/input-otp-demo'
+
+## Anatomy
+
+<InputOTPDemo />
+
+The value is one string, not an array. Six boxes are a presentation of a six-digit
+code rather than six separate fields, and treating it as one value is what makes
+paste work.
+
+Three behaviours come for free and are worth knowing about, because rebuilding this
+by hand loses them:
+
+- **Paste distributes.** A pasted code fills every box, wherever the caret was.
+- **Backspace steps back.** On an empty box it moves to the previous one and clears
+  it, so correcting a typo does not need the mouse.
+- **The first box takes `autocomplete="one-time-code"`**, so iOS offers the code
+  from the SMS.
+
+## States
+
+Invalid and disabled are on the panel. There is no "complete" state: when the last
+box fills, `onComplete` fires and the form moves on, so the filled state is a moment
+rather than something to design for.
+
+## Use something else when
+
+- **The code is alphanumeric or long.** `Input`. Boxes imply a fixed count of single
+  characters, and they get unwieldy past six.
+- **The value is a password.** `Input` with `type="password"`, in an `InputGroup`
+  with a reveal button. See [Input](/docs/ds/input).
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Submit from `onComplete`. The reader has finished; asking them to press
+      Continue as well is a step that adds nothing.
+    </Do>
+    <Dont>
+      Wait for a button press. The code is either complete or it is not, and you
+      already know which.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Clear `invalid` on the next keystroke, so the error goes away as the reader
+      starts fixing it.
+    </Do>
+    <Dont>
+      Leave the boxes red while they retype. The error then describes the previous
+      attempt, not this one.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Say where the code comes from: "from your authenticator app".
+    </Do>
+    <Dont>
+      Label it "Code". Six empty boxes do not say which of several codes they want.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="value / onChange" type="string / (value: string) => void">
+    Controlled. One string, not an array.
+  </Prop>
+  <Prop name="onComplete" type="(value: string) => void">
+    Fires when the last box fills.
+  </Prop>
+  <Prop name="length" type="number" default="6">
+    Number of boxes.
+  </Prop>
+  <Prop name="invalid" type="boolean" default="false">
+    Draws the error border on every box.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Blocks input and drops opacity.
+  </Prop>
+  <Prop name="autoFocus" type="boolean" default="false">
+    Focuses the first box on mount. Right for a dedicated two-factor step.
+  </Prop>
+</PropsTable>

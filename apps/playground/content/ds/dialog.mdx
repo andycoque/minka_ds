@@ -1,0 +1,113 @@
+---
+title: Dialog
+description: An overlay that takes the screen until the reader deals with it. For a decision or a form that should not lose its context.
+tags: component, reference
+status: stable
+---
+
+import { DialogDemo } from '@/components/docs/demos/dialog-demo'
+
+## Anatomy
+
+<DialogDemo />
+
+Two props carry most of the behaviour and neither is obvious from the name.
+
+`flow` caps the dialog at `calc(100dvh - 12.5rem)` and lays the children out as a
+flex column with `min-h-0`, so an inner `flex-1 overflow-y-auto` region scrolls
+instead of the box growing past the screen. Short dialogs are unaffected: they
+still shrink-wrap under the cap. Any dialog with a form in it wants this.
+
+`DialogPanel` adds a context column beside the body, for the thing being acted on.
+`placement="side"` puts it left; `inset` floats it with an 8px frame instead of
+bleeding to the dialog edge.
+
+## Variants
+
+Dialog has no `variant` prop. What changes is the width, set with a class on
+`DialogContent`.
+
+| Width | Use |
+| --- | --- |
+| `max-w-md` | A confirmation, or two or three fields. |
+| `sm:max-w-3xl` | A form with a panel beside it. |
+| default | Everything else. |
+
+## Motion
+
+<MotionSpec
+  duration="500ms in, 300ms out"
+  easing="cubic-bezier(0.16, 1, 0.3, 1) in, ease-out out"
+  properties="opacity, transform (translateY 8px and scale 0.97 → 1)"
+  note={<>The box settles in: it rises 8px and scales from 97% on a soft curve, 60ms behind the backdrop so the surface arrives before the content. Closing mirrors it but faster and in the other direction, drifting up 10px as it shrinks. The keyframes are declared in the component rather than as Tailwind utilities, because Radix unmounts the node before a utility-driven exit animation can play.</>}
+>
+  <DialogDemo />
+</MotionSpec>
+
+## Use something else when
+
+- **The flow has ordered steps.** `Wizard`, which owns the stepped body, the
+  footer and the discard guard.
+- **The content is a side surface, not a decision.** `Sheet`, which slides from an
+  edge and leaves the page visible behind it.
+- **It is a short confirmation attached to a control.** `Popover` if it can be
+  dismissed by clicking away, since a dialog takes the whole screen to ask.
+- **It is only feedback.** `toast`. A dialog demands an action; feedback does not.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Pass `flow` on any dialog with a form, so the body scrolls and the footer
+      stays reachable.
+    </Do>
+    <Dont>
+      Let a long dialog grow past the viewport. The actions end up below the fold
+      with nothing to scroll.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Name the action in the title and repeat it on the primary button: "Revoke
+      API key", then "Revoke".
+    </Do>
+    <Dont>
+      Title it "Are you sure?" and label the button "Yes". Neither says what
+      happens.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Use `DialogPanel` to keep the thing being acted on visible while the reader
+      decides.
+    </Do>
+    <Dont>
+      Restate the record as prose in the body. The panel exists so the decision
+      and its subject share the screen.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="flow" type="boolean" default="false">
+    Caps the height and makes the children a scrolling flex column. Pair it with
+    `flex-1 overflow-y-auto` on the region that should scroll.
+  </Prop>
+  <Prop name="open / onOpenChange" type="boolean / (open: boolean) => void">
+    Controlled pair. Omit both to let `DialogTrigger` manage it.
+  </Prop>
+  <Prop name="DialogPanel placement" type="'side' | 'top'" default="'side'">
+    Where the panel sits. `side` takes two fifths of the width; `top` runs across
+    the head of the dialog.
+  </Prop>
+  <Prop name="DialogPanel inset" type="boolean" default="false">
+    Floats the panel with an 8px frame instead of bleeding to the dialog edge.
+  </Prop>
+  <Prop name="showCloseButton" type="boolean" default="true">
+    The X in the corner. Turn it off when the dialog must be resolved by an
+    action.
+  </Prop>
+</PropsTable>

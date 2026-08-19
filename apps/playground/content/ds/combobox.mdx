@@ -1,0 +1,70 @@
+---
+title: Combobox
+description: Picks one value or several from a list long enough to need searching.
+tags: component, reference
+status: stable
+---
+
+import { ComboboxDemo } from '@/components/docs/demos/choice-demos'
+
+## Anatomy
+
+<ComboboxDemo />
+
+The chips composition above is the multi-select form: `ComboboxChips` holds the
+chosen values and the input, and doubles as the anchor the list hangs off.
+
+`ComboboxContent` takes an **`anchor` ref**, and it is required rather than
+optional. Combobox is built on Base UI while the rest of the overlay components
+are Radix, so it does not inherit the anchoring the others get for free. A
+combobox rendered without `anchor` opens in the wrong place, and nothing warns
+you.
+
+## Use something else when
+
+- **The list is short and fixed.** `Select`. A search field over five options is
+  furniture.
+- **The options are actions.** `DropdownMenu`.
+- **The reader is narrowing a table.** `SearchBar` with `filterCategories`, which
+  renders the filter builder and keeps the query in the URL.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Pass an `anchor` ref to `ComboboxContent`, taken from `ComboboxChips` or the
+      trigger.
+    </Do>
+    <Dont>
+      Omit it and assume the list will find its own position. This is the one
+      component in the DS that cannot.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Change the placeholder once something is chosen: "Select roles" becomes
+      "Add role".
+    </Do>
+    <Dont>
+      Keep the empty-state prompt after the field has values in it.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="multiple" type="boolean" default="false">
+    Turns `value` into an array and enables the chips composition.
+  </Prop>
+  <Prop name="value / onValueChange" type="string | string[] / (value) => void">
+    Controlled pair. The array form pairs with `multiple`.
+  </Prop>
+  <Prop name="ComboboxContent anchor" type="RefObject<HTMLElement>">
+    What the list positions against. Required.
+  </Prop>
+  <Prop name="ComboboxItem value" type="string">
+    What gets stored. The children are what the reader sees.
+  </Prop>
+</PropsTable>

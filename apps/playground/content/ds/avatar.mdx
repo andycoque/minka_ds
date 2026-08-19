@@ -1,0 +1,69 @@
+---
+title: Avatar
+description: A person or a participant, as an image or their initials.
+tags: component, reference
+status: stable
+---
+
+import { AvatarDemo } from '@/components/docs/demos/surface-demos'
+
+## Anatomy
+
+<AvatarDemo />
+
+Pass `name` and the initials are derived from it. `name` also becomes the alt text,
+so it is worth passing even when there is a `src`.
+
+Initials are set in the serif face, which is deliberate: an avatar is an identity
+mark rather than UI text, and the display face reads as a monogram.
+
+## Sizes
+
+| Size | Use |
+| --- | --- |
+| `sm` | Inline in a table row or a menu item |
+| `md` | The default, for a list or a card |
+| `lg` | A detail page or a profile panel |
+
+## Use something else when
+
+- **It stands for a status.** `StatusCell`. A coloured circle beside a name is a
+  status, and it should read as one.
+- **It is a logo rather than a person.** Use the mark directly. Initials imply
+  something with a name that could have had a photo.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Pass `name` even when you pass `src`, so the image has alt text and the
+      fallback has initials.
+    </Do>
+    <Dont>
+      Pass only `src`. A broken or slow image then leaves an empty circle with no
+      accessible name.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="name" type="string">
+    Full name. Alt text, and the source of the initials.
+  </Prop>
+  <Prop name="src" type="string">
+    Image URL. Falls back to initials when absent or broken.
+  </Prop>
+  <Prop name="initials" type="string">
+    Overrides the derived initials, for a name that abbreviates oddly.
+  </Prop>
+  <Prop name="size" type="'sm' | 'md' | 'lg'" default="'md'">
+    See [Sizes](#sizes).
+  </Prop>
+  <Prop name="background / color" type="string">
+    Overrides the generated colours, for a participant with brand colours of its
+    own.
+  </Prop>
+</PropsTable>

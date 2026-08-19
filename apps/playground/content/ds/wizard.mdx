@@ -1,0 +1,255 @@
+---
+title: Wizard
+description: A stepped dialog for creating something that needs more input than one screen can hold comfortably.
+tags: component, reference
+status: stable
+---
+
+import { WizardBasicDemo, WizardOverflowDemo, WizardDiscardDemo } from '@/components/docs/demos/wizard-demo'
+
+## Purpose
+
+A Wizard is a dialog that breaks one creation flow into ordered steps. Use it
+when a form has more input than fits on one screen without the reader losing
+their place, and when the input divides into groups that make sense on their own.
+
+The Wizard owns more than the layout. It owns the shell, the animated stepped
+body, the footer, and the discard guard, so a consumer supplies step content,
+per-step validity, and navigation state, and nothing else.
+
+Reach for something else when:
+
+- **The form fits on one screen.** Use `Dialog`. A two-field wizard adds a click
+  and a progress counter to a form that had no progress to report.
+- **The steps are not ordered.** Use `Tabs` inside a dialog. A wizard promises
+  that step two follows step one; tabs promise nothing and let the reader roam.
+- **The flow is a page, not a dialog.** Use `Stepper` on the page itself. A
+  wizard is bounded by a dialog, so it caps at the dialog's height.
+
+## Anatomy
+
+<Anatomy>
+  <Part name="steps">
+    An ordered array of `WizardStep`.
+  </Part>
+  <Part name="step / onStepChange">
+    The active step. Controlled, so the consumer owns navigation.
+  </Part>
+  <Part name="Footer">
+    The "N of N" counter, Back-or-Cancel, and Next-or-Finish. Owned by the Wizard.
+  </Part>
+  <Part name="panel" optional>
+    A left context panel, usually a `DialogPanel`. Present on every step.
+  </Part>
+  <Part name="override" optional>
+    Replaces the form and footer while set. For the provisioning or result phase.
+  </Part>
+  <Part name="Discard guard">
+    Blurs the box and floats a confirmation when a `dirty` form is closed.
+  </Part>
+  <Part name="floor" optional>
+    The lowest reachable step. For resume flows.
+  </Part>
+</Anatomy>
+
+Each `WizardStep` carries `content`, plus optional `title` and `eyebrow` for the
+stepped header and `valid` to gate advancing past it. The override sits inside the
+same dialog shell, so it inherits the enter and exit dissolve, and it suppresses
+the discard guard and close button because it owns its own actions. The guard's
+labels are overridable via `discardTitle`, `discardDescription`,
+`keepEditingLabel` and `discardLabel`. Steps below `floor` are treated as already
+committed: Back cannot go under it and the counter renumbers from it.
+
+## Variants
+
+The Wizard has no `variant` prop. It varies by what you pass it.
+
+### Basic
+
+Two short steps. Neither overflows the dialog, so the footer is pinned from the
+start and `Next` dims until the step is valid.
+
+<Specimen plain>
+  <WizardBasicDemo />
+</Specimen>
+
+### With a step taller than the dialog
+
+The first step has nine fields. The footer starts inline at the end of the scroll
+region and pins once the reader reaches the bottom, so the forward action cannot
+be pressed before the step has actually been seen.
+
+<Specimen plain>
+  <WizardOverflowDemo />
+</Specimen>
+
+The second step of that demo is a Review with no validity of its own. That is the
+case `finishDisabled` exists for: it gates the last step's action when an
+*earlier* step went invalid. If it merely repeats the last step's `valid`, pass
+one or the other, not both.
+
+### With a discard guard
+
+<Specimen plain>
+  <WizardDiscardDemo />
+</Specimen>
+
+### Footer behaviour
+
+Not hover and press, which the panels above already show. These are the footer's
+rules, and they are the ones that were getting hand-rolled.
+
+<Anatomy>
+  <Part name="Step valid">
+    `Next` is live. The reader can advance.
+  </Part>
+  <Part name="Step invalid">
+    `Next` is dimmed but still clickable.
+  </Part>
+  <Part name="Step not yet seen">
+    Forward is blocked until the reader has scrolled to the bottom once.
+  </Part>
+  <Part name="First step">
+    The left action reads `Cancel` rather than `Back`.
+  </Part>
+  <Part name="Last step">
+    The forward action reads `finishLabel` rather than `Next`.
+  </Part>
+  <Part name="Locked">
+    Esc, outside-click and the close button are all blocked.
+  </Part>
+</Anatomy>
+
+A dimmed `Next` still takes the click: it uses `aria-disabled` rather than
+`disabled`, so `onNextBlocked` fires and the consumer can reveal the step's field
+errors instead of leaving the reader to guess. The not-yet-seen block applies only
+to a step taller than the dialog, and a step stays seen for the rest of the
+session. Lock a wizard once it has started something it cannot abandon halfway,
+such as provisioning.
+
+Note what the footer does **not** do: it never hides its navigation. An earlier
+version of this component only rendered the footer once the step was valid, which
+took the counter and Back down with it, so an invalid step looked like a dead
+end rather than a form with a missing field.
+
+## Motion
+
+<MotionSpec
+  duration="380ms"
+  easing="cubic-bezier(0.4, 0, 0.2, 1)"
+  properties="height"
+  note={<>The body measures its content and animates to it, so moving between steps of different lengths resizes the dialog rather than jumping. Once the content is taller than the available height the animation stops and the scroll region takes over, which is why a long step scrolls instead of clipping.</>}
+>
+  <WizardBasicDemo />
+</MotionSpec>
+
+<MotionSpec
+  duration="250ms"
+  easing="cubic-bezier(0.16, 1, 0.3, 1)"
+  properties="opacity, transform (translateY 6px → 0)"
+  note={<>The footer's fade-in when it pins. It is declared once and rendered in one of two positions rather than twice in the tree, because rendering it twice would remount it and restart this animation on every scroll event.</>}
+>
+  <WizardOverflowDemo />
+</MotionSpec>
+
+The entering step also slides 12px, from the right when advancing and from the left
+when returning, so direction of travel is legible. All three animations are
+disabled under `prefers-reduced-motion`.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Give each step a `valid` and let the Wizard dim the forward action. Pair it
+      with `onNextBlocked` so pressing the dimmed button reveals which field is
+      missing.
+    </Do>
+    <Dont>
+      Hide or unmount the forward action on an invalid step. The reader loses the
+      step counter and the way back, and an incomplete form starts looking broken.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Set `dirty` whenever the form has input, and let the discard guard handle the
+      confirmation.
+    </Do>
+    <Dont>
+      Build your own confirm-on-close dialog inside a step. Two stacked dialogs
+      trap focus in the wrong one, and the guard already blurs the box behind it.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Use `override` for the provisioning and result phases, so they stay inside
+      the same dialog shell and inherit its dissolve.
+    </Do>
+    <Dont>
+      Close the Wizard and open a second dialog for the result. The reader sees one
+      box vanish and another appear, which reads as two unrelated events.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Split steps where the *input* changes subject: essentials, then settings,
+      then optional detail.
+    </Do>
+    <Dont>
+      Split steps to make each one short. Three steps of two fields is more
+      navigation than form, and the counter promises depth that is not there.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="open / onOpenChange" type="boolean / (open: boolean) => void">
+    Standard controlled dialog pair. `onOpenChange(false)` fires after the
+    discard guard resolves, not before it.
+  </Prop>
+  <Prop name="steps" type="WizardStep[]">
+    Ordered steps. Each is `{ content, valid?, title?, eyebrow? }`. `valid`
+    defaults to true.
+  </Prop>
+  <Prop name="step / onStepChange" type="number / (index: number) => void">
+    Controlled active step. The consumer owns navigation state.
+  </Prop>
+  <Prop name="onFinish" type="() => void">
+    Primary action on the last step.
+  </Prop>
+  <Prop name="finishLabel" type="ReactNode" default="'Finish'">
+    Label for that action. Write it as the verb being performed. "Create
+    participant", not "Finish".
+  </Prop>
+  <Prop name="finishDisabled" type="boolean" default="false">
+    Extra gate on the last step's action, ORed with that step's `valid`. For a
+    final Review step that has no validity of its own but must not submit when an
+    earlier step is invalid.
+  </Prop>
+  <Prop name="onNextBlocked" type="(step: number) => void">
+    Fires when the forward action is pressed on an invalid step. Use it to mark
+    fields touched so their errors show. The step still does not advance.
+  </Prop>
+  <Prop name="dirty" type="boolean" default="false">
+    Whether the form has unsaved input. Drives the discard guard on close.
+  </Prop>
+  <Prop name="panel" type="ReactNode">
+    Left context panel, usually a `DialogPanel`.
+  </Prop>
+  <Prop name="override" type="ReactNode">
+    Replaces the form and footer while set. Suppresses the discard guard and
+    close button.
+  </Prop>
+  <Prop name="locked" type="boolean" default="false">
+    Blocks Esc, outside-click and the close button.
+  </Prop>
+  <Prop name="floor" type="number" default="0">
+    Lowest reachable step index, for resume flows.
+  </Prop>
+  <Prop name="discardTitle" type="string" default="'Discard changes?'">
+    Discard guard copy. Also `discardDescription`, `keepEditingLabel` and
+    `discardLabel`.
+  </Prop>
+</PropsTable>

@@ -1,0 +1,80 @@
+---
+title: Cards
+description: Two surfaces. SectionCard renders its own title row; Card is the bare surface for everything else.
+tags: component, reference
+status: stable
+---
+
+import { CardDemo } from '@/components/docs/demos/surface-demos'
+
+## Anatomy
+
+<CardDemo />
+
+## Variants
+
+Neither has a `variant` prop. The choice is which component, and it is
+lopsided: nine studio views use `SectionCard` and two use `Card`.
+
+**Reach for `SectionCard`.** It renders the title row, so a detail page with six
+sections does not rebuild the same heading six times and let them drift.
+
+**Reach for `Card`** only when the surface is not a titled section: a summary panel
+whose header is a figure rather than a heading, or a container whose head you have
+to compose yourself.
+
+## Use something else when
+
+- **It holds one figure.** `StatCard`, which sets the type scale for a value and its
+  label.
+- **It is collapsible.** `HelpExpander` for supporting detail,
+  `ExpandablePanel` for a section that opens.
+- **It is the whole page's identity.** `DetailHeader`, not a card around a title.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Pass `title` and let `SectionCard` render the heading.
+    </Do>
+    <Dont>
+      Put your own heading inside a `SectionCard` body. There are then two headings
+      and only one is on the type scale.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Use `aside` for a count or a note beside the title.
+    </Do>
+    <Dont>
+      Put an action in `aside`. It is muted text, so a button lands there looking
+      disabled.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+### SectionCard
+
+<PropsTable>
+  <Prop name="title" type="ReactNode">
+    The section heading. Rendered on the type scale for you.
+  </Prop>
+  <Prop name="aside" type="ReactNode">
+    Muted text on the right of the title row, e.g. "4 fields".
+  </Prop>
+  <Prop name="bodyClassName" type="string">
+    Reaches the body rather than the outer surface, for setting the row gap.
+  </Prop>
+</PropsTable>
+
+### Card
+
+<PropsTable>
+  <Prop name="children" type="ReactNode">
+    Compose from `CardHeader`, `CardTitle`, `CardDescription`, `CardAction`,
+    `CardContent` and `CardFooter`.
+  </Prop>
+</PropsTable>

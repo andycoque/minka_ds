@@ -1,0 +1,120 @@
+---
+title: Minka Design System
+description: The component library behind Minka product surfaces. Tokens, components, and the rules for using them.
+tags: explanation
+---
+
+The design system is distributed as the `minka-ds` npm package. Everything in
+product UI is built from it: if a screen needs a component that is not here,
+that is a design system conversation, not a screen-level one.
+
+## Install
+
+```bash
+npm install minka-ds
+```
+
+```tsx
+import { Button, SearchBar, FilterCombobox } from 'minka-ds'
+```
+
+```css
+@import 'minka-ds/tokens/primitives.css';
+```
+
+## How these pages are organised
+
+Every component page uses the same sections in the same order, so you can skim to
+the one you need. Five are always present; three appear only when the component
+has something to say there.
+
+<Anatomy>
+  <Part name="Anatomy">
+    The parts, in a panel you can operate.
+  </Part>
+  <Part name="Variants">
+    Every variant side by side, chosen by usage, with modifiers like `disabled` as
+    toggles on the panel.
+  </Part>
+  <Part name="Sizes" optional>
+    When the component has a size prop. A scale table too, when it has more than
+    two.
+  </Part>
+  <Part name="Motion" optional>
+    When the transition carries values you cannot infer from watching it once.
+  </Part>
+  <Part name="Use something else when">
+    The components to reach for instead when this is the wrong fit.
+  </Part>
+  <Part name="Do and don't">
+    The hard rules, written down rather than left to memory.
+  </Part>
+  <Part name="Props">
+    The public API, hand-curated.
+  </Part>
+</Anatomy>
+
+**Show before explain.** A page opens on a live specimen, not a paragraph. The
+sections that argue come after the sections that demonstrate.
+
+**Every demo is a playground panel.** Even for a presentational component where
+interaction barely matters, because the panel is the shape a reader learns means
+"this is the component, this is how it behaves". Two shapes for the same job would
+make them read the page twice. The bordered specimen grid is only for the small
+paired examples inside Do and don't.
+
+**A state chip is for what the author sets, not what the user does.** Checked,
+open, expanded and the like are values the reader can set by operating the
+specimen, so they are not chips. Disabled and invalid are conditions the author
+puts the component into, so they are.
+
+**Specimens come from product code, not from imagination.** These pages document a
+design system that is already in use, so a composition in a panel should be one
+that exists in the product. A plausible-looking example nobody uses teaches the
+wrong thing, and it is indistinguishable from a real one on the page.
+
+**No States section.** Hover, press and focus are in the panels, where the reader
+can feel them; narrating them tells a designer something they already expect.
+`disabled` is a toggle on the Variants panel, because the useful question is what
+the whole set looks like disabled rather than one variant at a time.
+
+**Prose states the decision, the panel carries the correction.** Neither repeats
+the other, and Anatomy parts stay one line each. A page that argues its case in
+three places stops being scannable.
+
+## Rules that apply everywhere
+
+These hold across every component and are not repeated on each page.
+
+<DoDont>
+  <Rule>
+    <Do>
+      Use semantic tokens for every colour, typography, radius, shadow and z-index
+      value. If no token matches, flag it rather than reaching for a raw value.
+    </Do>
+    <Dont>
+      Use raw Tailwind colour or `rounded-*` / `shadow-sm` / `z-10` utilities in a
+      component. They bypass the token layer and drift immediately.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Keep identifiers, references and codes in the regular sans face, at the same
+      size as the rest of the row.
+    </Do>
+    <Dont>
+      Set identifiers in monospace. It reads as code rather than as data, and it
+      makes tables noisier without making them more scannable.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Give each piece of information in a table its own column, so every row is
+      one line tall and the columns stay comparable.
+    </Do>
+    <Dont>
+      Stack two pieces of content on top of each other inside a single cell. It
+      breaks row rhythm and the second line is never as scannable as a column.
+    </Dont>
+  </Rule>
+</DoDont>

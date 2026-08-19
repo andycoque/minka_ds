@@ -1,0 +1,61 @@
+---
+title: Tooltip
+description: One line naming or explaining a control. Never the only place something is said.
+tags: component, reference
+status: stable
+---
+
+import { TooltipDemo } from '@/components/docs/demos/overlay-demos'
+
+## Anatomy
+
+<TooltipDemo />
+
+A tooltip appears on hover and on keyboard focus, which is why the trigger has to
+be focusable. Wrapping a plain `div` gives a tooltip nobody using a keyboard will
+ever see.
+
+`TooltipProvider` goes once near the root of the app, not around each tooltip. It
+carries the shared open and close delays so a row of them behaves as one group
+rather than each firing on its own timer.
+
+## Use something else when
+
+- **The reader needs it to complete the task.** Put it on the page. A tooltip is
+  supplementary by definition, and it is invisible on touch.
+- **It is more than a line.** `Popover`, which can hold structure.
+- **It names an icon-only button.** Add `aria-label` as well. The tooltip is for
+  sighted mouse users; the label is what a screen reader reads.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Name the action: "Delete this bridge".
+    </Do>
+    <Dont>
+      Restate the label that is already visible beside it.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Give every icon-only trigger an `aria-label` as well as a tooltip.
+    </Do>
+    <Dont>
+      Rely on the tooltip for the accessible name. It is not announced as one.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="side" type="'top' | 'right' | 'bottom' | 'left'" default="'top'">
+    Preferred side. Flips when there is no room.
+  </Prop>
+  <Prop name="delayDuration" type="number">
+    Hover delay before opening. Set it on `TooltipProvider` so a group shares one
+    timing.
+  </Prop>
+</PropsTable>

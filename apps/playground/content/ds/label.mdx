@@ -1,0 +1,75 @@
+---
+title: Label
+description: Names a control. Bound to it, so clicking the label focuses the field.
+tags: component, reference
+status: stable
+---
+
+import { Checkbox, Input, Label, Switch } from 'minka-ds'
+import { LabelAnatomyDemo } from '@/components/docs/demos/label-anatomy'
+
+## Anatomy
+
+A label is one part, but the binding is the point. Click a label in the panel: it
+focuses the field or throws the toggle.
+
+<LabelAnatomyDemo />
+
+<Anatomy>
+  <Part name="htmlFor">
+    The `id` of the control it names. Without it the label is decoration: clicking
+    does nothing and a screen reader announces the field as unnamed.
+  </Part>
+  <Part name="children">
+    The name of the value, in sentence case, with no trailing colon.
+  </Part>
+</Anatomy>
+
+## States
+
+Label has no state of its own. It follows the control it names: a disabled control
+dims its label through `peer-disabled`, and a disabled group dims it through
+`group-data-[disabled=true]`. Try the Disabled toggle above.
+
+Because `peer-disabled` is a CSS sibling selector it only looks forward, so the
+control has to come **before** the label in the markup. Visual order is then a
+layout problem, not a markup one.
+
+## Use something else when
+
+- **The text explains rather than names.** Put it in the help line under the
+  field, not in the label.
+- **The text names a group of fields.** Use a heading or a `SectionCard` title. A
+  label points at one control.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<Label>Participant name</Label>}>
+      Name the value in sentence case.
+    </Do>
+    <Dont example={<Label>PARTICIPANT NAME:</Label>}>
+      Use caps or a trailing colon. Neither adds meaning and both add noise.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<span className="flex items-center gap-2.5"><Checkbox id="lb-f" /><Label htmlFor="lb-f">Single use</Label></span>}>
+      Bind with `htmlFor`, so the label is a second hit target for the control.
+    </Do>
+    <Dont example={<span className="flex items-center gap-2.5"><Checkbox /><Label>Single use</Label></span>}>
+      Leave the label unbound. It looks identical and behaves like plain text.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="htmlFor" type="string">
+    The `id` of the control. Effectively required.
+  </Prop>
+  <Prop name="children" type="ReactNode">
+    The name of the value.
+  </Prop>
+</PropsTable>

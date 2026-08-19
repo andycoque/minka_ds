@@ -1,0 +1,76 @@
+---
+title: Checkbox
+description: Records a one-off answer. A consent or acknowledgement gate is a checkbox, not a toggle.
+tags: component, reference
+status: stable
+---
+
+import { Checkbox, Label } from 'minka-ds'
+import { CheckboxAnatomyDemo, CheckboxStatesDemo } from '@/components/docs/demos/form-states'
+
+## Anatomy
+
+<CheckboxAnatomyDemo />
+
+With a description the box aligns to the **first line** of the label rather than
+centring on the block, so it stays level with the text it belongs to.
+
+## States
+
+<CheckboxStatesDemo />
+
+Checkbox and `Switch` share their focus, disabled and checked tokens, so the two
+read as siblings. What differs is meaning, not appearance.
+
+## Use something else when
+
+- **The setting applies immediately.** `Switch`. A switch turns something on and
+  it stays that way; a checkbox records an answer that gets submitted with a form.
+- **There is one choice from several.** Radio buttons, or `Select` when the list
+  is long enough to need a menu.
+- **The reader is filtering a list.** `FilterChip` through `SearchBar`, not a
+  column of checkboxes.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<span className="flex items-center gap-2.5"><Checkbox id="cb-a" /><Label htmlFor="cb-a">I confirm the beneficiary details are correct</Label></span>}>
+      Use a checkbox for consent, acknowledgement, or an answer that travels with
+      a form.
+    </Do>
+    <Dont example={<span className="flex items-center gap-2.5"><Checkbox id="cb-b" defaultChecked /><Label htmlFor="cb-b">Dark mode</Label></span>}>
+      Use a checkbox for a setting that takes effect the moment it changes. That
+      is a `Switch`.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<span className="flex items-center gap-2.5"><Checkbox id="cb-c" /><Label htmlFor="cb-c">Send a copy to the operator</Label></span>}>
+      Write the label as what checking it does.
+    </Do>
+    <Dont example={<span className="flex items-center gap-2.5"><Checkbox id="cb-d" /><Label htmlFor="cb-d">Do not skip notification</Label></span>}>
+      Write a label that is true when unchecked. A negated checkbox takes two
+      readings to understand.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="checked" type="boolean">
+    Controlled state. Pair with `onCheckedChange`.
+  </Prop>
+  <Prop name="onCheckedChange" type="(checked: boolean) => void">
+    Fires on change.
+  </Prop>
+  <Prop name="defaultChecked" type="boolean" default="false">
+    Uncontrolled starting state.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Removes pointer events and drops opacity. A bound `Label` dims with it.
+  </Prop>
+  <Prop name="aria-invalid" type="boolean">
+    Draws the error border, for a required consent that was not given.
+  </Prop>
+</PropsTable>
