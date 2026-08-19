@@ -10,16 +10,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--color-action-primary-default)] text-[var(--color-action-primary-foreground)] hover:bg-[var(--color-action-primary-hover)]",
+          "bg-[var(--color-action-primary-default)] text-[var(--color-action-primary-foreground)] hover:bg-[var(--color-action-primary-hover)] active:bg-[var(--color-action-primary-pressed)]",
         destructive:
-          "bg-[var(--color-action-destructive-default)] text-[var(--color-action-destructive-foreground)] hover:bg-[var(--color-action-destructive-hover)] focus-visible:ring-[var(--color-border-error)]/20",
+          "bg-[var(--color-action-destructive-default)] text-[var(--color-action-destructive-foreground)] hover:bg-[var(--color-action-destructive-hover)] active:bg-[var(--color-action-destructive-pressed)] focus-visible:ring-[var(--color-border-error)]/20",
         outline:
-          "border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] text-[var(--color-text-default)] shadow-xs hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-base)] hover:text-[var(--color-text-default)]",
+          "border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] text-[var(--color-text-default)] shadow-xs hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-base)] hover:text-[var(--color-text-default)] active:bg-[var(--color-action-secondary-pressed)]",
         secondary:
-          "bg-[var(--color-action-secondary-default)] text-[var(--color-action-secondary-foreground)] hover:bg-[var(--color-action-secondary-hover)]",
+          "bg-[var(--color-action-secondary-default)] text-[var(--color-action-secondary-foreground)] hover:bg-[var(--color-action-secondary-hover)] active:bg-[var(--color-action-secondary-pressed)]",
         ghost:
-          "text-[var(--color-text-default)] hover:bg-[var(--color-action-ghost-hover)] hover:text-[var(--color-text-default)]",
-        link: "text-[var(--color-text-link)] underline-offset-4 hover:underline hover:text-[var(--color-text-link-hover)]",
+          "text-[var(--color-text-default)] hover:bg-[var(--color-action-ghost-hover)] hover:text-[var(--color-text-default)] active:bg-[var(--color-action-ghost-pressed)]",
+        link: "text-[var(--color-text-link)] underline-offset-4 hover:underline hover:text-[var(--color-text-link-hover)] active:text-[var(--color-text-link-active)]",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

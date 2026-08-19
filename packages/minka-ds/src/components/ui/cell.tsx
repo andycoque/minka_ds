@@ -104,7 +104,12 @@ function ActionCell({ children, className }: ActionCellProps) {
 // columns and detail-page headers alike. Never a Badge: a badge reads as a label you
 // applied to the thing, where a status is a state the thing is in.
 
-type StatusCellVariant = "success" | "warning" | "error" | "neutral"
+/**
+ * `blocked` is black rather than red: something is deliberately preventing the record
+ * from being used, which is a different fact from a failure. Red is reserved for a
+ * fault or an irrevocable step. Grey (`neutral`) would read as merely inactive.
+ */
+type StatusCellVariant = "success" | "warning" | "error" | "blocked" | "neutral"
 
 /**
  * `default` is the table-column size. `lg` is for a detail-page identity header, where
@@ -120,10 +125,17 @@ interface StatusCellProps {
   className?: string
 }
 
-const STATUS_DOT: Record<StatusCellVariant, string> = {
+/**
+ * Dot colour per status variant. Exported because a status sometimes has to be drawn
+ * outside a StatusCell (e.g. as a choice in a list, where the label must stay in the
+ * default text colour and the dot moves to the trailing edge). One map so a new
+ * variant cannot get a dot here and be missed there.
+ */
+export const STATUS_DOT: Record<StatusCellVariant, string> = {
   success: "bg-[var(--primitive-green-500)]",
   warning: "bg-[var(--primitive-yellow-300)]",
   error:   "bg-[var(--primitive-red-500)]",
+  blocked: "bg-[var(--color-text-default)]",
   neutral: "bg-[var(--color-text-disabled)]",
 }
 
@@ -131,6 +143,7 @@ const STATUS_TEXT: Record<StatusCellVariant, string> = {
   success: "text-[var(--primitive-green-700)]",
   warning: "text-[var(--color-text-default)]",
   error:   "text-[var(--color-text-default)]",
+  blocked: "text-[var(--color-text-default)]",
   neutral: "text-[var(--color-text-disabled)]",
 }
 

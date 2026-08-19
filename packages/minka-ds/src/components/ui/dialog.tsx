@@ -113,9 +113,9 @@ function DialogPanel({
       className={cn(
         "relative flex flex-col justify-center bg-[var(--color-bg-canvas)]",
         // inset panels are tighter — the 8px frame already adds breathing room
-        inset ? "p-4" : "p-6",
+        inset ? "p-5" : "p-7",
         // side: a column down the left; top: a banner across the top
-        placement === "side" ? "shrink-0 sm:w-2/5" : "min-h-32",
+        placement === "side" ? "shrink-0 sm:w-[44%]" : "min-h-32",
         // inset: float inside the dialog with an 8px frame on the dialog-facing
         // edges only — the interior edge stays flush, the body padding separates
         inset && "overflow-hidden [border-radius:var(--radius-card)]",
@@ -184,7 +184,7 @@ function DialogContent({
         variant="ghost"
         size="icon-sm"
         aria-label="Close"
-        className="absolute top-5 right-5 z-10 translate-y-[5px] text-current opacity-70 hover:opacity-100"
+        className="absolute top-6 right-6 z-10 translate-y-[5px] text-current opacity-70 hover:opacity-100"
       >
         <XIcon />
       </Button>
@@ -203,9 +203,12 @@ function DialogContent({
         // layout: plain (padded grid) vs panelled (flex split, panel bleeds to edges)
         hasPanel
           ? placement === "side"
-            ? "flex flex-col sm:flex-row"
+            // A floor, not a fixed height: a short dialog stands taller and roomier
+            // while a tall one grows past it as before. Side-panelled only, since a
+            // plain confirm given a floor would be mostly empty space.
+            ? "flex flex-col sm:min-h-[26rem] sm:flex-row"
             : "flex flex-col"
-          : "grid gap-4 p-5",
+          : "grid gap-5 p-6",
         // flow: the box is a bounded flex child of the capped wrapper. min-h-0 lets it
         // shrink; it can't exceed the wrapper's capped height, so short dialogs
         // shrink-wrap while tall ones are capped and their inner region scrolls.
@@ -218,7 +221,7 @@ function DialogContent({
         ? React.cloneElement(panel, {}, panel.props.children, closeButton)
         : panel}
       {hasPanel ? (
-        <div data-slot="dialog-body" className={cn("relative flex flex-1 flex-col gap-4 p-5", flow && "min-h-0")}>
+        <div data-slot="dialog-body" className={cn("relative flex flex-1 flex-col gap-5 p-6", flow && "min-h-0")}>
           {body}
         </div>
       ) : (
@@ -240,7 +243,9 @@ function DialogContent({
           // positioned relative to this wrapper's box, so its presence never
           // re-centers the dialog.
           "fixed top-[50%] left-[50%] [z-index:var(--z-modal)] w-full max-w-[calc(100%-2rem)] [transform:translate(-50%,-50%)] outline-none",
-          hasPanel && placement === "side" ? "sm:max-w-2xl" : "sm:max-w-lg",
+          // +25% on both: panelled 42rem -> 52.5rem, plain 32rem -> 40rem. Explicit
+          // rem rather than the next scale step, which would have been +14% or +33%.
+          hasPanel && placement === "side" ? "sm:max-w-[52.5rem]" : "sm:max-w-[40rem]",
           // flow: cap the height so the dialog never fills the viewport, and make this
           // wrapper a bounded flex column so the cap actually cascades to the box
           // (max-h-full / min-h-0 / flex-1 below need a definite parent height to
@@ -294,7 +299,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
+        "mt-auto flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
         className
       )}
       {...props}
