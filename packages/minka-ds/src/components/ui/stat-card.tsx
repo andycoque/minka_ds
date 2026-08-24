@@ -89,7 +89,15 @@ function StatCard(props: StatCardProps) {
         className={cn(
           "flex flex-col gap-1",
           CARD_BASE,
-          onClick && "text-left hover:bg-[var(--color-bg-table-hover)] transition-colors cursor-pointer",
+          // A clickable card is a real button, so it needs the full set: hover, a press
+          // state, and a focus ring. Without the ring a keyboard reader gets no
+          // indication at all that the card is the thing they have landed on.
+          onClick && [
+            "cursor-pointer text-left transition-colors",
+            "hover:bg-[var(--color-bg-table-hover)]",
+            "active:bg-[var(--color-bg-base)]",
+            "outline-none focus-visible:border-[var(--color-border-focus)] focus-visible:ring-[3px] focus-visible:ring-[var(--color-border-focus)]/50",
+          ],
           className
         )}
       >
@@ -121,7 +129,15 @@ function StatCard(props: StatCardProps) {
         className={cn(
           "flex flex-col gap-1",
           CARD_BASE,
-          onClick && "text-left hover:bg-[var(--color-bg-table-hover)] transition-colors cursor-pointer",
+          // A clickable card is a real button, so it needs the full set: hover, a press
+          // state, and a focus ring. Without the ring a keyboard reader gets no
+          // indication at all that the card is the thing they have landed on.
+          onClick && [
+            "cursor-pointer text-left transition-colors",
+            "hover:bg-[var(--color-bg-table-hover)]",
+            "active:bg-[var(--color-bg-base)]",
+            "outline-none focus-visible:border-[var(--color-border-focus)] focus-visible:ring-[3px] focus-visible:ring-[var(--color-border-focus)]/50",
+          ],
           className
         )}
       >

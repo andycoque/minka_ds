@@ -15,6 +15,12 @@ Two nodes, an amount, and a direction. It answers the question a top-up or withd
 dialog exists to answer: what moves, from where to where, and what are the balances
 afterwards.
 
+**Vertical and two-ended, on purpose.** For a horizontal route with several hops and a
+notion of where it stopped, that is
+[Process diagram](/docs/ds/diagrams/process-diagram) — a sibling, not a variant of this.
+This one has no per-node state because a balance movement either happens or does not;
+"where did it stop" is not a question a top-up asks.
+
 ## Element variations
 
 **The nodes do not swap when the direction changes.** `top` stays on top. Only the arrow
@@ -35,8 +41,8 @@ different colour from a withdrawal.
 
 - **There is one object, not a movement.** [Diagram node](/docs/ds/diagrams/diagram-node)
   or an object card.
-- **The path has more than two ends.** This component is deliberately two-node. A wider
-  graph needs its own composition.
+- **The path has more than two ends, or can stop partway.**
+  [Process diagram](/docs/ds/diagrams/process-diagram).
 - **It is a sequence of events over time.** [Timeline](/docs/ds/diagrams/timeline).
 
 ## Do and don't

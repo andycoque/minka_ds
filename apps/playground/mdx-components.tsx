@@ -3,7 +3,6 @@ import type { MDXComponents } from 'mdx/types'
 import { Anatomy, Part } from '@/components/docs/anatomy'
 import { Code } from '@/components/docs/code'
 import { Do, DoDont, Dont, Rule } from '@/components/docs/do-dont'
-import { MotionSpec } from '@/components/docs/motion-spec'
 import { Playground } from '@/components/docs/playground'
 import { Prop, PropsTable } from '@/components/docs/props-table'
 import { Specimen, SpecimenRow } from '@/components/docs/specimen'
@@ -12,7 +11,7 @@ import { Specimen, SpecimenRow } from '@/components/docs/specimen'
  * Components available in every MDX page without an import.
  *
  * The docs components live here because they are the page template — a
- * component page is expected to use Specimen, Anatomy, DoDont, MotionSpec and
+ * component page is expected to use Specimen, Anatomy, DoDont and
  * PropsTable, so making them ambient keeps the frontmatter-to-content distance
  * short and stops each page inventing its own imports.
  *
@@ -32,7 +31,6 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Rule,
     Do,
     Dont,
-    MotionSpec,
     Playground,
     PropsTable,
     Prop,

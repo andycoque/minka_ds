@@ -5,7 +5,7 @@ tags: component, reference
 status: stable
 ---
 
-import { DialogDemo } from '@/components/docs/demos/dialog-demo'
+import { DialogDemo, DialogPanelDemo, DialogMotionLoop } from '@/components/docs/demos/dialog-demo'
 
 ## Anatomy
 
@@ -33,16 +33,57 @@ Dialog has no `variant` prop. What changes is the width, set with a class on
 | `sm:max-w-3xl` | A form with a panel beside it. |
 | default | Everything else. |
 
+## Left panel
+
+<DialogPanelDemo />
+
+`DialogPanel` turns a dialog into two columns: the panel holds **what is being acted
+on**, the body holds **the decision**. Ten studio dialogs use one.
+
+Its purpose is to stop a reader losing the object while they act on it. A status change
+dialog that only shows a list of states asks "which state?" without saying "for what" —
+the panel answers the second question so the body only has to ask the first.
+
+### What it holds
+
+Three things, in the product:
+
+- **The object itself.** An object card, a resolution diagram, a live preview of what is
+  being created. This is the common case and the reason the panel exists.
+- **A help expander**, `inset` and anchored bottom-right, filling the space below the
+  object. This is the only place `inset` works — see
+  [Help expander](/docs/ds/surfaces/help-expander).
+- **An alert**, for a consequence that belongs with the object rather than beside the
+  button that triggers it.
+
+### Examples
+
+The creation wizards each show a live card of the record being built, so a reader can
+see the object take shape as they fill the form. The
+[status change dialog](/docs/ds/detail-pages/status-change-dialog) shows the record's
+card plus the consequence of the selected state. The liquidity movement dialogs show a
+[flow diagram](/docs/ds/diagrams/flow-diagram) with the balances before and after.
+
+The pattern in all three: **the body is where you decide, the panel is what you are
+deciding about.**
+
 ## Motion
 
-<MotionSpec
-  duration="500ms in, 300ms out"
-  easing="cubic-bezier(0.16, 1, 0.3, 1) in, ease-out out"
-  properties="opacity, transform (translateY 8px and scale 0.97 → 1)"
-  note={<>The box settles in: it rises 8px and scales from 97% on a soft curve, 60ms behind the backdrop so the surface arrives before the content. Closing mirrors it but faster and in the other direction, drifting up 10px as it shrinks. The keyframes are declared in the component rather than as Tailwind utilities, because Radix unmounts the node before a utility-driven exit animation can play.</>}
->
-  <DialogDemo />
-</MotionSpec>
+Shown as a loop on an abstract block rather than on a dialog. A specimen shows what a
+dialog looks like; a loop shows what the movement feels like, and stripping the chrome
+leaves only the thing being documented.
+
+<DialogMotionLoop />
+
+Two layers on offset timings. Going in, the backdrop leads and the card follows 60ms
+behind, so the surface arrives before the content. Coming out it inverts: the card leaves
+first and the dim lingers 100ms, so it does not snap away from under a departing card.
+
+The asymmetry is deliberate. Arriving settles over 500ms on a soft curve; leaving gets out
+of the way in 300ms on an ease-in. Arriving deserves attention, leaving does not.
+
+The keyframes live in the component rather than as Tailwind utilities, because Radix
+unmounts the node before a utility-driven exit animation can play.
 
 ## Use something else when
 

@@ -51,21 +51,83 @@ const ALERT_COPY: Record<string, { title: string; body: string }> = {
   error: { title: "Delivery retries exhausted", body: "The bridge stopped retrying after five attempts." },
 }
 
+/** Anatomy: which parts are present, not which colour. */
+const ALERT_PARTS: Control[] = [
+  { type: "toggle", name: "icon", label: "Icon", defaultValue: true },
+  { type: "toggle", name: "description", label: "Description", defaultValue: true },
+  { type: "toggle", name: "action", label: "Action", defaultValue: false },
+]
+
 function AlertDemo() {
+  return (
+    <Playground
+      controls={ALERT_PARTS}
+      minHeight={170}
+      details={(state) => (
+        <Anatomy>
+          {state.icon ? (
+            <Part name="Icon" optional>
+              A <Code>lucide-react</Code> icon as the FIRST child. The grid collapses
+              its column when absent, so omitting it costs no indent.
+            </Part>
+          ) : null}
+          <Part name="AlertTitle">
+            One line naming what happened. Not a category like &ldquo;Warning&rdquo;.
+          </Part>
+          {state.description ? (
+            <Part name="AlertDescription" optional>
+              What follows from it. Omit it when the title already says everything.
+            </Part>
+          ) : null}
+          {state.action ? (
+            <Part name="Action" optional>
+              A <Code>Button</Code> as a child, right-aligned. One action, and only when
+              the alert is about something the reader can fix here.
+            </Part>
+          ) : null}
+        </Anatomy>
+      )}
+    >
+      {(state) => (
+        <Alert variant="warning" className="w-full max-w-lg">
+          {state.icon ? <TriangleAlert className="size-4" /> : null}
+          <div className="flex flex-1 flex-col">
+            <AlertTitle>This key expires in 9 days</AlertTitle>
+            {state.description ? (
+              <AlertDescription>
+                It stops working on 24 Aug 2026. Rotate before then to avoid an outage.
+              </AlertDescription>
+            ) : null}
+          </div>
+          {state.action ? (
+            <Button size="sm" variant="outline" className="shrink-0 self-center">
+              Rotate key
+            </Button>
+          ) : null}
+        </Alert>
+      )}
+    </Playground>
+  )
+}
+
+/** Variants: the same alert in each colour, with the copy that fits it. */
+function AlertVariantsDemo() {
   return (
     <Playground
       controls={ALERT_VARIANTS}
       minHeight={150}
-      details={() => (
+      details={(state) => (
         <Anatomy>
-          <Part name="AlertTitle">
-            One line naming what happened. Not a category like "Warning".
-          </Part>
-          <Part name="AlertDescription">
-            What follows from it, and what to do. Where the action lives.
-          </Part>
-          <Part name="Icon" optional>
-            A `lucide-react` icon as the first child.
+          <Part name="variant">
+            {String(state.variant) === "default"
+              ? "No semantic colour. For something worth saying that is neither good nor bad."
+              : String(state.variant) === "info"
+              ? "Neutral information: where something is managed, why a field is fixed."
+              : String(state.variant) === "success"
+              ? "Something completed. Rare as an alert: a toast usually carries this."
+              : String(state.variant) === "warning"
+              ? "Something needs attention before it becomes a problem."
+              : "Something failed and the reader has to deal with it."}
           </Part>
         </Anatomy>
       )}
@@ -108,6 +170,8 @@ const STATCARD_TYPES: Control[] = [
     ],
     defaultValue: "count",
   },
+  // A real toggle rather than prose: hover and press cannot be described, only felt.
+  { type: "toggle", name: "clickable", label: "Clickable", defaultValue: false },
 ]
 
 function StatCardDemo() {
@@ -142,7 +206,9 @@ function StatCardDemo() {
             ) : null}
             {t !== "status" ? (
               <Part name="onClick" optional>
-                Makes the card a button, for filtering a list to this figure.
+                {state.clickable
+                  ? "Renders the card as a button: hover it, press it, and tab to it. A card with no onClick is inert and shows none of those."
+                  : "Makes the card a button, for filtering a list to this figure. Turn on Clickable to feel the states."}
               </Part>
             ) : null}
           </Anatomy>
@@ -160,6 +226,7 @@ function StatCardDemo() {
               value="1,250,000.00"
               unit="COP"
               percent={4.2}
+              onClick={state.clickable ? () => {} : undefined}
               className="w-64"
             />
           )
@@ -178,7 +245,13 @@ function StatCardDemo() {
         }
 
         return (
-          <StatCard label="Transactions today" value={1284} percent={-2.1} className="w-64" />
+          <StatCard
+            label="Transactions today"
+            value={1284}
+            percent={-2.1}
+            onClick={state.clickable ? () => {} : undefined}
+            className="w-64"
+          />
         )
       }}
     </Playground>
@@ -257,14 +330,101 @@ function CardDemo() {
 
 // ── Avatar, Kbd, Separator ────────────────────────────────────────────────────
 
+/**
+ * One avatar with its real props, rather than three specimens of the same thing.
+ *
+ * `size` is the axis that actually varies in the product: `lg` on the settings profile,
+ * `sm` in a table row. `background` and `color` exist on the component but are never
+ * overridden anywhere, so they are documented in Props rather than given a chip.
+ */
+const AVATAR_CONTROLS: Control[] = [
+  {
+    type: "select",
+    name: "size",
+    label: "Size",
+    options: [
+      { value: "sm", label: "sm · 28px" },
+      { value: "md", label: "md · 36px" },
+      { value: "lg", label: "lg · 48px" },
+    ],
+    defaultValue: "md",
+  },
+  {
+    type: "select",
+    name: "tone",
+    label: "Colour",
+    options: [
+      { value: "default", label: "Default" },
+      { value: "beige", label: "Beige" },
+      { value: "blue", label: "Blue" },
+      { value: "rose", label: "Rose" },
+    ],
+    defaultValue: "default",
+  },
+]
+
+/**
+ * `background` and `color` take any CSS colour. Passing a brand PAIR keeps the ink
+ * legible on the fill without a second decision — see the Pairs section on the tokens
+ * page.
+ */
+const TONE: Record<string, { background?: string; color?: string }> = {
+  default: {},
+  beige: { background: "var(--color-pair-beige-bronze-light)", color: "var(--color-pair-beige-bronze-dark)" },
+  blue:  { background: "var(--color-pair-blue-navy-light)",    color: "var(--color-pair-blue-navy-dark)" },
+  rose:  { background: "var(--color-pair-rose-coral-light)",   color: "var(--color-pair-rose-coral-dark)" },
+}
+
 function AvatarDemo() {
   return (
-    <Playground controls={[]} minHeight={120}>
-      {() => (
-        <div className="flex items-center gap-6">
-          <Avatar name="Banco Davivienda" />
-          <Avatar name="Ximena Rojas" />
-          <Avatar name="A" />
+    <Playground
+      controls={AVATAR_CONTROLS}
+      minHeight={150}
+      details={(state) => (
+        <Anatomy>
+          <Part name="name" optional>
+            The full name. Used for alt text, and initials are derived from it: two
+            letters, so &ldquo;Banco Davivienda&rdquo; becomes BD.
+          </Part>
+          <Part name="initials" optional>
+            Overrides the derived value, for a single letter or a code. With neither
+            name nor initials it renders <Code>?</Code> rather than collapsing.
+          </Part>
+          <Part name="src" optional>
+            An image. Falls back to initials when absent or broken, so a missing avatar
+            is never an empty circle.
+          </Part>
+          <Part name="background / color" optional>
+            {state.tone === "default"
+              ? "Any CSS colour. Defaults to a brand colour with inverse ink."
+              : "Pass a brand PAIR — a light fill and its own dark ink — so the initials stay legible without a second decision."}
+          </Part>
+          <Part name="size">
+            {state.size === "lg"
+              ? "48px. A profile header."
+              : state.size === "sm"
+              ? "28px. A table row or a compact list."
+              : "36px. The default."}
+          </Part>
+
+        </Anatomy>
+      )}
+    >
+      {(state) => (
+        <div className="flex items-center gap-4">
+          <Avatar
+            size={String(state.size) as "sm" | "md" | "lg"}
+            name="Banco Davivienda"
+            {...TONE[String(state.tone)]}
+          />
+          <Avatar
+            size={String(state.size) as "sm" | "md" | "lg"}
+            name="Ximena Rojas"
+            {...TONE[String(state.tone)]}
+          />
+          <span className="text-caption text-[var(--color-text-muted)]">
+            Initials derive from the name: two letters.
+          </span>
         </div>
       )}
     </Playground>
@@ -339,4 +499,4 @@ function SeparatorDemo() {
   )
 }
 
-export { AlertDemo, StatCardDemo, CardDemo, AvatarDemo, KbdDemo, SeparatorDemo }
+export { AlertDemo, AlertVariantsDemo, StatCardDemo, CardDemo, AvatarDemo, KbdDemo, SeparatorDemo }

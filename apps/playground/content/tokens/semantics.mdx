@@ -31,6 +31,12 @@ app imports.
   { name: '--color-bg-warning', use: 'Warning tint.' },
   { name: '--color-bg-error', use: 'Error tint.' },
   { name: '--color-bg-info', use: 'Neutral-informational tint.' },
+  { name: '--color-bg-table-hover', use: 'A table row under the cursor. Semi-transparent, so it works over any surface.' },
+  { name: '--color-bg-table-selected', use: 'A selected row.' },
+  { name: '--color-bg-backdrop', use: 'Behind a dialog.' },
+  { name: '--color-bg-backdrop-heavy', use: 'Behind something that must dominate.' },
+  { name: '--color-bg-glass', use: 'A frosted surface over content, e.g. an inset help card.' },
+  { name: '--color-bg-glass-subtle', use: 'The same, lighter.' },
 ]} />
 
 ### Text
@@ -42,6 +48,14 @@ app imports.
   { name: '--color-text-disabled', use: 'Text in a disabled control.' },
   { name: '--color-text-inverse', use: 'On an inverted or filled surface.' },
   { name: '--color-text-error', use: 'A field error, inline.' },
+  { name: '--color-text-success', use: 'Positive text, where a dot is not enough.' },
+  { name: '--color-text-warning', use: 'Cautionary text.' },
+  { name: '--color-text-info', use: 'Informational text.' },
+  { name: '--color-text-inverse-muted', use: 'Secondary text on an inverted surface, where text-muted would vanish.' },
+  { name: '--color-text-link', use: 'A link in prose.' },
+  { name: '--color-text-link-hover', use: 'Hovered.' },
+  { name: '--color-text-link-active', use: 'Pressed.' },
+  { name: '--color-text-link-visited', use: 'Visited.' },
 ]} />
 
 ### Border
@@ -54,20 +68,33 @@ app imports.
   { name: '--color-border-success', use: 'Success outline.' },
   { name: '--color-border-warning', use: 'Warning outline.' },
   { name: '--color-border-error', use: 'Invalid field outline.' },
+  { name: '--color-border-info', use: 'Informational outline.' },
+  { name: '--color-border-disabled', use: 'A disabled control.' },
+  { name: '--color-border-inverse', use: 'An outline on an inverted surface.' },
 ]} />
 
 ### Action
 
-Each action style carries its own `default`, `hover`, `pressed`, `disabled` and
-`foreground`, so a button never composes its own state colours.
+Four styles — `primary`, `secondary`, `destructive`, `ghost` — and each carries the same
+five slots: `default`, `hover`, `pressed`, `disabled` and `foreground`. Twenty tokens, so
+a button never composes its own state colours.
+
+The full set for one style, to show the shape:
 
 <ColorTokens tokens={[
   { name: '--color-action-primary-default', use: 'The primary button, and any control that should read as the main action.' },
   { name: '--color-action-primary-hover', use: 'Primary, hovered.' },
   { name: '--color-action-primary-pressed', use: 'Primary, pressed.' },
+  { name: '--color-action-primary-disabled', use: 'Primary, disabled.' },
+  { name: '--color-action-primary-foreground', use: 'Text on a primary fill.' },
+]} />
+
+The other three follow the same pattern:
+
+<ColorTokens tokens={[
   { name: '--color-action-secondary-default', use: 'Secondary button fill.' },
-  { name: '--color-action-ghost-hover', use: 'Ghost button hover. Transparent until then.' },
   { name: '--color-action-destructive-default', use: 'A destructive action.' },
+  { name: '--color-action-ghost-hover', use: 'Ghost hover. Transparent until then.' },
 ]} />
 
 ### Feedback
@@ -80,6 +107,43 @@ says what you can do.
   { name: '--color-feedback-warning', use: 'Pending, expiring, needs attention.' },
   { name: '--color-feedback-error', use: 'Failed, rejected, irrevocable.' },
   { name: '--color-feedback-info', use: 'Neutral information.' },
+]} />
+
+### Brand
+
+Eight brand colours. These are not for interface chrome: they exist for the diagram
+family and for surfaces that carry brand rather than function.
+
+<ColorTokens tokens={[
+  { name: '--color-brand-beige', use: 'Light neutral ground.' },
+  { name: '--color-brand-bronze', use: 'The dark half of the beige pair.' },
+  { name: '--color-brand-yellow', use: 'Light accent.' },
+  { name: '--color-brand-darkforest', use: 'The dark half of the yellow pair.' },
+  { name: '--color-brand-rose', use: 'Light warm accent.' },
+  { name: '--color-brand-coral', use: 'The dark half of the rose pair.' },
+  { name: '--color-brand-blue', use: 'Light cool accent.' },
+  { name: '--color-brand-navy', use: 'The dark half of the blue pair.' },
+]} />
+
+### Pairs
+
+A pair is a light and a dark brand colour that belong together, so a diagram node can
+take a fill and its own legible ink from one decision instead of two.
+
+Reach for a pair rather than picking two brand tokens yourself: the pairing is what
+guarantees the contrast holds.
+
+<ColorTokens tokens={[
+  { name: '--color-pair-yellow-darkforest-light', use: 'Fill.' },
+  { name: '--color-pair-yellow-darkforest-dark', use: 'Ink on that fill.' },
+  { name: '--color-pair-rose-coral-light', use: 'Fill.' },
+  { name: '--color-pair-rose-coral-dark', use: 'Ink on that fill.' },
+  { name: '--color-pair-blue-navy-light', use: 'Fill.' },
+  { name: '--color-pair-blue-navy-dark', use: 'Ink on that fill.' },
+  { name: '--color-pair-beige-bronze-light', use: 'Fill.' },
+  { name: '--color-pair-beige-bronze-dark', use: 'Ink on that fill.' },
+  { name: '--color-pair-gray-black-light', use: 'The neutral pair, for a node with no brand meaning.' },
+  { name: '--color-pair-gray-black-dark', use: 'Ink on that fill.' },
 ]} />
 
 ### Radius

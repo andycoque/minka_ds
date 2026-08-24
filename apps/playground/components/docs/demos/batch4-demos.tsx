@@ -11,15 +11,18 @@ import {
   DateTimePicker,
   DateTimeRangePicker,
   HelpExpander,
-  Kbd,
   Label,
   SearchBar,
+  Kbd,
+  AmountCell,
+  StatusCell,
   TimeField,
   type CategoryValue,
   type DateTimeRange,
   type DateTimeValue,
   type FilterCategory,
 } from "minka-ds"
+import { Command, CornerDownLeft } from "lucide-react"
 import { Anatomy, Part } from "@/components/docs/anatomy"
 import { Code } from "@/components/docs/code"
 import { Playground, type Control } from "@/components/docs/playground"
@@ -105,6 +108,9 @@ function SearchBarDemo() {
     <Playground
       controls={SEARCH_CONTROLS}
       minHeight={180}
+      // The filter dropdown renders inside the stage rather than portaled, so the
+      // stage's clip would cut it off mid-list.
+      overflowVisible
       details={(state) => (
         <Anatomy>
           <Part name="value / onChange">The query. Controlled.</Part>
@@ -121,7 +127,8 @@ function SearchBarDemo() {
             </>
           ) : null}
           <Part name="kbdHint" optional>
-            A <Code>Kbd</Code> in the field, naming the shortcut that focuses it.
+            The shortcut that focuses the field. Pass bare content, not a{" "}
+            <Code>Kbd</Code>: the field wraps it in one already.
           </Part>
         </Anatomy>
       )}
@@ -135,12 +142,7 @@ function SearchBarDemo() {
               placeholder="Search transactions"
               value={query}
               onChange={setQuery}
-              kbdHint={
-                <span className="flex items-center gap-1">
-                  <Kbd>⌘</Kbd>
-                  <Kbd>K</Kbd>
-                </span>
-              }
+              kbdHint={<><Command className="size-3" /> K</>}
               filterCategories={withFilters ? CATEGORIES : undefined}
               activeFilters={withFilters ? active : undefined}
               // Keeps the chip row present when the last chip is removed. Without
@@ -158,6 +160,125 @@ function SearchBarDemo() {
               }
               onClearFilters={() => setActive({})}
             />
+          </div>
+        )
+      }}
+    </Playground>
+  )
+}
+
+// ── SearchBar: suggested results ──────────────────────────────────────────────
+
+/**
+ * The transactions list's suggestion dropdown, verbatim in structure.
+ *
+ * `SearchBar` takes it as `children` rather than owning it: what counts as a result and
+ * how a hit is rendered is the page's business, and the ledger's search is not the same
+ * shape as, say, the directory's.
+ */
+const SUGGEST_CONTROLS: Control[] = [
+  {
+    type: "select",
+    name: "state",
+    label: "State",
+    options: [
+      { value: "hits", label: "Matches" },
+      { value: "empty", label: "No matches" },
+    ],
+    defaultValue: "hits",
+  },
+]
+
+const HITS = [
+  { id: "MOL-9291-596C-85DB", pair: "Bancolombia → Nequi", amount: "$120,000.00", status: "Completed" as const },
+  { id: "MOL-4417-2A0F-19CC", pair: "Davivienda → Nequi", amount: "$47,500.00", status: "Pending" as const },
+]
+
+const HIT_VARIANT = { Completed: "success", Pending: "warning" } as const
+
+function SearchSuggestionsDemo() {
+  const [query, setQuery] = React.useState("MOL")
+
+  return (
+    <Playground
+      controls={SUGGEST_CONTROLS}
+      minHeight={260}
+      overflowVisible
+      details={(state) => (
+        <Anatomy>
+          <Part name="children">
+            The dropdown. Positioned by the page, so the results can be shaped like the
+            records being searched.
+          </Part>
+          <Part name="Result row">
+            The identifier on top, the parties beneath, the amount and status on the
+            right. A whole row is one target.
+          </Part>
+          {state.state === "empty" ? (
+            <Part name="Empty state">
+              Not a dead end: it says pressing Enter searches the full database. The
+              list is scoped to the current view, so no match here does not mean no
+              match anywhere.
+            </Part>
+          ) : (
+            <Part name="Footer hint">
+              Present even when there are hits, because the visible rows are only what
+              matches the current view.
+            </Part>
+          )}
+        </Anatomy>
+      )}
+    >
+      {(state) => {
+        const empty = state.state === "empty"
+        return (
+          <div className="w-full max-w-lg">
+            <SearchBar
+              size="sm"
+              placeholder="Search by Transaction ID, sender, alias, or description"
+              value={empty ? "ZZZ-0000" : query}
+              onChange={setQuery}
+              kbdHint={<><Command className="size-3" /> K</>}
+            >
+              <div className="absolute top-full right-0 left-0 z-10 mt-1 overflow-hidden [border-radius:var(--radius-popover)] border border-[var(--color-border-default)] bg-[var(--color-bg-overlay)] shadow-[var(--shadow-popover)]">
+                {empty ? (
+                  <div className="flex flex-col gap-0.5 px-4 py-3">
+                    <span className="flex items-center gap-1 text-body-sm text-[var(--color-text-default)]">
+                      Press <Kbd><CornerDownLeft className="size-3" /></Kbd> to search for
+                      &ldquo;ZZZ-0000&rdquo; in the full database
+                    </span>
+                    <span className="text-caption text-[var(--color-text-muted)]">
+                      No matches in current view
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    {HITS.map(h => (
+                      <button
+                        key={h.id}
+                        type="button"
+                        className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-[var(--color-bg-table-hover)]"
+                      >
+                        <span className="flex min-w-0 flex-col gap-0.5">
+                          <span className="text-label-sm">{h.id}</span>
+                          <span className="truncate text-caption text-[var(--color-text-muted)]">
+                            {h.pair}
+                          </span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-3">
+                          <AmountCell>{h.amount}</AmountCell>
+                          <StatusCell variant={HIT_VARIANT[h.status]}>{h.status}</StatusCell>
+                        </span>
+                      </button>
+                    ))}
+                    <div className="flex items-center gap-1 border-t border-[var(--color-border-subtle)] px-4 py-2 text-caption text-[var(--color-text-hint)]">
+                      Press <CornerDownLeft className="inline size-3" /> to search all
+                      transactions
+                    </div>
+                  </>
+                )}
+              </div>
+            </SearchBar>
           </div>
         )
       }}
@@ -193,7 +314,7 @@ function HelpExpanderDemo() {
           </Part>
           <Part name="mode">
             {String(state.mode) === "inset"
-              ? "Expands inside the nearest positioned container, frosting what is behind it."
+              ? "Expands into the nearest positioned container, frosting what is behind it. In practice that means a dialog's left panel — the only surface with room."
               : "Floats beside the trigger, portaled, so it works anywhere."}
           </Part>
           <Part name="trigger" optional>
@@ -204,17 +325,35 @@ function HelpExpanderDemo() {
       )}
     >
       {(state) => (
-        <div className="relative flex w-full max-w-sm items-center gap-2">
-          <span className="text-heading-4">Quorum approval</span>
-          <HelpExpander
-            mode={String(state.mode) as "popover" | "inset"}
-            title="What counts as quorum"
-          >
-            A movement above the operator's limit needs a second approval from
-            someone with the same role. The second factor can live outside the
-            ledger.
-          </HelpExpander>
-        </div>
+        // `inset` is rendered inside a panel-shaped container, because that is the only
+        // place it works: it expands into the nearest positioned ancestor, and a
+        // dialog's left panel is the one surface with room. Showing it beside a heading
+        // would demonstrate the case the page tells you not to build.
+        state.mode === "inset" ? (
+          <div className="relative flex h-[190px] w-full max-w-[280px] flex-col items-center justify-center gap-3 overflow-hidden [border-radius:var(--radius-card)] bg-[var(--color-bg-base)] p-4">
+            <span className="text-caption text-[var(--color-text-muted)]">
+              A dialog&rsquo;s left panel
+            </span>
+            <div className="w-full [border-radius:var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] p-3">
+              <span className="text-body-sm text-[var(--color-text-default)]">
+                Preview card
+              </span>
+            </div>
+            <HelpExpander mode="inset" anchor="bottom-right" title="What counts as quorum">
+              A movement above the operator&rsquo;s limit needs a second approval from
+              someone with the same role.
+            </HelpExpander>
+          </div>
+        ) : (
+          <div className="relative flex w-full max-w-sm items-center gap-2">
+            <span className="text-heading-4">Quorum approval</span>
+            <HelpExpander mode="popover" title="What counts as quorum">
+              A movement above the operator&rsquo;s limit needs a second approval from
+              someone with the same role. The second factor can live outside the
+              ledger.
+            </HelpExpander>
+          </div>
+        )
       )}
     </Playground>
   )
@@ -321,6 +460,7 @@ function DateTimeDemo() {
 export {
   BreadcrumbDemo,
   SearchBarDemo,
+  SearchSuggestionsDemo,
   HelpExpanderDemo,
   DateTimeDemo,
 }

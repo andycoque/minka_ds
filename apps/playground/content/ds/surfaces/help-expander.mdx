@@ -21,9 +21,16 @@ Two modes, and the choice is about what is around the trigger.
 `popover` floats the card beside the trigger and is portaled, so it works anywhere,
 including inside a dialog or a table cell. Use it unless you have a reason not to.
 
+`inset` is the exception, and a narrow one: see below.
+
 `inset` expands the card inside the nearest positioned container and frosts what is
-behind it. It suits a panel with empty space to fill, where a floating card would
-cover content the reader still wants.
+behind it.
+
+In practice it means **one place: a dialog's left panel.** All six uses in the product
+are there, each with `anchor="bottom-right"`, filling the space below a creation flow's
+preview card. It needs a positioned container with room to grow into, and the panel is
+the only surface that reliably has one — elsewhere the card either has nowhere to expand
+or covers the content the reader is working with.
 
 ## Use something else when
 
@@ -46,11 +53,12 @@ cover content the reader still wants.
   </Rule>
   <Rule>
     <Do>
-      Keep `popover` unless the surrounding panel has space that wants filling.
+      Use `inset` in a dialog's left panel, anchored bottom-right. That is what it was
+      built for and where every use of it lives.
     </Do>
     <Dont>
-      Use `inset` inside a dialog or a table. It needs a positioned container with
-      room, and neither reliably has one.
+      Use `inset` anywhere else. Outside a panel there is no positioned container with
+      room, so the card either cannot expand or covers what the reader is using.
     </Dont>
   </Rule>
 </DoDont>

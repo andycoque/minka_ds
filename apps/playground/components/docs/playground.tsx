@@ -63,6 +63,7 @@ function Playground({
   details,
   dark,
   minHeight = 200,
+  overflowVisible = false,
   className,
 }: {
   controls: Control[]
@@ -84,6 +85,16 @@ function Playground({
    * layer rather than special-casing one component.
    */
   dark?: (state: PlaygroundState) => boolean
+  /**
+   * Lets a specimen's overlay escape the stage.
+   *
+   * The stage clips by default so the dot texture stops at its rounded corners. That
+   * also clips any overlay positioned inside the stage rather than portaled — the
+   * filter dropdown on SearchBar, for instance, which renders `absolute top-full`.
+   * Set this where the specimen has such an overlay, so the reader sees all of it
+   * instead of the top third.
+   */
+  overflowVisible?: boolean
   /** Stage height floor, so switching options does not resize the panel. */
   minHeight?: number
   className?: string
@@ -117,7 +128,9 @@ function Playground({
           reading that a separate control bar had. */}
       <div
         className={cn(
-          "ds-playground-stage flex flex-col overflow-hidden border border-[var(--color-border-default)] transition-colors duration-200",
+          "ds-playground-stage flex flex-col border border-[var(--color-border-default)] transition-colors duration-200",
+          // Clipping is the default so the dot texture respects the corner radius.
+          overflowVisible ? "overflow-visible" : "overflow-hidden",
           // `.dark` is the DS token context, so everything inside resolves to the
           // dark palette: the panel, the chips, the dot texture, the specimen.
           isDark && "dark bg-[var(--color-bg-base)]",

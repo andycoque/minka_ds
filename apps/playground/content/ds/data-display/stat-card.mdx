@@ -27,6 +27,18 @@ card carrying every field.
 A `null` value renders a dash, not a zero. The distinction matters on a ledger:
 zero transactions is a fact, and not knowing yet is not.
 
+## Interaction
+
+A card with `onClick` renders as a `button` and behaves like one: it hovers, it takes a
+press state, and it is reachable by keyboard with a focus ring. Toggle **Clickable** on
+the panel above to feel all three.
+
+A card without `onClick` renders as a `div` and shows none of them, which is the point.
+A figure that looks pressable but is not costs the reader a click to find out.
+
+Use it where the figure corresponds to a filter: pressing "4 pending" should leave the
+list showing those four.
+
 ## Use something else when
 
 - **The figure needs a trend line.** A chart. A stat card carries a single
@@ -79,6 +91,7 @@ zero transactions is a fact, and not knowing yet is not.
     `status` only.
   </Prop>
   <Prop name="onClick" type="() => void">
-    Makes the card a button.
+    Renders the card as a `button`, with hover, press and focus states. Omit it and the
+    card is an inert `div`.
   </Prop>
 </PropsTable>

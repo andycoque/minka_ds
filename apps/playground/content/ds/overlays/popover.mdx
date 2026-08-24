@@ -6,6 +6,7 @@ status: stable
 ---
 
 import { PopoverDemo } from '@/components/docs/demos/overlay-demos'
+import { AnchoredLoop } from '@/components/docs/anchored-loop'
 
 ## Anatomy
 
@@ -17,14 +18,25 @@ the bottom of the page opens upward whatever you asked for.
 
 ## Motion
 
-<MotionSpec
-  duration="150ms"
-  easing="ease"
-  properties="opacity, transform (scale 0.95 → 1, slide 8px from the trigger side)"
-  note={<>Nothing sets a duration here: these are tw-animate-css utilities and 150ms ease is that library's default. The slide direction follows the RESOLVED side rather than the requested one, so a popover that flipped near a screen edge still animates from where it actually is. Tooltip and DropdownMenu use the same four classes, so the three read as one family.</>}
->
-  <PopoverDemo />
-</MotionSpec>
+<AnchoredLoop />
+
+The trigger stays put and the panel moves against it, because that relationship *is* the
+animation. The panel slides 8px **from the trigger**, which is what makes it read as
+attached rather than as something that happened to appear nearby.
+
+The loop walks all four sides. Note the slide always comes from the trigger's edge, and
+that it follows the **resolved** side rather than the requested one — a popover that
+flipped near a screen edge still animates from where it actually ended up.
+
+Nothing sets a duration: these are `tw-animate-css` utilities, and 150ms `ease` is that
+library's default rather than a decision of ours.
+
+Tooltip, DropdownMenu and Select pass the same four classes, so the family reads as one
+thing:
+
+```
+animate-in fade-in-0 zoom-in-95 slide-in-from-{side}-2
+```
 
 ## Use something else when
 

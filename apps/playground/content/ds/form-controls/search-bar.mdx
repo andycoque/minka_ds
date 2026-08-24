@@ -5,7 +5,7 @@ tags: component, reference
 status: stable
 ---
 
-import { SearchBarDemo } from '@/components/docs/demos/batch4-demos'
+import { SearchBarDemo, SearchSuggestionsDemo } from '@/components/docs/demos/batch4-demos'
 
 ## Anatomy
 
@@ -26,6 +26,25 @@ Each category carries a `type`, and the type decides the editor the reader gets:
 | `amount` | Exact, or a minimum and maximum |
 | `hours` | A time window within a day |
 | `text` | Free text with is / is not / matches |
+
+## Suggested results
+
+<SearchSuggestionsDemo />
+
+A search bar can suggest as you type. `SearchBar` takes the dropdown as `children`
+rather than owning it: what counts as a result, and how a hit is rendered, is the page's
+business. A transaction hit shows an id, the two parties, an amount and a status; a
+directory hit would show something else entirely.
+
+Two rules make it honest.
+
+**The list is scoped to the current view**, so a hit is something already loaded. That is
+why the footer hint is present even when there are matches: what you can see is not
+everything there is.
+
+**No matches is not a dead end.** The empty state says pressing Enter searches the full
+database. Without that, a reader with a valid id and a filtered view concludes the record
+does not exist.
 
 ## Sizes
 

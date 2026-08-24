@@ -58,8 +58,9 @@ function PopoverDemo() {
             The control it hangs off. <Code>asChild</Code> keeps your own button.
           </Part>
           <Part name="PopoverContent">
-            The floating surface. <Code>side</Code> and <Code>align</Code> place
-            it; it flips automatically when there is no room.
+            The floating surface, padded by default. <Code>side</Code> and{" "}
+            <Code>align</Code> place it; it flips automatically when there is no
+            room. A picker that supplies its own frame sets <Code>p-0</Code>.
           </Part>
         </Anatomy>
       )}

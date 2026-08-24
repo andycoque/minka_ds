@@ -2,10 +2,11 @@
 title: Primitives
 description: The raw value layer — colour ramps, the type scale, spacing, radii and z-levels.
 tags: token, reference
-icon: Layers
+icon: Blocks
 ---
 
 import { Ramp } from '@/components/docs/token-table'
+import { TypeScale } from '@/components/docs/type-scale'
 
 The value layer: 215 tokens holding colour ramps, the type scale, radii, spacing,
 shadows and z-indices, with no opinion about use.
@@ -38,31 +39,108 @@ Fourteen ramps. Neutral runs 0–1000 including pure white and black; the others
 
 ### Type
 
-The scale is primitives; what you write in a component is a **utility class**, not a
-token. There are 23, spanning `heading-1` to `caption-sm`, each in a sans and a serif
-cut with `-light` and `-lg` modifiers.
+Thirty-nine utilities. The scale itself is primitives; what you write in a component is
+a **utility class**, not a token, which is why these are classes rather than
+`var(--...)` references.
 
-<Specimen>
-  <SpecimenRow label="heading-2-serif">
-    <span className="text-heading-2-serif">Ledger overview</span>
-  </SpecimenRow>
-  <SpecimenRow label="heading-4">
-    <span className="text-heading-4">Section title</span>
-  </SpecimenRow>
-  <SpecimenRow label="body">
-    <span className="text-body">Body copy, the default reading size.</span>
-  </SpecimenRow>
-  <SpecimenRow label="body-sm">
-    <span className="text-body-sm">Table rows and form fields.</span>
-  </SpecimenRow>
-  <SpecimenRow label="caption">
-    <span className="text-caption text-[var(--color-text-muted)]">Timestamps and hints.</span>
-  </SpecimenRow>
-</Specimen>
+Every row below renders in its own class and reports the size it actually resolves to,
+so this table cannot drift from the CSS.
 
-Serif is for page and section titles; sans for everything else. A type utility must be
-registered in `cn()`'s `font-size` group or it is silently dropped when a colour class
-sits beside it — see [Architecture](/docs/architecture).
+**Serif is for titles, sans for everything else.** A `-serif` utility exists at nearly
+every size because a section title and a page title are both serif at different scales,
+not because serif is a choice you make per element.
+
+#### Headings
+
+Serif in practice.
+
+**The `-lg-serif` set is a problem worth naming.** Each is one step larger than its
+base, which means three of the four duplicate a value that already exists under another
+name:
+
+| Value | Names |
+| --- | --- |
+| 1.5rem | `heading-3-serif`, `heading-4-lg-serif` |
+| 1.875rem | `heading-2-serif`, `heading-3-lg-serif` |
+| 2.25rem | `heading-1-serif`, `heading-2-lg-serif` |
+| 3rem | `heading-1-lg-serif` — the only one with no twin |
+
+Usage backs that up: across the product, `heading-1-lg-serif` is used **once** (the login
+brand panel) and the other three `-lg-serif` headings are used **nowhere**. Two names for
+one value is a coin flip at every call site, and coin flips are how a type scale drifts.
+
+Left in place for now rather than removed, because the login panel does need a 3rem
+title. The honest fix is one `display`-scale serif for that case and dropping the other
+three.
+
+<TypeScale rows={[
+  { name: 'text-display', use: 'Marketing scale. Unused in product UI.' },
+  { name: 'text-heading-1-serif', use: 'A page title' },
+  { name: 'text-heading-2-serif', use: 'A list page heading' },
+  { name: 'text-heading-3-serif' },
+  { name: 'text-heading-4-serif', use: 'A section title, and DetailHeader at size="section"' },
+  { name: 'text-heading-1-lg-serif' },
+  { name: 'text-heading-2-lg-serif' },
+  { name: 'text-heading-3-lg-serif' },
+  { name: 'text-heading-4-lg-serif' },
+]} />
+
+The sans headings exist for a heading that must not read as a title:
+
+<TypeScale rows={[
+  { name: 'text-heading-1' },
+  { name: 'text-heading-2' },
+  { name: 'text-heading-3' },
+  { name: 'text-heading-4' },
+]} />
+
+#### Body
+
+`text-body-sm` is the workhorse: table rows, form fields, most of the product.
+
+<TypeScale rows={[
+  { name: 'text-body-lg' },
+  { name: 'text-body', use: 'Default reading size' },
+  { name: 'text-body-sm', use: 'Table rows and form fields' },
+  { name: 'text-body-lg-light' },
+  { name: 'text-body-light' },
+  { name: 'text-body-sm-light', use: 'A value in a read-only row' },
+  { name: 'text-body-xl-serif' },
+  { name: 'text-body-lg-serif' },
+  { name: 'text-body-serif', use: 'An object name on a card' },
+  { name: 'text-body-sm-serif' },
+  { name: 'text-body-sm-lg-serif' },
+]} />
+
+#### Paragraph
+
+Longer-form prose, with looser line height than `body`. Rare in product UI.
+
+<TypeScale rows={[
+  { name: 'text-paragraph-lg' },
+  { name: 'text-paragraph' },
+  { name: 'text-paragraph-sm' },
+]} />
+
+#### Label, caption, overline
+
+<TypeScale rows={[
+  { name: 'text-label', use: 'A form field label' },
+  { name: 'text-label-sm', use: 'A dense label, e.g. a timeline row' },
+  { name: 'text-caption', use: 'Timestamps, hints, secondary detail' },
+  { name: 'text-caption-sm' },
+  { name: 'text-caption-light' },
+  { name: 'text-caption-sm-light' },
+  { name: 'text-caption-lg-serif' },
+  { name: 'text-caption-serif' },
+  { name: 'text-caption-sm-serif' },
+  { name: 'text-caption-sm-lg-serif' },
+  { name: 'text-overline', use: 'An uppercase eyebrow above a title' },
+  { name: 'text-code', use: 'Inline code and identifiers in docs' },
+]} />
+
+A type utility must be registered in `cn()`'s `font-size` group or it is silently
+dropped when a colour class sits beside it — see [Architecture](/docs/architecture).
 
 ### Spacing, radius, z
 

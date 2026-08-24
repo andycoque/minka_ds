@@ -142,6 +142,7 @@
   --color-bg-info:            var(--primitive-slate-50);
   --color-bg-backdrop:        oklch(0 0 0 / 50%);
   --color-bg-backdrop-heavy:  oklch(0 0 0 / 70%);
+  --color-bg-backdrop-blur:   oklch(0 0 0 / 40%);
   --color-bg-glass:           oklch(1 0 0 / 80%);
   --color-bg-glass-subtle:    oklch(1 0 0 / 60%);
 
@@ -310,6 +311,7 @@
   --color-bg-info:            var(--primitive-slate-900);
   --color-bg-backdrop:        oklch(0 0 0 / 50%);
   --color-bg-backdrop-heavy:  oklch(0 0 0 / 70%);
+  --color-bg-backdrop-blur:   oklch(0 0 0 / 40%);
   --color-bg-glass:           oklch(0 0 0 / 80%);
   --color-bg-glass-subtle:    oklch(0 0 0 / 60%);
 

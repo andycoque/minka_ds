@@ -5,6 +5,9 @@ import {
   DiagramNode,
   ExpandablePanel,
   FlowDiagram,
+  ProcessDiagram,
+  ProcessAmountChip,
+  ProcessLabelChip,
   Toaster,
   TabCount,
   Timeline,
@@ -153,6 +156,118 @@ function FlowDiagramDemo() {
           />
         </div>
       )}
+    </Playground>
+  )
+}
+
+// ── ProcessDiagram ────────────────────────────────────────────────────────────
+
+const PROCESS_CONTROLS: Control[] = [
+  {
+    type: "select",
+    name: "halt",
+    label: "State",
+    options: [
+      { value: "complete", label: "Completed" },
+      { value: "pending", label: "Pending" },
+      { value: "failed", label: "Failed" },
+    ],
+    defaultValue: "complete",
+  },
+]
+
+/** The transaction flow, which is where this component was built and proven. */
+function ProcessDiagramDemo() {
+  return (
+    <Playground
+      controls={PROCESS_CONTROLS}
+      minHeight={230}
+      details={(state) => (
+        <Anatomy>
+          <Part name="steps">
+            Nodes and the arrows between them, in order. Each step is a node plus the
+            arrow that follows it; the last step has no arrow.
+          </Part>
+          <Part name="node.variant">
+            <Code>wallet</Code> for a party, <Code>anchor</Code> for a routing handle.
+            The same grammar as the rest of the diagram family.
+          </Part>
+          <Part name="arrow.chip">
+            Rides the centre of the arrow. An amount in{" "}
+            <Code>ProcessAmountChip</Code>, an action name in{" "}
+            <Code>ProcessLabelChip</Code>.
+          </Part>
+          {state.halt !== "complete" ? (
+            <Part name="haltAt / haltKind">
+              Where it stopped, as an index into the interleaved sequence. Everything
+              before is complete, everything after is ghosted.
+            </Part>
+          ) : null}
+          {state.halt !== "complete" ? (
+            <Part name="haltReason">
+              Shown in the marker's tooltip. Say why, and what to do about it.
+            </Part>
+          ) : null}
+        </Anatomy>
+      )}
+    >
+      {(state) => {
+        const halt = state.halt === "complete" ? undefined : 1
+        return (
+          <div className="w-full overflow-x-auto">
+            <ProcessDiagram
+              haltAt={halt}
+              haltKind={state.halt === "failed" ? "failed" : "pending"}
+              haltReason={
+                state.halt === "failed"
+                  ? "The sender's institution rejected the debit. Ask them to confirm the account is funded."
+                  : "Waiting on the sender's institution to confirm the debit."
+              }
+              steps={[
+                {
+                  node: {
+                    variant: "wallet",
+                    children: (
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-body-sm text-[var(--color-text-default)]">
+                          Bancolombia
+                        </span>
+                        <span className="text-caption text-[var(--color-text-muted)]">
+                          bancolombia.co
+                        </span>
+                      </div>
+                    ),
+                  },
+                  arrow: { chip: <ProcessAmountChip>$120,000.00</ProcessAmountChip> },
+                },
+                {
+                  node: {
+                    variant: "anchor",
+                    compact: true,
+                    children: <span className="text-body-sm">3005550142</span>,
+                  },
+                  arrow: { chip: <ProcessLabelChip>resolves to</ProcessLabelChip> },
+                },
+                {
+                  node: {
+                    variant: "wallet",
+                    children: (
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-body-sm text-[var(--color-text-default)]">
+                          Nequi
+                        </span>
+                        <span className="text-caption text-[var(--color-text-muted)]">
+                          nequi.co
+                        </span>
+                      </div>
+                    ),
+                  },
+                },
+              ]}
+            />
+          </div>
+        )
+      }}
     </Playground>
   )
 }
@@ -353,6 +468,7 @@ function TabCountDemo() {
 export {
   DiagramNodeDemo,
   FlowDiagramDemo,
+  ProcessDiagramDemo,
   TimelineDemo,
   ExpandablePanelDemo,
   ToastDemo,

@@ -5,7 +5,9 @@ tags: component, reference
 status: stable
 ---
 
-import { WizardBasicDemo, WizardOverflowDemo, WizardDiscardDemo } from '@/components/docs/demos/wizard-demo'
+import { WizardEnterExitLoop } from '@/components/docs/demos/wizard-anatomy'
+import { ResizeLoop } from '@/components/docs/resize-loop'
+import { WizardAnatomyDemo } from '@/components/docs/demos/wizard-anatomy'
 
 ## Purpose
 
@@ -28,71 +30,42 @@ Reach for something else when:
 
 ## Anatomy
 
-<Anatomy>
-  <Part name="steps">
-    An ordered array of `WizardStep`.
-  </Part>
-  <Part name="step / onStepChange">
-    The active step. Controlled, so the consumer owns navigation.
-  </Part>
-  <Part name="Footer">
-    The "N of N" counter, Back-or-Cancel, and Next-or-Finish. Owned by the Wizard.
-  </Part>
-  <Part name="panel" optional>
-    A left context panel, usually a `DialogPanel`. Present on every step.
-  </Part>
-  <Part name="override" optional>
-    Replaces the form and footer while set. For the provisioning or result phase.
-  </Part>
-  <Part name="Discard guard">
-    Blurs the box and floats a confirmation when a `dirty` form is closed.
-  </Part>
-  <Part name="floor" optional>
-    The lowest reachable step. For resume flows.
-  </Part>
-</Anatomy>
+<WizardAnatomyDemo />
 
-Each `WizardStep` carries `content`, plus optional `title` and `eyebrow` for the
-stepped header and `valid` to gate advancing past it. The override sits inside the
-same dialog shell, so it inherits the enter and exit dissolve, and it suppresses
-the discard guard and close button because it owns its own actions. The guard's
-labels are overridable via `discardTitle`, `discardDescription`,
-`keepEditingLabel` and `discardLabel`. Steps below `floor` are treated as already
-committed: Back cannot go under it and the counter renumbers from it.
+Each `WizardStep` carries `content`, plus optional `title` and `eyebrow` for the stepped
+header and `valid` to gate advancing past it. `step` and `onStepChange` are controlled,
+so navigation state lives where the form data does.
+
+Three things the chips above are worth pausing on.
+
+**The left panel** is present on every step, not per-step. It holds a live preview of
+what is being built, so a reader watches the record take shape as they fill the form.
+
+**The discard guard** attaches as a strip below the dialog and blurs the form behind it,
+rather than opening a second modal. A dialog stacked on a dialog is where a reader loses
+track of what they were doing. Its labels are overridable via `discardTitle`,
+`discardDescription`, `keepEditingLabel` and `discardLabel`.
+
+Two more props do not appear on the panel because they replace it wholesale. `override`
+swaps the form and footer for a provisioning or result phase, suppressing the guard and
+close button since it owns its own actions. `floor` marks the lowest reachable step, for
+a resume flow: Back cannot go under it and the counter renumbers from it.
 
 ## Variants
 
-The Wizard has no `variant` prop. It varies by what you pass it.
+The Wizard has no `variant` prop. It varies by what you pass it: two short steps, a step
+tall enough to scroll, a `dirty` form that raises the discard guard. All three are on the
+Anatomy panel above rather than repeated as separate demos here.
 
-### Basic
+Two rules worth stating that the panel cannot show.
 
-Two short steps. Neither overflows the dialog, so the footer is pinned from the
-start and `Next` dims until the step is valid.
+**A step taller than the dialog** starts its footer inline at the end of the scroll region
+and pins it once the reader reaches the bottom, so the forward action cannot be pressed
+before the step has actually been seen.
 
-<Specimen plain>
-  <WizardBasicDemo />
-</Specimen>
-
-### With a step taller than the dialog
-
-The first step has nine fields. The footer starts inline at the end of the scroll
-region and pins once the reader reaches the bottom, so the forward action cannot
-be pressed before the step has actually been seen.
-
-<Specimen plain>
-  <WizardOverflowDemo />
-</Specimen>
-
-The second step of that demo is a Review with no validity of its own. That is the
-case `finishDisabled` exists for: it gates the last step's action when an
-*earlier* step went invalid. If it merely repeats the last step's `valid`, pass
-one or the other, not both.
-
-### With a discard guard
-
-<Specimen plain>
-  <WizardDiscardDemo />
-</Specimen>
+**`finishDisabled`** gates the last step's action when an *earlier* step went invalid.
+That is the case it exists for: a Review step has no validity of its own. If it merely
+repeats the last step's `valid`, pass one or the other, not both.
 
 ### Footer behaviour
 
@@ -134,27 +107,54 @@ end rather than a form with a missing field.
 
 ## Motion
 
-<MotionSpec
-  duration="380ms"
-  easing="cubic-bezier(0.4, 0, 0.2, 1)"
-  properties="height"
-  note={<>The body measures its content and animates to it, so moving between steps of different lengths resizes the dialog rather than jumping. Once the content is taller than the available height the animation stops and the scroll region takes over, which is why a long step scrolls instead of clipping.</>}
->
-  <WizardBasicDemo />
-</MotionSpec>
+Each animation below is shown as a **loop on an abstract block** rather than on the
+wizard itself. A specimen shows what the component looks like; a loop shows what the
+movement feels like, and stripping the chrome leaves only the thing being documented.
 
-<MotionSpec
-  duration="250ms"
-  easing="cubic-bezier(0.16, 1, 0.3, 1)"
-  properties="opacity, transform (translateY 6px → 0)"
-  note={<>The footer's fade-in when it pins. It is declared once and rendered in one of two positions rather than twice in the tree, because rendering it twice would remount it and restart this animation on every scroll event.</>}
->
-  <WizardOverflowDemo />
-</MotionSpec>
+### Opening and closing
 
-The entering step also slides 12px, from the right when advancing and from the left
-when returning, so direction of travel is legible. All three animations are
-disabled under `prefers-reduced-motion`.
+<WizardEnterExitLoop />
+
+Inherited from `DialogContent`, so a wizard arrives the way every other dialog does. The
+asymmetry is deliberate: entering settles over 500ms on a soft curve, leaving gets out of
+the way in 300ms on an ease-in. Arriving deserves the reader's attention; leaving does
+not.
+
+The 60ms delay on the card is what makes the surface arrive before the content, rather
+than the two racing.
+
+### Resizing between steps
+
+<ResizeLoop />
+
+The body measures its content and the dialog animates to it, so moving between steps of
+different lengths resizes rather than jumps. Once the content is taller than the
+available height the animation stops and the scroll region takes over, which is why a
+long step scrolls instead of clipping.
+
+The entering step also slides 12px — from the right when advancing, from the left when
+returning — so direction of travel is legible without reading the counter.
+
+Two things in the loop above are worth watching rather than just the height.
+
+The **footer holds position** while the body grows above it, which is what keeps the
+primary action in the same place from step to step — a reader is not chasing it down the
+dialog.
+
+The **panel does not resize at all.** The body grows beside a fixed column, which is why
+a wizard's panel holds a preview rather than part of the form: content that changed
+height there would fight the body for the same space.
+
+The footer also fades in when it pins, over 250ms. Not shown as a loop: it is a 6px
+nudge on a control that has just appeared, and a loop of it would be a block twitching
+with nothing to compare against.
+
+Worth knowing anyway, because it is easy to break: the footer is declared once and
+rendered in one of two positions rather than twice in the tree. Rendering it twice
+remounts it, which restarts that animation on every scroll event.
+
+All of these are disabled under `prefers-reduced-motion`, and the loops above hold still
+rather than looping.
 
 ## Do and don't
 

@@ -1,0 +1,117 @@
+---
+title: Process diagram
+description: A horizontal process — objects joined by named actions, and where it stopped.
+tags: component, reference
+status: stable
+---
+
+import { ProcessDiagramDemo } from '@/components/docs/demos/batch7-demos'
+
+## Anatomy
+
+<ProcessDiagramDemo />
+
+Read left to right: an object, an action, an object. It answers two questions at once —
+what route did this take, and did it get there.
+
+```
+[sender wallet] —send $120,000→ [3005550142] —resolves to→ [receiver wallet]
+```
+
+## Process diagram or flow diagram
+
+They look alike and do different jobs. Picking wrong makes a diagram that cannot say
+the thing you need it to say.
+
+| | **Process diagram** | [**Flow diagram**](/docs/ds/diagrams/flow-diagram) |
+| --- | --- | --- |
+| Axis | Horizontal | Vertical |
+| Nodes | Any number | Two, fixed |
+| Answers | What route, and did it arrive | What moved, and what are the balances after |
+| Per-node state | Yes | No |
+
+A transaction is a process: several hops, each either done or not. A liquidity top-up is
+a movement: two ends and an amount, where "where did it stop" is not a question.
+
+## States
+
+Every node and arrow is in one of four states, derived from a single `haltAt` index
+rather than set per element. Pass the index and the component works out the rest.
+
+<Anatomy>
+  <Part name="complete">
+    The flow passed through. Solid line, arrowhead, a travelling sheen.
+  </Part>
+  <Part name="pending">
+    Halted here, still in progress. The line truncates, a pulsing amber dot carries the
+    reason, the remainder goes dashed.
+  </Part>
+  <Part name="failed">
+    Broke here. The line runs red to the break and stops. A static red glyph, not a
+    pulse: it is not going anywhere.
+  </Part>
+  <Part name="upcoming">
+    Never reached. Ghosted and desaturated, so it is visibly not merely faint.
+  </Part>
+</Anatomy>
+
+The distinction between pending and failed is the one that earns its keep. Amber and
+pulsing says wait; red and static says act. A single "error" treatment for both would
+have an operator chasing a transaction that is simply slow.
+
+## Element variations
+
+**`ProcessAmountChip`** is the inverted chip, for a value. **`ProcessLabelChip`** is the
+quiet outlined chip, for the name of an action. An amount is the louder of the two
+because it is the fact the reader came for.
+
+**`haltAt` is an interleaved index**: node 0 is `0`, the arrow after it is `1`, node 1 is
+`2`. That is deliberate — a flow can halt *on* a hop as easily as on an object, and
+"the debit was rejected" happens on the arrow, not at either end.
+
+## Use something else when
+
+- **It is a balance movement.** [Flow diagram](/docs/ds/diagrams/flow-diagram).
+- **It is a record's history over time.** [Timeline](/docs/ds/diagrams/timeline). A
+  process shows the route; a timeline shows the proof, with timestamps.
+- **It is one object.** [Diagram node](/docs/ds/diagrams/diagram-node) or an object card.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Put the reason in `haltReason`, naming what to do about it.
+    </Do>
+    <Dont>
+      Mark a halt with no reason. A red glyph that explains nothing tells the operator
+      only that they cannot fix it from here.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Keep node content to two or three lines: the institution, the account, the domain.
+    </Do>
+    <Dont>
+      Fill a node with every field. The diagram is a route, and a node that needs
+      reading stops the eye travelling along it.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="steps" type="ProcessStep[]">
+    Required. Each is `{ node, arrow? }`. Omit `arrow` on the last step.
+  </Prop>
+  <Prop name="haltAt" type="number">
+    Interleaved index of the halt. Omit for a completed flow.
+  </Prop>
+  <Prop name="haltKind" type="'pending' | 'failed'" default="'pending'">
+    Amber and pulsing, or red and static.
+  </Prop>
+  <Prop name="haltReason" type="ReactNode">
+    Shown in the marker's tooltip.
+  </Prop>
+</PropsTable>

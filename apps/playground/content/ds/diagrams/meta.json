@@ -4,6 +4,7 @@
   "pages": [
     "diagram-node",
     "flow-diagram",
+    "process-diagram",
     "timeline"
   ]
 }

@@ -167,7 +167,37 @@
    check), but it renders as a bare icon with no affordance until hover, so it
    reads as decoration rather than a control. Given a border, a ground and a
    pointer it reads as the button it is.
+
+   The glyph is swapped from lucide Clipboard to lucide Copy, matching every copy
+   affordance in the product. Fumadocs hardcodes the icon inside its compiled
+   CodeBlock, so it cannot be passed as a prop: the path is hidden and the Copy
+   glyph is drawn as a mask on the same box instead. The check icon shown after a
+   successful copy is left alone — it is the same in both sets.
    ─────────────────────────────────────────────────────────────────────── */
+
+/* Hide the shipped clipboard glyph and paint Copy as a mask on the button itself.
+   Masking the button rather than the svg because ::after on a replaced element is
+   not reliable. The post-copy check keeps its own svg visible. */
+#nd-page figure button[aria-label*="opy" i]:has(> svg:not(.lucide-check))::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.875rem;
+  height: 0.875rem;
+  transform: translate(-50%, -50%);
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+#nd-page figure button[aria-label*="opy" i] > svg:not(.lucide-check) {
+  visibility: hidden;
+}
+
 #nd-page figure button[aria-label*="opy" i],
 #nd-page pre ~ button,
 #nd-page figure > button {
@@ -177,6 +207,7 @@
   color: var(--color-text-muted);
   cursor: pointer;
   opacity: 1;
+  position: relative;
   transition: border-color 150ms ease, color 150ms ease;
 }
 
