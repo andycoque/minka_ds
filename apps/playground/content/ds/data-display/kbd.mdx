@@ -1,0 +1,74 @@
+---
+title: Kbd
+description: A keyboard shortcut, named in text.
+tags: component, reference
+status: stable
+---
+
+import { Kbd } from 'minka-ds'
+import { Command, CornerDownLeft } from 'lucide-react'
+import { KbdDemo } from '@/components/docs/demos/surface-demos'
+
+## Anatomy
+
+<KbdDemo />
+
+One `Kbd` is one thing to press. A modifier plus a letter is one thing to press, so
+`⌘K` is a single chip rather than two side by side.
+
+That is what `SearchBar` does with `kbdHint`: it wraps whatever you pass in a single
+`Kbd`, and every search bar in the product passes the modifier glyph followed by the
+letter.
+
+## Element variations
+
+The modifier is a **glyph on macOS and a word on Windows**, so it is passed by the
+caller rather than hardcoded. `usePlatform` reports which one to use, and the same
+call appears at every search bar:
+
+<Specimen>
+  <span className="flex items-center gap-4">
+    <Kbd><Command className="size-3" /> K</Kbd>
+    <Kbd>Ctrl K</Kbd>
+  </span>
+</Specimen>
+
+A key with no modifier is the glyph alone, as in the transactions search dropdown
+telling the reader what Enter will do:
+
+<Specimen>
+  <Kbd><CornerDownLeft className="size-3" /></Kbd>
+</Specimen>
+
+## Use something else when
+
+- **It is a code or an identifier.** Inline code, or `DataCell` in a table. `Kbd`
+  says "press this".
+- **It is a menu shortcut hint.** `DropdownMenuShortcut`, which aligns it to the
+  right of the item for you.
+- **It is a search field's shortcut.** Pass `kbdHint` to `SearchBar` instead of
+  placing a `Kbd` yourself. It already puts one in the field's trailing addon.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<Kbd><Command className="size-3" /> K</Kbd>}>
+      Keep a modifier and its key in one chip. It is one gesture, and it matches every
+      search bar in the product.
+    </Do>
+    {/* The gap is deliberately the DS default here — two chips at any spacing read as
+        two separate presses, which is the mistake being shown. */}
+    <Dont example={<span className="flex items-center gap-1"><Kbd><Command className="size-3" /></Kbd><Kbd>K</Kbd></span>}>
+      Split it into two chips. It reads as two keys pressed one after the other.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="children" type="ReactNode">
+    What to press. A glyph, a short word, or a modifier followed by a key.
+  </Prop>
+</PropsTable>

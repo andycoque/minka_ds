@@ -1,0 +1,147 @@
+---
+title: Semantics
+description: The tokens to build against. Each names a job rather than a value, and this is the layer a theme redefines.
+tags: token, reference
+icon: Palette
+---
+
+import { ColorTokens, ScaleTokens } from '@/components/docs/token-table'
+
+The layer to build against. 234 tokens, each naming a job rather than a value:
+`--color-bg-raised`, not `--primitive-neutral-0`. A theme redefines these and nothing
+else, which is why one switch restyles every component.
+
+Reach past them to a [primitive](/docs/tokens/primitives) only when what you are
+styling carries no meaning worth naming.
+
+Every swatch below resolves its own variable at paint time, so this page cannot go
+stale. A token showing **not defined** is referenced but missing from the layer this
+app imports.
+
+### Background
+
+<ColorTokens tokens={[
+  { name: '--color-bg-canvas', use: 'The page behind surfaces. The soft grey a card sits on.' },
+  { name: '--color-bg-base', use: 'A recessed area inside a surface: a field, a nested block.' },
+  { name: '--color-bg-raised', use: 'A card, a row, a panel. The default surface.' },
+  { name: '--color-bg-overlay', use: 'Anything floating: dialog, popover, dropdown.' },
+  { name: '--color-bg-inverted', use: 'A dark surface with light ink on it.' },
+  { name: '--color-bg-disabled', use: 'A control that cannot be used.' },
+  { name: '--color-bg-success', use: 'Success tint, for an alert or a banner.' },
+  { name: '--color-bg-warning', use: 'Warning tint.' },
+  { name: '--color-bg-error', use: 'Error tint.' },
+  { name: '--color-bg-info', use: 'Neutral-informational tint.' },
+]} />
+
+### Text
+
+<ColorTokens tokens={[
+  { name: '--color-text-default', use: 'Body copy and anything primary.' },
+  { name: '--color-text-muted', use: 'Secondary text: a description, a timestamp.' },
+  { name: '--color-text-hint', use: 'Placeholder and hint text. The faintest legible step.' },
+  { name: '--color-text-disabled', use: 'Text in a disabled control.' },
+  { name: '--color-text-inverse', use: 'On an inverted or filled surface.' },
+  { name: '--color-text-error', use: 'A field error, inline.' },
+]} />
+
+### Border
+
+<ColorTokens tokens={[
+  { name: '--color-border-subtle', use: 'A divider between rows. Barely there.' },
+  { name: '--color-border-default', use: 'A card or field outline. The default.' },
+  { name: '--color-border-strong', use: 'A control outline that needs to read as interactive.' },
+  { name: '--color-border-focus', use: 'The focus ring.' },
+  { name: '--color-border-success', use: 'Success outline.' },
+  { name: '--color-border-warning', use: 'Warning outline.' },
+  { name: '--color-border-error', use: 'Invalid field outline.' },
+]} />
+
+### Action
+
+Each action style carries its own `default`, `hover`, `pressed`, `disabled` and
+`foreground`, so a button never composes its own state colours.
+
+<ColorTokens tokens={[
+  { name: '--color-action-primary-default', use: 'The primary button, and any control that should read as the main action.' },
+  { name: '--color-action-primary-hover', use: 'Primary, hovered.' },
+  { name: '--color-action-primary-pressed', use: 'Primary, pressed.' },
+  { name: '--color-action-secondary-default', use: 'Secondary button fill.' },
+  { name: '--color-action-ghost-hover', use: 'Ghost button hover. Transparent until then.' },
+  { name: '--color-action-destructive-default', use: 'A destructive action.' },
+]} />
+
+### Feedback
+
+Status colour, kept separate from action colour: one says what happened, the other
+says what you can do.
+
+<ColorTokens tokens={[
+  { name: '--color-feedback-success', use: 'Completed, active, healthy.' },
+  { name: '--color-feedback-warning', use: 'Pending, expiring, needs attention.' },
+  { name: '--color-feedback-error', use: 'Failed, rejected, irrevocable.' },
+  { name: '--color-feedback-info', use: 'Neutral information.' },
+]} />
+
+### Radius
+
+Named by what it wraps rather than by size, so a card and a modal can diverge without
+every consumer editing a number.
+
+<ScaleTokens specimen="radius" tokens={[
+  { name: '--radius-tag', use: 'Badge, chip, checkbox.' },
+  { name: '--radius-input', use: 'Field, small control.' },
+  { name: '--radius-button', use: 'Button, icon tile.' },
+  { name: '--radius-card', use: 'Card, panel, row.' },
+  { name: '--radius-popover', use: 'Popover, dropdown, tooltip.' },
+  { name: '--radius-modal', use: 'Dialog.' },
+  { name: '--radius-avatar', use: 'Avatar. Fully round.' },
+]} />
+
+### Shadow
+
+Four levels, each tied to a surface rather than an elevation number.
+
+<ScaleTokens specimen="shadow" tokens={[
+  { name: '--shadow-raised', use: 'A surface lifted off the page.' },
+  { name: '--shadow-card', use: 'A card.' },
+  { name: '--shadow-popover', use: 'A floating panel.' },
+  { name: '--shadow-modal', use: 'A dialog, the heaviest.' },
+]} />
+
+### Z-index
+
+Always a token, never a number. The stack only stays correct if every layer is
+declared in one place.
+
+<ScaleTokens specimen="value" tokens={[
+  { name: '--z-sticky', use: 'A sticky header or footer inside a scroll area.' },
+  { name: '--z-dropdown', use: 'A dropdown attached to a control.' },
+  { name: '--z-backdrop', use: 'The dim behind a dialog.' },
+  { name: '--z-popover', use: 'A popover or tooltip over content.' },
+  { name: '--z-modal', use: 'A dialog.' },
+  { name: '--z-floating', use: 'A menu opened from inside a dialog.' },
+  { name: '--z-toast', use: 'A toast, above everything.' },
+]} />
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<span className="[border-radius:var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] px-3 py-2 text-body-sm">Semantic</span>}>
+      Name the job: `--color-bg-raised`, `--radius-card`. It themes, and it says why
+      the value was chosen.
+    </Do>
+    <Dont example={<span className="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-body-sm">Raw</span>}>
+      Reach for a raw Tailwind utility or a hex value. It cannot theme and it drifts
+      from everything around it.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do example={<span className="text-body-sm text-[var(--color-text-muted)]">A muted description</span>}>
+      Use a text token for ink, so dark mode inverts with the rest of the page.
+    </Do>
+    <Dont example={<span className="text-body-sm" style={{ color: '#6b7280' }}>A muted description</span>}>
+      Hardcode a grey. It stays that grey on a dark ground, where it is unreadable.
+    </Dont>
+  </Rule>
+</DoDont>

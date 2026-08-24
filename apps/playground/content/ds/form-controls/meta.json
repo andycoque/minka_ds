@@ -1,0 +1,17 @@
+{
+  "title": "Form controls",
+  "icon": "TextCursorInput",
+  "pages": [
+    "button",
+    "checkbox",
+    "combobox",
+    "date-and-time",
+    "input",
+    "input-otp",
+    "radio-group",
+    "search-bar",
+    "select",
+    "switch",
+    "textarea"
+  ]
+}

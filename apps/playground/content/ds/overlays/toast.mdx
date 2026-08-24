@@ -1,0 +1,72 @@
+---
+title: Toast
+description: Confirm that something happened, without interrupting.
+tags: component, reference
+status: stable
+---
+
+import { ToastDemo } from '@/components/docs/demos/batch7-demos'
+
+## Anatomy
+
+<ToastDemo />
+
+Called imperatively from a handler, never rendered as an element. `Toaster` is mounted
+once in the app shell and every `toast()` call renders through it, so no page mounts its
+own.
+
+The most-used component in the product: 26 call sites.
+
+## Element variations
+
+**The title says what happened, the description says to what.** "Directory key inactive"
+with `description: "pay.bancolombia"`. Putting the record's name in the title makes it
+long enough to wrap, and the pattern stops being scannable when three toasts stack.
+
+**`toast.success` and `toast.error`** are the two in use. A plain `toast()` exists for
+something that is neither, but almost every action either worked or did not.
+
+## Use something else when
+
+- **The reader must acknowledge it.** A dialog. A toast can be missed, so it cannot carry
+  anything that requires a decision.
+- **The state is on the page.** Show it on the page. A toast saying "3 items selected"
+  duplicates what the page already says and then disappears.
+- **It is an error the reader must fix.** An inline error on the field, or an `Alert`. A
+  validation failure that vanishes after four seconds leaves them stuck.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Name the outcome in the past tense: "Report queued", "Signer disabled".
+    </Do>
+    <Dont>
+      Say "Success" or "Done". The reader knows something happened; the toast exists to
+      say what.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Put the record's name in `description`.
+    </Do>
+    <Dont>
+      Put it in the title. Long titles wrap and stop being scannable when toasts stack.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="toast.success(title, opts)" type="function">
+    The common case. `opts.description` names what it applied to.
+  </Prop>
+  <Prop name="toast.error(title, opts)" type="function">
+    For a failed action.
+  </Prop>
+  <Prop name="Toaster" type="component">
+    Mounted once in the app shell.
+  </Prop>
+</PropsTable>

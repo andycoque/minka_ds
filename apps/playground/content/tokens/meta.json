@@ -1,0 +1,8 @@
+{
+  "title": "Tokens",
+  "icon": "Coins",
+  "pages": [
+    "semantics",
+    "primitives"
+  ]
+}

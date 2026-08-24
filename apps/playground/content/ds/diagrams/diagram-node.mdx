@@ -1,0 +1,84 @@
+---
+title: Diagram node
+description: One box in a diagram. The variant says what kind of thing it is.
+tags: component, reference
+status: stable
+---
+
+import { DiagramNodeDemo } from '@/components/docs/demos/batch7-demos'
+
+## Anatomy
+
+<DiagramNodeDemo />
+
+The node supplies the surface; you supply what goes in it. Its job is to make the **type**
+of a thing readable at a glance, consistently, wherever it appears.
+
+## Variants
+
+**`wallet`** is white and raised: a party, a wallet, a person. The neutral treatment.
+
+**`anchor`** is inverted navy with light ink: a routing handle — a directory key, a QR
+code, a dynamic key.
+
+That pairing is load-bearing across the whole diagram family and the object cards. Navy
+means something routes; white means someone holds it. Break it in one diagram and the
+reader has to re-learn the convention on every screen.
+
+**`accent`** overrides both with a brand pair, for a **state** node such as issue or
+destroy. This is the sanctioned colour exception: the colour is carrying the meaning of
+the state, not decorating the box.
+
+## Element variations
+
+`filled={false}` renders a dashed empty slot, for a creation flow where the object does
+not exist yet. `compact` tightens the padding, used by anchor nodes inside a dense
+diagram.
+
+[`AnchorCard` and `RecordCard`](/docs/ds/detail-pages/object-cards) are the two standard
+fillings. Reach for those before composing a node by hand.
+
+## Use something else when
+
+- **It is not in a diagram.** The object cards, which wrap this and supply the layout.
+- **It is a table row or a list item.** The table-cell primitives.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Keep navy for anchors and white for parties, in every diagram.
+    </Do>
+    <Dont>
+      Pick the variant by what looks better in this layout. The colour is a type, and a
+      reader who learns it on one screen will misread the next.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Use `accent` only where the state itself carries meaning, as on issue and destroy.
+    </Do>
+    <Dont>
+      Use it to make a diagram more colourful. It then reads as a state that does not
+      exist.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="variant" type="'wallet' | 'anchor'" default="'wallet'">
+    White for a party, inverted navy for a routing handle.
+  </Prop>
+  <Prop name="filled" type="boolean" default="true">
+    False renders a dashed empty slot.
+  </Prop>
+  <Prop name="accent" type="DiagramAccent">
+    A brand pair, for a state node. Overrides the variant colours.
+  </Prop>
+  <Prop name="compact" type="boolean" default="false">
+    Tighter padding, for a dense diagram.
+  </Prop>
+</PropsTable>

@@ -1,0 +1,10 @@
+{
+  "title": "Surfaces",
+  "icon": "Square",
+  "pages": [
+    "alert",
+    "cards",
+    "expandable-panel",
+    "help-expander"
+  ]
+}

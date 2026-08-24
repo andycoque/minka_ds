@@ -1,0 +1,12 @@
+{
+  "title": "Overlays",
+  "icon": "Layers2",
+  "pages": [
+    "dialog",
+    "dropdown-menu",
+    "popover",
+    "toast",
+    "tooltip",
+    "wizard"
+  ]
+}

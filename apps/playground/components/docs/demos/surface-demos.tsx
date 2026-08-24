@@ -1,6 +1,6 @@
 "use client"
 
-import { Info, TriangleAlert } from "lucide-react"
+import { Command, Info, TriangleAlert } from "lucide-react"
 import {
   Alert,
   AlertDescription,
@@ -271,15 +271,49 @@ function AvatarDemo() {
   )
 }
 
+/**
+ * Kbd, in the shape the product actually uses it: ONE chip per gesture, with the
+ * modifier and the key inside it. Taken from `SearchBar`'s `kbdHint`, which wraps
+ * whatever it is passed in a single Kbd.
+ *
+ * The platform chip is a real prop rather than decoration: the modifier is a glyph on
+ * macOS and the word Ctrl on Windows, and callers pass whichever `usePlatform`
+ * reports.
+ */
+const KBD_CONTROLS: Control[] = [
+  {
+    type: "select",
+    name: "platform",
+    label: "Platform",
+    options: [
+      { value: "mac", label: "macOS" },
+      { value: "win", label: "Windows" },
+    ],
+    defaultValue: "mac",
+  },
+]
+
 function KbdDemo() {
   return (
-    <Playground controls={[]} minHeight={120}>
-      {() => (
-        <div className="flex items-center gap-3">
-          <Kbd>⌘</Kbd>
-          <Kbd>K</Kbd>
+    <Playground
+      controls={KBD_CONTROLS}
+      minHeight={120}
+      details={() => (
+        <Anatomy>
+          <Part name="children">
+            What to press. A modifier and its key stay in one chip, because pressing
+            them is one gesture.
+          </Part>
+        </Anatomy>
+      )}
+    >
+      {(state) => (
+        <div className="flex items-center gap-2">
+          <Kbd>
+            {state.platform === "mac" ? <Command className="size-3" /> : "Ctrl"} K
+          </Kbd>
           <span className="text-caption text-[var(--color-text-muted)]">
-            opens the command palette
+            focuses the search field
           </span>
         </div>
       )}

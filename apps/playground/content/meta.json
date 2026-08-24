@@ -1,4 +1,10 @@
 {
   "title": "Design System",
-  "pages": ["index", "ds"]
+  "pages": [
+    "---Introduction---",
+    "index",
+    "architecture",
+    "tokens",
+    "ds"
+  ]
 }

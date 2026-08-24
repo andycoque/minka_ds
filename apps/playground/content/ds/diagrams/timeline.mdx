@@ -1,0 +1,78 @@
+---
+title: Timeline
+description: A record's events in order, grouped into phases, each closed by a milestone.
+tags: component, reference
+status: stable
+---
+
+import { TimelineDemo } from '@/components/docs/demos/batch7-demos'
+
+## Anatomy
+
+<TimelineDemo />
+
+Events down a rail, grouped into sections. Each section is a **phase** of the record's
+life with a milestone naming it, so the reader can follow the shape of what happened
+without reading every row.
+
+Used by the transaction lifecycle, where the question is usually "how far did this get,
+and where did it stop".
+
+## Element variations
+
+**`items`** are the events: a label, a status, an optional actor in `meta` and a
+timestamp. An item with `fields` can expand to show the underlying proof, so the detail
+is available without being in the way.
+
+**`milestone`** names the phase. `active: false` dims it, for a phase not yet reached.
+`position` decides which end of the items it sits at — every section in the product
+passes `top`, so the phase name leads the events it covers.
+
+**`annotationBefore`** puts an alert inside the rail, before a section's items. For
+something that explains the section rather than being an event in it.
+
+**`truncateAtFailure`** stops rendering after the first failure. The steps that never ran
+are not shown as pending, because they are not pending — they are moot, and showing them
+greyed implies they are still coming.
+
+## Use something else when
+
+- **The events have no phases.** A plain list. The rail and milestones cost vertical
+  space that only pays off when there is a structure to show.
+- **It is a form with steps.** `Wizard`, or `Stepper` for a progress indicator.
+- **It is two balances and a movement.** [Flow diagram](/docs/ds/diagrams/flow-diagram).
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Put the actor in `meta` and the time in `timestamp`, so both columns stay
+      scannable down the rail.
+    </Do>
+    <Dont>
+      Write them into the label. "Ledger created the transaction at 14:00" cannot be
+      scanned against the row above it.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Set `truncateAtFailure` on a record that stopped.
+    </Do>
+    <Dont>
+      Render the remaining steps as pending. They will never run, and pending says they
+      might.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="sections" type="TimelineSection[]">
+    Required. Each takes `items`, a `milestone` and a `position`.
+  </Prop>
+  <Prop name="truncateAtFailure" type="boolean" default="false">
+    Stop after the first failed item and its section.
+  </Prop>
+</PropsTable>

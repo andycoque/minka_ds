@@ -1,0 +1,95 @@
+---
+title: Object cards
+description: Two cards that render a record as an object. AnchorCard for routing handles, RecordCard for parties.
+tags: component, reference
+status: stable
+---
+
+import { ObjectCardDemo } from '@/components/docs/demos/batch6-demos'
+
+## Anatomy
+
+<ObjectCardDemo />
+
+Both wrap `DiagramNode`, so an object reads the same in a card as it does inside a flow
+diagram. The pairing carries meaning:
+
+**`AnchorCard`** is the dark navy card, for an **anchor object** — something that routes.
+A directory key, a QR code, a dynamic key.
+
+**`RecordCard`** is the white card, for a **party or credential** — a user, a signer, an
+API key.
+
+The colour is the type. A reader who has seen one flow diagram already knows that navy
+means a handle and white means someone who holds one.
+
+## Element variations
+
+Every region on both cards is optional, which is what lets one component serve the
+directory and payment instruments without either flow rendering empty rows.
+
+A directory key passes an identity, a participant and a destination. An instrument adds
+a use-type marker in `trailing` and a value/expiry pair in the footer. A user passes an
+identity and roles as chips; a signer passes an identity and nests a public-key block in
+`children`.
+
+`filled={false}` draws the card as an empty outline, for a creation flow before anything
+is entered.
+
+## Use something else when
+
+- **It is a table row.** The [table cells](/docs/ds/data-display/table-cells) primitives.
+  A card in a row is a card too many.
+- **It is the page's own identity.** [Detail header](/docs/ds/detail-pages/detail-header).
+- **It is a node in a flow.** `DiagramNode` directly, with whatever the flow needs.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Pass the same card a record's creation flow shows, so the object looks the same
+      whether you are making it or acting on one that exists.
+    </Do>
+    <Dont>
+      Build a bespoke summary per surface. The status dialog and the creation wizard then
+      disagree about what the object looks like.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Leave a region off when the flow has no such concept.
+    </Do>
+    <Dont>
+      Pass an empty string to keep the layout even. It renders as a blank row that reads
+      as missing data.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="icon / title" type="ReactNode">
+    The type glyph and the object's own name. `titlePlaceholder` covers the unfilled
+    creation state.
+  </Prop>
+  <Prop name="participant / destination" type="ReactNode">
+    AnchorCard. Who it belongs to, and where it routes.
+  </Prop>
+  <Prop name="subtitle / eyebrow" type="ReactNode">
+    RecordCard. A second line, and a centred context label above the card.
+  </Prop>
+  <Prop name="trailing" type="ReactNode">
+    AnchorCard. A top-right marker.
+  </Prop>
+  <Prop name="footerStart / footerEnd" type="ReactNode">
+    AnchorCard. A value and an expiry, above a hairline.
+  </Prop>
+  <Prop name="footer" type="ReactNode">
+    RecordCard. Chips below the card.
+  </Prop>
+  <Prop name="filled" type="boolean" default="true">
+    False renders an empty outline.
+  </Prop>
+</PropsTable>

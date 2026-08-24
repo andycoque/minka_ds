@@ -1,0 +1,54 @@
+---
+title: Expandable panel
+description: A summary row that opens to show its detail.
+tags: component, reference
+status: stable
+---
+
+import { ExpandablePanelDemo } from '@/components/docs/demos/batch7-demos'
+
+## Anatomy
+
+<ExpandablePanelDemo />
+
+The collapsed row has to be enough. If a reader must open the panel to know whether they
+want it open, the summary has failed — that is what `subtitle` and `meta` are for.
+
+## Use something else when
+
+- **The content is short enough to just show.** Show it. A panel that everyone opens is
+  a click charged for nothing.
+- **It is a section of a detail page.** [Section card](/docs/ds/surfaces/cards). Sections
+  are not hidden by default.
+- **It is one of several exclusive views.** [Tabs](/docs/ds/navigation/tabs).
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Say what is inside: "4 fields", "3 events".
+    </Do>
+    <Dont>
+      Label it "Details" with nothing else. The reader has to open it to find out whether
+      they needed to.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="title" type="ReactNode">
+    Required. Readable while collapsed.
+  </Prop>
+  <Prop name="subtitle" type="ReactNode">
+    The summary that saves opening it.
+  </Prop>
+  <Prop name="meta" type="ReactNode">
+    Right-aligned: a count, a timestamp.
+  </Prop>
+  <Prop name="open" type="boolean">
+    Controlled. Omit for uncontrolled.
+  </Prop>
+</PropsTable>

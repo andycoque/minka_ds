@@ -1,0 +1,78 @@
+---
+title: Flow diagram
+description: Value moving between two nodes, with the balances before and after.
+tags: component, reference
+status: stable
+---
+
+import { FlowDiagramDemo } from '@/components/docs/demos/batch7-demos'
+
+## Anatomy
+
+<FlowDiagramDemo />
+
+Two nodes, an amount, and a direction. It answers the question a top-up or withdrawal
+dialog exists to answer: what moves, from where to where, and what are the balances
+afterwards.
+
+## Element variations
+
+**The nodes do not swap when the direction changes.** `top` stays on top. Only the arrow
+and its sheen reverse. That is deliberate: a diagram whose boxes move when you toggle a
+radio makes the reader re-read it every time.
+
+**`amount: 0` renders the idle state**, not a zero. Before anything is entered, the
+diagram shows the shape of the movement without pretending a figure exists.
+
+**`after` on each node** is the projected balance. Passing `null` leaves it off, for a
+flow where the outcome is not yet known.
+
+**`accent`** tints the arrow with a brand pair. Semantic only where the movement itself
+carries meaning, as on issue and destroy — a top-up between two participants is not a
+different colour from a withdrawal.
+
+## Use something else when
+
+- **There is one object, not a movement.** [Diagram node](/docs/ds/diagrams/diagram-node)
+  or an object card.
+- **The path has more than two ends.** This component is deliberately two-node. A wider
+  graph needs its own composition.
+- **It is a sequence of events over time.** [Timeline](/docs/ds/diagrams/timeline).
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Show `after` balances once the amount is known, so the consequence is visible
+      before the reader commits.
+    </Do>
+    <Dont>
+      Show only the current balances. The reader then does the arithmetic that the
+      diagram exists to do.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="top / bottom" type="FlowNode">
+    Required. `{ name, current, after }`, plus an optional subtitle and icon.
+  </Prop>
+  <Prop name="amount" type="number">
+    Required. Zero renders the idle state.
+  </Prop>
+  <Prop name="direction" type="'up' | 'down'">
+    Required. Which way the arrow travels. Node positions do not change.
+  </Prop>
+  <Prop name="currency" type="string">
+    Unit shown beside the amount.
+  </Prop>
+  <Prop name="format" type="(n: number) => string">
+    Custom formatter. Defaults to `$` plus en-US grouping.
+  </Prop>
+  <Prop name="footer" type="ReactNode">
+    Content below the diagram, e.g. a reference pill.
+  </Prop>
+</PropsTable>

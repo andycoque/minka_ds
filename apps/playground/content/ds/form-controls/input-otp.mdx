@@ -5,7 +5,7 @@ tags: component, reference
 status: stable
 ---
 
-import { InputOTPDemo } from '@/components/docs/demos/input-otp-demo'
+import { InputOTPDemo, InputOTPStatesDemo } from '@/components/docs/demos/input-otp-demo'
 
 ## Anatomy
 
@@ -26,16 +26,17 @@ by hand loses them:
 
 ## States
 
-Invalid and disabled are on the panel. There is no "complete" state: when the last
-box fills, `onComplete` fires and the form moves on, so the filled state is a moment
-rather than something to design for.
+<InputOTPStatesDemo />
+
+There is no "complete" state: when the last box fills, `onComplete` fires and the
+form moves on, so being full is a moment rather than something to design for.
 
 ## Use something else when
 
 - **The code is alphanumeric or long.** `Input`. Boxes imply a fixed count of single
   characters, and they get unwieldy past six.
 - **The value is a password.** `Input` with `type="password"`, in an `InputGroup`
-  with a reveal button. See [Input](/docs/ds/input).
+  with a reveal button. See [Input](/docs/ds/form-controls/input).
 
 ## Do and don't
 

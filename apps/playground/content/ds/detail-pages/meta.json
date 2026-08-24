@@ -1,0 +1,9 @@
+{
+  "title": "Detail pages",
+  "icon": "FileText",
+  "pages": [
+    "detail-header",
+    "object-cards",
+    "status-change-dialog"
+  ]
+}

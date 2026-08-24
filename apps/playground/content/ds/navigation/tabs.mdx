@@ -1,0 +1,90 @@
+---
+title: Tabs
+description: Switch between views of the same subject, without leaving the page.
+tags: component, reference
+status: stable
+---
+
+import { TabsDemo } from '@/components/docs/demos/batch5-demos'
+
+## Anatomy
+
+<TabsDemo />
+
+Tabs switch a **view**, they never perform an action. That is why every label is a noun:
+All, Pending, Members. A tab called "Export" would be a button wearing a tab's clothes.
+
+Only the active `TabsContent` is mounted, so a heavy panel costs nothing until it is
+opened.
+
+## Variants
+
+Two are in use, and which one you want depends on what the tabs sit against.
+
+**`subtle`** is the list-page row: a recessed group in a page header, switching the
+scope of the list below it. Transactions, liquidity, users.
+
+**`line`** is the in-page row: an underline with no container, for sections within a
+detail page where a bordered group would compete with the cards around it.
+
+**`default`** is a raised group with an inverted active tab. It is the component's
+default value but is **not used anywhere in the product** — every call site passes
+`subtle` or `line`. Treat it as available rather than recommended, and reach for it only
+with a reason.
+
+## Element variations
+
+A count belongs in a `TabCount` inside the trigger, not in the label text. "Pending (4)"
+has to be re-read when the number changes; a separate pill is scannable and stays put.
+
+`TabCount` rather than `Badge` for this: it is a fixed 16px circle built for exactly
+this slot, so a two-digit count does not change the tab's height.
+
+## Use something else when
+
+- **The views are different subjects.** Sidebar navigation or a route. Tabs imply
+  "different angles on one thing"; using them across unrelated pages hides half the
+  product inside a row nobody scans.
+- **There are more than about five.** A `Select`, or rethink the grouping. A tab row
+  that wraps or scrolls has stopped being a row.
+- **There is one tab.** Nothing, or a heading. A control with a single option is not a
+  control — this is why the Signers page dropped its tab row when API keys were
+  deferred.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Keep the tab in the URL on a list page, so a filtered view can be shared and
+      survives a refresh.
+    </Do>
+    <Dont>
+      Hold it in local state only. The reader loses their place on every reload, and
+      cannot send anyone what they are looking at.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Label tabs with nouns naming the subset: All, Pending, Failed.
+    </Do>
+    <Dont>
+      Label them with verbs. A verb promises an action and delivers a view.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="TabsList variant" type="'default' | 'subtle' | 'line'" default="'default'">
+    `subtle` for a list-page header, `line` for in-page sections. The default value is
+    unused in the product.
+  </Prop>
+  <Prop name="Tabs value / onValueChange" type="string / (value: string) => void">
+    Controlled. Use `defaultValue` for the uncontrolled case.
+  </Prop>
+  <Prop name="TabsTrigger value" type="string">
+    Required. Matches the `TabsContent` it reveals.
+  </Prop>
+</PropsTable>

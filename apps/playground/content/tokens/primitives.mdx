@@ -1,0 +1,71 @@
+---
+title: Primitives
+description: The raw value layer — colour ramps, the type scale, spacing, radii and z-levels.
+tags: token, reference
+icon: Layers
+---
+
+import { Ramp } from '@/components/docs/token-table'
+
+The value layer: 215 tokens holding colour ramps, the type scale, radii, spacing,
+shadows and z-indices, with no opinion about use.
+
+Build against a [semantic token](/docs/tokens/semantics) instead. Name a primitive
+directly only when what you are styling has no meaning to name, such as a decorative
+stripe or a diagram fill, because a primitive cannot follow a theme.
+
+### Colour ramps
+
+Fourteen ramps. Neutral runs 0–1000 including pure white and black; the others run
+50–950.
+
+<div className="not-prose flex flex-col gap-4">
+  <Ramp family="neutral" steps={[0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000]} />
+  <Ramp family="slate" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="green" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="yellow" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="red" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="aquamarine" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="lulo" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="beige" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="bronze" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="sea" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="blue" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="purple" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="fuchsia" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+  <Ramp family="flamingo" steps={[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]} />
+</div>
+
+### Type
+
+The scale is primitives; what you write in a component is a **utility class**, not a
+token. There are 23, spanning `heading-1` to `caption-sm`, each in a sans and a serif
+cut with `-light` and `-lg` modifiers.
+
+<Specimen>
+  <SpecimenRow label="heading-2-serif">
+    <span className="text-heading-2-serif">Ledger overview</span>
+  </SpecimenRow>
+  <SpecimenRow label="heading-4">
+    <span className="text-heading-4">Section title</span>
+  </SpecimenRow>
+  <SpecimenRow label="body">
+    <span className="text-body">Body copy, the default reading size.</span>
+  </SpecimenRow>
+  <SpecimenRow label="body-sm">
+    <span className="text-body-sm">Table rows and form fields.</span>
+  </SpecimenRow>
+  <SpecimenRow label="caption">
+    <span className="text-caption text-[var(--color-text-muted)]">Timestamps and hints.</span>
+  </SpecimenRow>
+</Specimen>
+
+Serif is for page and section titles; sans for everything else. A type utility must be
+registered in `cn()`'s `font-size` group or it is silently dropped when a colour class
+sits beside it — see [Architecture](/docs/architecture).
+
+### Spacing, radius, z
+
+Ten spacing steps, eight radii and eight z-levels sit under the semantic names above.
+Use the semantic token: `--radius-card` rather than `--primitive-radius-lg`, so a
+change to card rounding is one edit rather than a search.

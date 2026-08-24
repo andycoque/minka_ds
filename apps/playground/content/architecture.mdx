@@ -1,0 +1,144 @@
+---
+title: Architecture
+description: How the design system is built — the token layers, what components are made of, and how a consuming app wires it up.
+icon: Boxes
+tags: explanation
+---
+
+import { Alert, AlertTitle, AlertDescription } from 'minka-ds'
+import { LayerDiagram } from '@/components/docs/layer-diagram'
+import { LayerDemo } from '@/components/docs/demos/layer-demo'
+
+Three layers, each depending only on the one below it. A component never names a
+colour; it names a semantic token, which names a primitive, which holds the value.
+
+<LayerDiagram />
+
+Every token in both layers is listed on the [Semantics](/docs/tokens/semantics) and [Primitives](/docs/tokens/primitives) pages.
+
+### The layers on one card
+
+An ordinary directory-key card. Nothing on it names a value: each one is a semantic
+token resolving through to a primitive, which is why a theme change restyles the whole
+thing without touching the card.
+
+<LayerDemo />
+
+## Why the middle layer exists
+
+A primitive answers "what colour is this". A semantic token answers "what is this
+for". The second question is the one that survives a redesign.
+
+```css
+/* primitives.css — the value */
+--primitive-neutral-0: oklch(1 0 0);
+
+/* semantic.css — the job */
+--color-bg-raised: var(--primitive-neutral-0);
+
+/* the component — the job, never the value */
+class="bg-[var(--color-bg-raised)]"
+```
+
+Dark mode is the clearest payoff: `.dark` redefines the semantic layer only.
+`--color-bg-raised` becomes `--primitive-neutral-800`, and every component that used
+it follows without a single component-level change. A component that had reached for
+`--primitive-neutral-0` directly would stay stubbornly white.
+
+This is also why **arbitrary values are a bug, not a shortcut**. `bg-[#fff]` or
+`rounded-lg` in a component bypasses both layers: it cannot theme, and it drifts
+from everything around it the moment a token changes.
+
+## What a component is made of
+
+Most are thin. The work is in the tokens and the composition rules, not in the
+component code.
+
+<Anatomy>
+  <Part name="A headless primitive">
+    19 components wrap Radix, for the ones where keyboard behaviour and focus
+    management are the hard part: dialogs, menus, selects, the radio group. One
+    (`Combobox`) is Base UI, which is why it needs an explicit `anchor` where the
+    Radix overlays do not.
+  </Part>
+  <Part name="Semantic token classes">
+    Every visual value. Same focus, disabled and checked tokens across siblings, so
+    Checkbox, Switch and RadioGroup read as one family.
+  </Part>
+  <Part name="data-slot attributes">
+    On 36 components. A stable hook for a consumer that has to reach inside, and how
+    `RadioCard` styles its own control from the wrapper's state.
+  </Part>
+  <Part name="cva, where variants are real">
+    8 components. Everything else takes plain conditional classes: `cva` earns its
+    keep at Button and Alert, not at a component with one shape.
+  </Part>
+</Anatomy>
+
+### cn(), and the trap in it
+
+`cn()` is `clsx` plus `tailwind-merge`. The merge step is what lets a consumer
+override a component's own class instead of fighting it: the later class wins.
+
+That same step is the single most common source of silent bugs here.
+`tailwind-merge` groups conflicting utilities and drops all but the last, and it
+treats **every `text-*` utility as one group** — colour and size together. So this
+quietly loses the typography:
+
+```tsx
+cn("text-body-sm", "text-[var(--color-text-muted)]")  // text-body-sm dropped
+```
+
+Our custom typography utilities (`text-body`, `text-heading-4`,
+`text-body-sm-serif`) are registered in the `font-size` group in `src/lib/utils.ts`
+so they survive alongside a colour class. **A new type utility must be added to that
+list**, in both this package and the playground's copy, or it will vanish wherever a
+colour sits beside it — and it fails silently, rendering as the inherited size.
+
+## How an app consumes it
+
+The package ships **source, not a build**. There is no compile step: `exports` maps
+`.` to `src/index.ts` and `./tokens/*` straight through.
+
+```css
+@import "tailwindcss";
+@import "minka-ds/tokens/primitives.css";
+@import "minka-ds/tokens/text-utilities.css";
+@import "minka-ds/tokens/utilities.css";
+
+/* Tailwind must scan the DS source, or its classes never compile */
+@source "../node_modules/minka-ds/src";
+```
+
+That `@source` line is not optional. Tailwind only generates the utilities it finds
+in scanned files, so without it every DS component renders unstyled — and the failure
+looks like a broken component rather than a missing config line.
+
+<Alert variant="warning">
+  <AlertTitle>The semantic layer is currently duplicated</AlertTitle>
+  <AlertDescription>
+    `semantic.css` is not imported by consumers today: studio inlines about 160
+    semantic tokens into its own `globals.css`, and the playground keeps a shared
+    `_semantic-layer.css`. A new `--color-*` token added only to the package resolves
+    to nothing in those apps and renders as a fallback. Until this is consolidated, a
+    new semantic token has to be added in every copy.
+  </AlertDescription>
+</Alert>
+
+## Where the boundary sits
+
+The design system owns anything that should look and behave the same everywhere: the
+component, its tokens, its states, its keyboard behaviour. A product surface owns
+what is specific to it: which components, in what order, with what copy and data.
+
+Two consequences worth stating plainly.
+
+**A screen never styles a DS component into a new shape.** If a screen needs a
+variant that does not exist, that is a design system change, not a local override.
+Otherwise the same component ends up looking three different ways in three places,
+and none of them can be fixed centrally.
+
+**A composition used twice belongs in the package.** `StatusChangeDialog` and
+`AnchorCard` both started as one page's markup and moved into the DS on the second
+use. The rule is not "abstract early", it is "abstract on the second use", so the
+API is designed against two real cases rather than one imagined one.

@@ -99,21 +99,19 @@ function CellsAnatomyDemo() {
         }
 
         if (cell === "action") {
-          // Both taken from product code. Every real ActionCell carries
-          // `w-full justify-end`, because an action column is right-aligned
-          // against the edge of the table rather than left against its header.
+          // One shape, because the product only has one: every ActionCell in studio is
+          // a ghost `icon-sm` kebab with `w-full justify-end`. An earlier version of
+          // this panel also showed a labelled button, which exists nowhere.
+          //
+          // `w-full justify-end` because an action column is right-aligned against the
+          // edge of the table rather than left against its header.
           return (
             <div className="flex w-full max-w-xs flex-col gap-3">
-              <Row label="Kebab">
+              <Row label="Row actions">
                 <ActionCell className="w-full justify-end">
                   <Button variant="ghost" size="icon-sm" aria-label="Actions">
                     <MoreHorizontal />
                   </Button>
-                </ActionCell>
-              </Row>
-              <Row label="Labelled">
-                <ActionCell className="w-full justify-end">
-                  <Button variant="ghost" size="sm">Request / response</Button>
                 </ActionCell>
               </Row>
             </div>

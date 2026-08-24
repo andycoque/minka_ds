@@ -1,6 +1,6 @@
 "use client"
 
-import { MoreHorizontal, Trash2 } from "lucide-react"
+import { Ban, Info, MoreHorizontal, Pencil, Trash2, Wallet } from "lucide-react"
 import {
   Button,
   DropdownMenu,
@@ -14,12 +14,6 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -29,7 +23,7 @@ import { Code } from "@/components/docs/code"
 import { Playground, type Control } from "@/components/docs/playground"
 
 /**
- * The three anchored overlays plus Sheet.
+ * The three anchored overlays.
  *
  * Popover, Tooltip and DropdownMenu share one Radix shape (trigger, portal,
  * anchored content) and one animation, so their panels are deliberately
@@ -90,54 +84,132 @@ function PopoverDemo() {
   )
 }
 
+/**
+ * Content shape rather than position: `side` resolves against the viewport, so it is
+ * rarely set by hand. What varies in the product is how much the tooltip carries.
+ */
+const TOOLTIP_CONTROLS: Control[] = [
+  {
+    type: "select",
+    name: "kind",
+    label: "Content",
+    options: [
+      { value: "label", label: "Label" },
+      { value: "explanation", label: "Explanation" },
+      { value: "legend", label: "Legend" },
+    ],
+    defaultValue: "label",
+  },
+]
+
 function TooltipDemo() {
   return (
     <Playground
-      controls={SIDES}
-      minHeight={150}
-      details={() => (
+      controls={TOOLTIP_CONTROLS}
+      minHeight={160}
+      details={(state) => (
         <Anatomy>
           <Part name="TooltipTrigger">
-            The control being explained. Must be focusable, or keyboard readers
-            never see the tooltip.
+            The control being explained. Must be focusable, or keyboard readers never
+            see the tooltip.
           </Part>
           <Part name="TooltipContent">
-            One short line. Not a place for a paragraph or a control.
+            {state.kind === "label"
+              ? "Names an icon-only control. A few words, no punctuation."
+              : state.kind === "explanation"
+              ? "Explains a rule the label cannot carry. Takes max-w-56 so it wraps rather than stretching across the page."
+              : "A short list, e.g. what each status colour means. Takes its own padding, since rows need more room than one line does."}
           </Part>
         </Anatomy>
       )}
     >
-      {(state) => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon-sm" aria-label="Delete">
-              <Trash2 />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side={String(state.side) as Side}>
-            Delete this bridge
-          </TooltipContent>
-        </Tooltip>
-      )}
+      {(state) => {
+        if (state.kind === "legend") {
+          return (
+            <Tooltip open>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon-sm" aria-label="Status legend">
+                  <Info />
+                </Button>
+              </TooltipTrigger>
+              {/* The transactions list's status legend, verbatim. */}
+              <TooltipContent side="right" className="space-y-1.5 p-3">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 shrink-0 rounded-full bg-[var(--color-feedback-success)]" />
+                  <span>Completed</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="size-2 shrink-0 rounded-full bg-[var(--color-feedback-warning)]" />
+                  <span>Pending</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="size-2 shrink-0 rounded-full bg-[var(--primitive-red-500)]" />
+                  <span>Failed / Rejected</span>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          )
+        }
+
+        if (state.kind === "explanation") {
+          return (
+            <Tooltip open>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon-sm" aria-label="Why can't I edit my email?">
+                  <Info />
+                </Button>
+              </TooltipTrigger>
+              {/* The settings page's email tooltip, verbatim. */}
+              <TooltipContent side="right" className="max-w-56">
+                Your email identifies this account and cannot be changed. Contact your
+                admin with any request about it.
+              </TooltipContent>
+            </Tooltip>
+          )
+        }
+
+        return (
+          <Tooltip open>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon-sm" aria-label="Delete">
+                <Trash2 />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Delete this bridge</TooltipContent>
+          </Tooltip>
+        )
+      }}
     </Playground>
   )
 }
 
+const MENU_CONTROLS: Control[] = [
+  { type: "toggle", name: "icons", label: "With icons", defaultValue: true },
+  { type: "toggle", name: "label", label: "Category label", defaultValue: true },
+]
+
 function DropdownMenuDemo() {
   return (
     <Playground
-      controls={SIDES}
+      controls={MENU_CONTROLS}
       minHeight={170}
-      details={() => (
+      details={(state) => (
         <Anatomy>
           <Part name="DropdownMenuTrigger">
             Usually a kebab button in an <Code>ActionCell</Code>.
           </Part>
-          <Part name="DropdownMenuLabel" optional>
-            Names the group when the menu holds more than one kind of action.
-          </Part>
           <Part name="DropdownMenuItem">
-            One action. Destructive ones go last, under a separator.
+            One action. Most carry a leading icon: 30 of the 36 items in the product
+            do, so an icon-less item beside them reads as unfinished.
+          </Part>
+          {state.label ? (
+            <Part name="DropdownMenuLabel" optional>
+              Names the group when the menu holds more than one kind of action.
+              Uncommon: worth it only when the items are not obviously siblings.
+            </Part>
+          ) : null}
+          <Part name="DropdownMenuSeparator" optional>
+            Above a destructive action, which goes last.
           </Part>
         </Anatomy>
       )}
@@ -149,12 +221,20 @@ function DropdownMenuDemo() {
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent side={String(state.side) as Side} align="start">
-            <DropdownMenuLabel>Bridge</DropdownMenuLabel>
-            <DropdownMenuItem>Edit configuration</DropdownMenuItem>
-            <DropdownMenuItem>Assign wallets</DropdownMenuItem>
+          {/* No `side` chip: position resolves against the viewport, so a menu near the
+              bottom of the page flips upward on its own and there is nothing to set. */}
+          <DropdownMenuContent align="start">
+            {state.label ? <DropdownMenuLabel>Bridge</DropdownMenuLabel> : null}
+            <DropdownMenuItem>
+              {state.icons ? <Pencil className="size-4" /> : null}Edit configuration
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              {state.icons ? <Wallet className="size-4" /> : null}Assign wallets
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Suspend</DropdownMenuItem>
+            <DropdownMenuItem>
+              {state.icons ? <Ban className="size-4" /> : null}Suspend
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
@@ -162,55 +242,4 @@ function DropdownMenuDemo() {
   )
 }
 
-const SHEET_SIDES: Control[] = [
-  {
-    type: "select",
-    name: "side",
-    label: "Side",
-    options: [
-      { value: "right", label: "Right" },
-      { value: "left", label: "Left" },
-      { value: "top", label: "Top" },
-      { value: "bottom", label: "Bottom" },
-    ],
-    defaultValue: "right",
-  },
-]
-
-function SheetDemo() {
-  return (
-    <Playground
-      controls={SHEET_SIDES}
-      minHeight={140}
-      details={() => (
-        <Anatomy>
-          <Part name="SheetTrigger">Opens it.</Part>
-          <Part name="SheetHeader">
-            Holds <Code>SheetTitle</Code> and <Code>SheetDescription</Code>.
-          </Part>
-          <Part name="SheetFooter" optional>
-            Actions, when the sheet is editable rather than just a reader.
-          </Part>
-        </Anatomy>
-      )}
-    >
-      {(state) => (
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline">Open sheet</Button>
-          </SheetTrigger>
-          <SheetContent side={String(state.side) as Side}>
-            <SheetHeader>
-              <SheetTitle>Delivery detail</SheetTitle>
-              <SheetDescription>
-                The request and response for this attempt.
-              </SheetDescription>
-            </SheetHeader>
-          </SheetContent>
-        </Sheet>
-      )}
-    </Playground>
-  )
-}
-
-export { PopoverDemo, TooltipDemo, DropdownMenuDemo, SheetDemo }
+export { PopoverDemo, TooltipDemo, DropdownMenuDemo }

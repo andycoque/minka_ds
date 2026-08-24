@@ -1,0 +1,9 @@
+{
+  "title": "Diagrams",
+  "icon": "GitBranch",
+  "pages": [
+    "diagram-node",
+    "flow-diagram",
+    "timeline"
+  ]
+}

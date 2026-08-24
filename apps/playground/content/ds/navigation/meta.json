@@ -1,0 +1,9 @@
+{
+  "title": "Navigation",
+  "icon": "Compass",
+  "pages": [
+    "breadcrumb",
+    "tab-count",
+    "tabs"
+  ]
+}

@@ -1,0 +1,62 @@
+---
+title: Skeleton
+description: A placeholder the size and shape of the content that is loading.
+tags: component, reference
+status: stable
+---
+
+import { SkeletonDemo } from '@/components/docs/demos/batch5-demos'
+
+## Anatomy
+
+<SkeletonDemo />
+
+One prop: `className`. The component supplies a pulsing block; you supply its
+dimensions. Every real use sets a height and a width, because the whole point is to
+occupy the space the content will occupy, so the page does not jump when it arrives.
+
+That is the discipline: a skeleton is a **measurement**, not a decoration. Five bars of
+the row height for five table rows; a short bar and a long bar for a label and its
+value.
+
+## Use something else when
+
+- **The wait is under about 200ms.** Nothing. A skeleton that flashes is worse than a
+  brief blank, because the flash reads as a glitch.
+- **The wait has no predictable shape.** A spinner with a line of text saying what is
+  happening. A report being generated has no layout to stand in for, so
+  `Loader2` plus "Generating" beats a rectangle pretending to be a file.
+- **Nothing is coming.** An empty state. A skeleton promises content; showing one where
+  there is none is a lie the reader waits through.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<span className="flex w-40 flex-col gap-2"><span className="h-4 w-24 animate-pulse rounded-[var(--radius-card)] bg-[var(--color-bg-disabled)]" /><span className="h-4 w-36 animate-pulse rounded-[var(--radius-card)] bg-[var(--color-bg-disabled)]" /></span>}>
+      Match the real layout: varied widths, the same heights and gaps as the content.
+    </Do>
+    <Dont example={<span className="h-16 w-40 animate-pulse rounded-[var(--radius-card)] bg-[var(--color-bg-disabled)]" />}>
+      Use one large block for a region. It tells the reader nothing about what is
+      coming, and the layout jumps when it resolves.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Render the same number of skeleton rows as the page's usual batch, so the scroll
+      height is roughly right.
+    </Do>
+    <Dont>
+      Render one row. The page grows abruptly when twenty arrive.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="className" type="string">
+    Height, width and any layout classes. Required in practice: without a size the
+    block collapses.
+  </Prop>
+</PropsTable>

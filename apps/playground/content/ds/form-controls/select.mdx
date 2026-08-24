@@ -21,17 +21,6 @@ The trigger carries the same focus ring and disabled treatment as `Input`, so a
 select sitting in a form row reads as a sibling of the fields around it rather
 than as a different kind of control.
 
-## Motion
-
-<MotionSpec
-  duration="150ms"
-  easing="ease"
-  properties="opacity, transform (scale 0.95 → 1, slide 8px)"
-  note={<>The same tw-animate-css defaults as Popover and DropdownMenu. The list slides from the side it resolved to, so a select near the bottom of the page opens upward and animates from below.</>}
->
-  <SelectDemo />
-</MotionSpec>
-
 ## Use something else when
 
 - **The list is long enough to scan.** `Combobox`, which can be searched. A

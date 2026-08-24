@@ -23,13 +23,26 @@ const CONTROLS: Control[] = [
     name: "length",
     label: "Length",
     options: [
-      { value: "4", label: "4" },
-      { value: "6", label: "6" },
+      { value: "4", label: "4 digits" },
+      { value: "6", label: "6 digits" },
     ],
     defaultValue: "6",
   },
-  { type: "toggle", name: "invalid", label: "Invalid", defaultValue: false },
-  { type: "toggle", name: "disabled", label: "Disabled", defaultValue: false },
+]
+
+/** Invalid and disabled are states, not things the author sets to shape the field. */
+const STATE_CONTROLS: Control[] = [
+  {
+    type: "select",
+    name: "state",
+    label: "State",
+    options: [
+      { value: "default", label: "Default" },
+      { value: "invalid", label: "Invalid" },
+      { value: "disabled", label: "Disabled" },
+    ],
+    defaultValue: "default",
+  },
 ]
 
 function InputOTPDemo() {
@@ -64,8 +77,6 @@ function InputOTPDemo() {
               length={length}
               value={code.slice(0, length)}
               onChange={setCode}
-              invalid={Boolean(state.invalid)}
-              disabled={Boolean(state.disabled)}
             />
             <p className="text-caption text-[var(--color-text-muted)]">
               Type into it, or paste a {length}-digit code.
@@ -77,4 +88,45 @@ function InputOTPDemo() {
   )
 }
 
-export { InputOTPDemo }
+/**
+ * The same field in each of its states. Seeded with a partial code so invalid has
+ * something to mark: an empty field in error reads as untouched rather than wrong.
+ */
+function InputOTPStatesDemo() {
+  const [code, setCode] = React.useState("1234")
+
+  return (
+    <Playground
+      controls={STATE_CONTROLS}
+      minHeight={150}
+      details={(state) => (
+        <Anatomy>
+          <Part name="invalid" optional>
+            {state.state === "invalid"
+              ? "Draws the error border on every box. Clear it on the next keystroke, so it describes this attempt rather than the last one."
+              : "Draws the error border on every box."}
+          </Part>
+          <Part name="disabled" optional>
+            Blocks input and drops opacity. For a code that is being verified, not
+            for one the reader has not reached yet.
+          </Part>
+        </Anatomy>
+      )}
+    >
+      {(state) => (
+        <div className="flex flex-col items-start gap-2.5">
+          <Label>Authentication code</Label>
+          <InputOTP
+            length={6}
+            value={code}
+            onChange={setCode}
+            invalid={state.state === "invalid"}
+            disabled={state.state === "disabled"}
+          />
+        </div>
+      )}
+    </Playground>
+  )
+}
+
+export { InputOTPDemo, InputOTPStatesDemo }

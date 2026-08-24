@@ -1,0 +1,113 @@
+---
+title: Data table
+description: The table behind every list page. Sortable, hideable columns, batched rendering.
+tags: component, reference
+status: stable
+---
+
+import { DataTableDemo } from '@/components/docs/demos/batch5-demos'
+
+## Anatomy
+
+<DataTableDemo />
+
+`DataTable` wraps TanStack Table and supplies everything a list page needs: the header
+row, sorting, a column-visibility toggle, batched rendering, and row click handling.
+You supply columns and data.
+
+It does **not** filter or search. That belongs to the page, above the table, usually in
+a [Search bar](/docs/ds/form-controls/search-bar) — so the table renders whatever array
+it is handed and stays ignorant of why those rows and not others.
+
+## Element variations
+
+**`DataTableColumnHeader`** makes a column sortable. Wrap the header text in it rather
+than writing a button: it supplies the sort affordance, the aria state and the
+three-way cycle (ascending, descending, none).
+
+**`DataTableColumnToggle`** is the column-visibility menu. `DataTable` renders one
+already; you only reach for it directly when you are building the header row yourself.
+
+A column with `id: "actions"` is **auto-pinned**: never hidden, never listed in the
+toggle. Pin any other column with `enableHiding: false` on its `ColumnDef` — a table
+whose identifying column can be hidden leaves rows nobody can tell apart.
+
+## Batched rendering
+
+Rows render `batchSize` at a time (40 by default) and extend as you scroll. This is not
+pagination: there are no page numbers and no controls, the list simply keeps going. A
+ledger list can run to thousands of rows, and mounting them all costs seconds.
+
+If you need real pagination with numbered pages, that is `Pagination`, and it is a
+different interaction — one the product does not currently use.
+
+## Use something else when
+
+- **There are three or four rows and no columns to compare.** A list of
+  `SectionCard`s, or plain rows. A table's cost is its header, and a header earns its
+  keep only when columns are being compared.
+- **The reader picks one item rather than scanning.** `Combobox` or `Select`.
+- **The data is one record's fields.** [Section card](/docs/ds/surfaces/cards) with
+  label/value rows. A two-column table of field names and values is a table pretending
+  to be a definition list.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Return a table-cell primitive from every `cell`: `DataCell`, `AmountCell`,
+      `StatusCell`, `BadgeCell`, `ActionCell`.
+    </Do>
+    <Dont>
+      Return raw text or a bare `span`. It renders at the wrong size and drifts from
+      every other table in the product.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Use `onRowClick` to open the record, so the whole row is the target.
+    </Do>
+    <Dont>
+      Put a link inside a cell. It gives the reader a small target and leaves the rest
+      of the row looking inert when it is not.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Set `persistenceKey` on a list a person returns to, so their column choice
+      survives navigation.
+    </Do>
+    <Dont>
+      Leave it off and let the columns reset on every mount. Someone who hid six
+      columns will hide them again on every visit.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="columns" type="ColumnDef<TData>[]">
+    Required. TanStack column definitions. `id: "actions"` is auto-pinned.
+  </Prop>
+  <Prop name="data" type="TData[]">
+    Required. The rows to render, already filtered and sorted by the page.
+  </Prop>
+  <Prop name="variant" type="'default' | 'compact'" default="'default'">
+    `compact` tightens row height, for a table nested in a tab or a panel.
+  </Prop>
+  <Prop name="onRowClick" type="(row: TData) => void">
+    Makes the row the click target.
+  </Prop>
+  <Prop name="batchSize" type="number" default="40">
+    Rows per render batch, extended on scroll.
+  </Prop>
+  <Prop name="initialColumnVisibility" type="VisibilityState">
+    Columns hidden on first render. Available in the toggle.
+  </Prop>
+  <Prop name="persistenceKey" type="string">
+    Persists column visibility to localStorage, namespaced as
+    `minka-ds:datatable:{key}`.
+  </Prop>
+</PropsTable>

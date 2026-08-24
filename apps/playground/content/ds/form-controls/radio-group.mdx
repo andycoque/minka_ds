@@ -1,0 +1,84 @@
+---
+title: Radio group
+description: Single-select from a visible set. RadioCard makes each option a row you can read.
+tags: component, reference
+status: stable
+---
+
+import { RadioCardDemo } from '@/components/docs/demos/batch6-demos'
+
+## Anatomy
+
+<RadioCardDemo />
+
+Arrow keys move between options and only the selected one is a tab stop. That is Radix's
+roving focus, and it is the main reason this is a component rather than styled markup —
+a hand-built radio list gets the visuals right and the keyboard wrong.
+
+## Element variations
+
+**`RadioGroupItem`** is the bare 16px control, for an ordinary form where the label sits
+beside it. Same focus, disabled and checked tokens as `Checkbox` and `Switch`, so the
+three read as one family.
+
+**`RadioCard`** makes the whole row the target: a label, an optional line on what
+choosing it does, and the control leading the row. Reach for this when the options need
+explaining — which is most of the time, because an option that needs no explanation is
+usually a `Select`.
+
+**`expanded`** reveals content inside the selected card, animated open and closed. Pass
+it only while the card is selected: an unselected card has nothing to reveal, and the
+wrapper it introduces would flatten the card's own border.
+
+A disabled card **stays in the list** with its reason in the description, rather than
+vanishing. An option that disappears looks like a bug.
+
+## Use something else when
+
+- **The list is long, or the reader already knows what they want.** `Select`. A radio
+  group shows everything, which is a cost when there are twelve options.
+- **The options are not exclusive.** `Checkbox`, one per option.
+- **It is on or off.** `Switch` for a setting, `Checkbox` for an acknowledgement.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Use `RadioCard` when each option needs a line of explanation.
+    </Do>
+    <Dont>
+      Put the explanation in the label. It makes the label unscannable and the group
+      unreadable at a glance.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Wrap a plain-text `label` in the type style it should have.
+    </Do>
+    <Dont>
+      Pass a bare string and expect a size. `label` is a node so a caller can pass a
+      `StatusCell`, which means the card cannot impose typography.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="value / onValueChange" type="string / (value: string) => void">
+    On `RadioGroup`. Controlled.
+  </Prop>
+  <Prop name="label" type="ReactNode">
+    Required on `RadioCard`. A node, so the caller owns its typography.
+  </Prop>
+  <Prop name="description" type="ReactNode">
+    One line on what choosing this does.
+  </Prop>
+  <Prop name="expanded" type="ReactNode">
+    Content revealed inside the card. Pass only while selected.
+  </Prop>
+  <Prop name="disabled" type="boolean">
+    Stays visible. Put the reason in `description`.
+  </Prop>
+</PropsTable>

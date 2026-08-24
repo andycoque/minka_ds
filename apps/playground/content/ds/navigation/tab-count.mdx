@@ -1,0 +1,47 @@
+---
+title: Tab count
+description: A small pill holding a number, sized for a tab row.
+tags: component, reference
+status: stable
+---
+
+import { TabCountDemo } from '@/components/docs/demos/batch7-demos'
+
+## Anatomy
+
+<TabCountDemo />
+
+One prop: a number. A fixed 16px circle with a minimum width, so a one-digit count and a
+three-digit count leave the tab exactly the same height.
+
+That is the whole reason it exists rather than a `Badge`. A badge grows with its content,
+which is right for a label and wrong inside a tab row where the row's height must not
+move as the numbers update.
+
+## Use something else when
+
+- **It is a label rather than a count.** [Badge](/docs/ds/data-display/badge).
+- **It is a status.** `StatusCell`.
+- **It is outside a tab row.** Usually a `Badge`. This is shaped for that one slot.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Put it inside the `TabsTrigger`, after the label.
+    </Do>
+    <Dont>
+      Write the count into the label text. "Pending (4)" has to be re-read whenever the
+      number changes.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="count" type="number">
+    Required. The number to show.
+  </Prop>
+</PropsTable>

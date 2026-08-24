@@ -1,0 +1,101 @@
+---
+title: Detail header
+description: The identity header at the top of a detail page. Title, status, meta, actions.
+tags: component, reference
+status: stable
+---
+
+import { DetailHeaderDemo } from '@/components/docs/demos/batch6-demos'
+
+## Anatomy
+
+<DetailHeaderDemo />
+
+The header answers three questions in order: what is this record, what state is it in,
+and what can I do to it. Everything else on the page is detail.
+
+It exists because six detail pages had each built this by hand and diverged: different
+title sizes, status as a badge on some pages and a `StatusCell` on others, meta rows
+with different spacing. `DetailHeader` makes the shape one decision.
+
+## Element variations
+
+**`status` is a `{ variant, label }` pair**, and the header renders it at the larger
+`StatusCell` size itself. That is deliberate: `size="lg"` is not a choice a consumer
+makes, so a status can never appear undersized beside a page title.
+
+**`adornment` and `trailing`** sit before and after the status. The distinction matters:
+an adornment qualifies the title (a copy button on an identifier), a trailing element
+qualifies the status (a type badge). Both were real divergences worth keeping when the
+six headers were merged.
+
+**`meta`** takes `MetaField`s. These are the facts a reader needs before scrolling, not
+every field the record has.
+
+**`banner`** puts an alert above the title, for a state that changes what the page
+means: a disabled signer, a pending invitation.
+
+## Sizes
+
+`page` is the page's own identity header. `section` drops to `heading-4` for a header
+nested inside a `SectionCard`, where a page-sized title would compete with the section
+it lives in.
+
+## Use something else when
+
+- **It is a list page.** A plain heading and the actions row. There is no single record
+  to identify.
+- **It is a section within a page.** [Section card](/docs/ds/surfaces/cards) with a
+  `title`, unless the section itself needs a status and actions.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Pass `status` and let the header size it.
+    </Do>
+    <Dont>
+      Put a `Badge` in `trailing` to show state. A badge reads as a label someone
+      applied; a status is a state the record is in.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Keep `meta` to the three or four facts that matter before scrolling.
+    </Do>
+    <Dont>
+      Mirror the whole record into the header. The sections below already hold it, and a
+      long meta row pushes the content off screen.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="title" type="ReactNode">
+    Required. The record's name.
+  </Prop>
+  <Prop name="status" type="{ variant, label }">
+    Rendered as a large `StatusCell`. The size is the header's decision.
+  </Prop>
+  <Prop name="actions" type="ReactNode">
+    What can be done to the record.
+  </Prop>
+  <Prop name="meta" type="ReactNode">
+    `MetaField`s.
+  </Prop>
+  <Prop name="adornment" type="ReactNode">
+    Before the status. Qualifies the title.
+  </Prop>
+  <Prop name="trailing" type="ReactNode">
+    After the status. Qualifies the status.
+  </Prop>
+  <Prop name="banner" type="ReactNode">
+    An alert above the title.
+  </Prop>
+  <Prop name="size" type="'page' | 'section'" default="'page'">
+    `section` for a header inside a `SectionCard`.
+  </Prop>
+</PropsTable>

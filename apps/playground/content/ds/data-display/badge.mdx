@@ -1,0 +1,85 @@
+---
+title: Badge
+description: A small label applied to something. Not a status.
+tags: component, reference
+status: stable
+---
+
+import { BadgeDemo } from '@/components/docs/demos/batch5-demos'
+
+## Anatomy
+
+<BadgeDemo />
+
+A badge is a **label someone applied to the thing**: a role, a type, a count, an error
+code. A status is a **state the thing is in**, and that is
+[`StatusCell`](/docs/ds/data-display/table-cells) — dot plus label, never a badge.
+
+That distinction is the whole reason to read this page. The two look similar enough that
+they get swapped, and once a status is rendered as a badge in one table it spreads.
+
+## Variants
+
+The component defines seven. **Three are sanctioned, and one of those carries almost all
+the weight.**
+
+**`secondary`** is the one to reach for: 24 of Badge's 29 uses in the product. A quiet
+label that names something without competing with the row it sits in. Roles, instrument
+types, tab counts.
+
+**`default`** is heavier, for a label that has to be noticed rather than merely read.
+Two uses.
+
+**`error`** is for an identifier that *is* a failure — a transaction's error code. Note
+what it is not: it is not the transaction's status. `INSUFFICIENT_FUNDS` is a code you
+might copy into a support ticket; "Failed" is a state, and that is a `StatusCell`.
+
+**`filled`, `destructive`, `success`, `warning`** exist in the component and are
+effectively unsanctioned. They duplicate what `StatusCell` does, and reaching for them is
+almost always the status-as-badge mistake. The one legitimate `success` use in the
+product labels which session is "This device" — a fact about identity, not a state.
+
+## Use something else when
+
+- **It is a state the record is in.** `StatusCell`. Active, Pending, Failed, Blocked,
+  Cancelled are all states.
+- **It is a count next to a tab label.** Still a badge, `secondary`, inside the
+  `TabsTrigger`. See [Tabs](/docs/ds/navigation/tabs).
+- **It is a keyboard shortcut.** [`Kbd`](/docs/ds/data-display/kbd).
+- **It is a filter the reader can remove.** `FilterChip`, which carries a dismiss
+  affordance a badge does not.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do example={<span className="flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-[var(--primitive-green-500)]" /><span className="text-body-sm text-[var(--primitive-green-700)]">Active</span></span>}>
+      Render a status as a `StatusCell`. A dot plus a label reads as a state.
+    </Do>
+    <Dont example={<span className="inline-flex items-center rounded-[var(--radius-tag)] border border-[var(--color-border-success)] bg-[var(--color-bg-success)] px-2 py-0.5 text-caption text-[var(--color-text-default)]">Active</span>}>
+      Render a status as a badge. It reads as a label someone attached, not a state the
+      record is in.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Keep to `secondary` unless there is a reason to be louder.
+    </Do>
+    <Dont>
+      Pick a semantic colour to add meaning. Colour on a badge implies status, which is
+      the one thing a badge is not for.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="variant" type="'secondary' | 'default' | 'error'" default="'default'">
+    Sanctioned values. The component also accepts `filled`, `destructive`, `success` and
+    `warning`, which duplicate `StatusCell` and should not be used for state.
+  </Prop>
+  <Prop name="children" type="ReactNode">
+    The label. A category, a count or a code.
+  </Prop>
+</PropsTable>

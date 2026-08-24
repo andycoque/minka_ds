@@ -1,0 +1,92 @@
+---
+title: Status change dialog
+description: Change the status of a policy-managed record by selecting a state, not flipping a boolean.
+tags: component, reference
+status: stable
+---
+
+import { StatusChangeDialogDemo } from '@/components/docs/demos/batch6-demos'
+
+## Anatomy
+
+<StatusChangeDialogDemo />
+
+Status on this ledger is policy-managed: a policy defines the states, they differ by
+ledger, and a record can usually move to any of them. So a Deactivate button is the wrong
+shape — it hardcodes one transition out of several and has to be relabelled for every
+state the record might be in.
+
+The reader picks a state instead. Four modules use this dialog: directory keys, payment
+instruments, users and signers.
+
+## Element variations
+
+**The selection is the deliberate act.** Picking a named state from a list is already a
+decision made on purpose, so an ordinary confirm is enough for most transitions.
+
+**`destructive` adds a typed confirmation** inside the selected card, and forces its dot
+red whatever `variant` says. Irrevocable is a warning, and the colour has to say so
+before the reader commits rather than after.
+
+**`reachable: false` drops a state from the list.** An instrument becomes `expired` when
+its validity window elapses; offering it would imply a person can set it. An option
+nobody can pick is noise.
+
+**`detail` shows the record's own card**, so the object stays in view through the action.
+Pass the same card its creation flow shows.
+
+The panel carries the consequence: an info alert for a recoverable state, a warning for
+an irreversible one, each on two lines — what happens now, then what that means
+afterwards.
+
+## Use something else when
+
+- **There are exactly two states and one is terminal.** A confirm dialog. A radio list
+  of one option is a control with nothing to choose.
+- **It is not a status.** A named action with its own confirm. Revoking a key and
+  rotating it are operations, not states.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Share one option list between the list kebab and the detail header.
+    </Do>
+    <Dont>
+      Define the states at each call site. The two surfaces then offer different
+      transitions for the same record.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Write `outcome` as what happens now, and `outcomeDetail` as what it means
+      afterwards. One line each.
+    </Do>
+    <Dont>
+      Run both into one long sentence. In a narrow panel it reads as a paragraph to work
+      through rather than a fact and its consequence.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="options" type="StatusOption[]">
+    Required. Each carries `value`, `label`, `variant`, a row `description` and a panel
+    `outcome` / `outcomeDetail`.
+  </Prop>
+  <Prop name="current" type="string">
+    Required. Filtered out of the list.
+  </Prop>
+  <Prop name="recordLabel / recordName" type="string / ReactNode">
+    What the record is, and its own name.
+  </Prop>
+  <Prop name="detail" type="ReactNode">
+    The record's card, for the side panel.
+  </Prop>
+  <Prop name="onConfirm" type="(next: string) => void">
+    Required. Fires with the selected value.
+  </Prop>
+</PropsTable>

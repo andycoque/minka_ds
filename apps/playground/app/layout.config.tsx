@@ -25,12 +25,7 @@ export const baseOptions: BaseLayoutProps = {
   // provably did nothing.
   themeSwitch: { enabled: false },
   githubUrl: 'https://github.com/andycoque/minka_ds',
-  links: [
-    {
-      text: 'Playground',
-      url: '/design-system',
-      // The legacy specimen page. Stays reachable until the migration finishes.
-      active: 'none',
-    },
-  ],
+  // No `links`: the legacy /design-system specimen page is still reachable by URL for
+  // whatever has not been migrated yet, but it is not offered in the nav. These pages
+  // are the reference now, and two entry points invite reading the wrong one.
 }
