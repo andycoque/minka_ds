@@ -214,7 +214,7 @@ function PageHelp({
         // --z-dropdown, NOT --z-floating: floating is 210, above the dialog tier at 200, so the
         // panel and its launcher used to sit ON TOP of a dialog's backdrop. This is page
         // furniture, so it belongs under any overlay that dims the page.
-        "fixed top-4 right-4 bottom-4 [z-index:var(--z-dropdown)] flex flex-col items-end justify-end gap-3 sm:top-6 sm:right-6 sm:bottom-6",
+        "fixed right-4 bottom-4 [z-index:var(--z-dropdown)] flex flex-col items-end gap-3 sm:right-6 sm:bottom-6",
         "pointer-events-none *:pointer-events-auto",
         className
       )}
@@ -251,7 +251,7 @@ function PageHelp({
           className={cn(
             // Fills the height it is given rather than capping at a card: this is a
             // reference panel, and the sections are the reason it exists.
-            "flex min-h-0 w-[calc(100vw-2rem)] flex-1 flex-col overflow-hidden sm:w-96",
+            "flex h-[60vh] w-[calc(100vw-2rem)] flex-col overflow-hidden sm:w-96",
             "[border-radius:var(--radius-modal)] border border-[var(--color-border-default)]",
             // Frosted, matching the inset `HelpExpander` card: the panel sits over live
             // content, so letting it read through is what keeps it feeling attached to
@@ -308,7 +308,7 @@ function PageHelp({
               native one, which is heavier than anything else on the panel. */}
           <div
             ref={scrollRef}
-            className="ds-scroll relative flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto p-4 pt-2"
+            className="ds-scroll relative flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto p-4 pt-2 pb-8"
             style={{
               // A mask rather than a gradient overlay: the panel is translucent and
               // blurred, so a painted gradient would have to guess the composited colour
