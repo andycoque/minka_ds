@@ -91,6 +91,8 @@ interface StatusChangeDialogProps {
    */
   detail?: React.ReactNode
   /** Styling for the panel that holds `detail`, e.g. the creation flow's dot grid. */
+  /** Paints the panel's line-grid stage; see `DialogPanel`'s `texture`. */
+  texture?: boolean
   detailClassName?: string
   detailStyle?: React.CSSProperties
 }
@@ -104,6 +106,7 @@ function StatusChangeDialog({
   options,
   onConfirm,
   detail,
+  texture = false,
   detailClassName,
   detailStyle,
 }: StatusChangeDialogProps) {
@@ -175,6 +178,7 @@ function StatusChangeDialog({
         <DialogPanel
           placement="side"
           inset
+          texture={texture}
           className={cn("items-stretch justify-center gap-4 overflow-y-auto", detailClassName)}
           style={detailStyle}
         >

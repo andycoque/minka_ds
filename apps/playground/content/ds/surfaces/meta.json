@@ -5,6 +5,8 @@
     "alert",
     "cards",
     "expandable-panel",
-    "help-expander"
+    "help-expander",
+    "page-help",
+    "section-intro"
   ]
 }

@@ -35,6 +35,32 @@ A ledger cannot show 12-hour times. `TimeField` is a text input that formats as 
 type, so `1430` becomes `14:30` and `2400` clamps to `23:00`, and it is 24-hour on
 every machine.
 
+## The field that opens it
+
+Neither picker draws its own trigger, because what opens one varies: a full date and time,
+the same with the time row hidden, or a bare calendar. Use `FieldTrigger` for the button.
+
+It mirrors `SelectTrigger` deliberately, so a date field and a select field are
+indistinguishable at rest and behave the same on focus and on error. Before it existed the
+three studio pickers each pasted the same class string, and all three had drifted: no focus
+ring, no invalid ring, no disabled state. A date field beside a select did not match it,
+and nothing revealed that until you tabbed in.
+
+```tsx
+<PopoverTrigger asChild>
+  <FieldTrigger
+    value={label}
+    placeholder="Select a date"
+    icon={<CalendarDays />}
+    aria-invalid={invalid || undefined}
+  />
+</PopoverTrigger>
+```
+
+Pass `value` as the formatted label and leave it undefined when empty: the placeholder and
+its hint colour are then handled for you, rather than each caller re-deriving which colour
+an empty field takes.
+
 ## Use something else when
 
 - **The value is a date typed from a document.** Still these. A typed date in a

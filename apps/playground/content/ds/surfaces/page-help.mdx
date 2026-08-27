@@ -1,0 +1,118 @@
+---
+title: Page guide
+description: A persistent, page-aware panel explaining where the reader is and what they can do there.
+tags: component, reference
+status: stable
+---
+
+import { PageHelpDemo } from '@/components/docs/demos/guide-demos'
+
+## Anatomy
+
+<PageHelpDemo />
+
+A launcher pinned to the bottom-right of the content area, and a panel that grows out of
+it. The panel carries a title, a summary, and two collapsible sections: **Concepts** (the
+vocabulary the page assumes) and **What you can do** (the actions available here).
+
+Labelled **Guide** with a lightbulb, not "Help" with a question mark. A `?` in a corner is
+the universal support affordance, and this panel reaches no one: it explains the page the
+reader is already on. Promising support and delivering a glossary is worse than not
+offering it.
+
+## Variants
+
+There are none. The panel's shape is fixed; what varies is the content passed to it.
+
+Two properties change what appears:
+
+- `docHref` adds a link out to full documentation, pinned below the scroll region.
+- `highlight` marks the launcher with a dot until it has been opened once. A marker rather
+  than a timed tooltip, because the reader may look away at the moment a tooltip would
+  appear.
+
+## Element variations
+
+A topic can carry two optional extras, and both are earned rather than default.
+
+`icon` — only when the topic already **has** an established glyph elsewhere in the
+product, so the reader meets the same mark here and on the control they are about to use.
+That is recognition. A glyph invented for a concept ("what is quorum?") is decoration, and
+it competes with the serif title for the same job.
+
+`action` — a way to go and do the thing just explained. Rendered at the end of the
+expanded body, never on the collapsed row: on the row it makes the panel a second launcher
+competing with the page's own toolbar, but after the explanation it reads as "now that you
+know what this is, here is the door".
+
+## Motion
+
+The panel scales from `0.95` and rises `8px` out of the launcher's corner over 200ms, and
+the launcher is replaced by it rather than sitting alongside, so the button reads as
+becoming the panel.
+
+Topics reveal with a `grid-template-rows` collapse from `0fr` to `1fr` rather than a
+conditional render. A mounted element has no start state to transition from, so a
+conditional render can only pop.
+
+## Use something else when
+
+- **It explains one control.** `HelpExpander`, beside the control. This panel is for
+  orientation before the reader has understood the page at all.
+- **The reader needs it to finish the task.** Put it on the page. Anything behind a
+  launcher is optional by construction.
+- **There is nothing to define.** A section whose content is self-evident should render no
+  launcher. An absent button beats one that opens to say "this is the overview".
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Title topics with words the reader has seen on screen: "Why does a movement need
+      approval?"
+    </Do>
+    <Dont>
+      Ask "What is quorum?" — a title naming the term it defines is useless to anyone who
+      does not already know it, so they never open it.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Keep the content registry as data, resolving actions by key at render time.
+    </Do>
+    <Dont>
+      Put handlers in the registry. An unwired key should render no button, which is what
+      lets coverage grow one section at a time.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="title" type="string">
+    The panel heading. "About &lt;thing the reader sees&gt;", matching the nav.
+  </Prop>
+  <Prop name="summary" type="ReactNode">
+    One or two sentences on what the page is for.
+  </Prop>
+  <Prop name="concepts" type="HelpTopic[]">
+    Vocabulary the page assumes the reader already has.
+  </Prop>
+  <Prop name="actions" type="HelpTopic[]">
+    What the reader can do here.
+  </Prop>
+  <Prop name="highlight" type="boolean" default="false">
+    Marks the launcher until the panel has been opened once.
+  </Prop>
+  <Prop name="onOpen" type="() => void">
+    Fired on first open, so a caller can clear `highlight`.
+  </Prop>
+  <Prop name="launcherReveal" type="'hidden' | 'chrome' | 'full'" default="'full'">
+    Staged reveal, for when a `SectionIntro` animates into this position.
+  </Prop>
+  <Prop name="docHref" type="string">
+    Optional link to full documentation.
+  </Prop>
+</PropsTable>

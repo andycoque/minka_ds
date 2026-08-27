@@ -94,6 +94,78 @@ function ColorTokens({
 }
 
 /**
+ * Brand pairs: one row per PAIR, not per token.
+ *
+ * A flat list of ten tokens is the wrong shape here. The pairing is the whole point of
+ * the layer, and alternating "Fill." / "Ink on that fill." rows make the reader
+ * reconstruct it from the token names. So each row is one decision, and the two halves
+ * are shown doing their job — the swatch is the light half with the dark half's ink on
+ * top, which is exactly what a diagram node is.
+ *
+ * Both directions are drawn because consumers use both: `ProcessDiagram` flips to
+ * dark-as-fill via `accentInverted`, so light is not always the ground. Calling one half
+ * "the fill" would be a convention the code does not actually follow.
+ */
+function PairTokens({ pairs }: { pairs: { pair: string; use: string }[] }) {
+  const names = pairs.flatMap(p => [
+    `--color-pair-${p.pair}-light`,
+    `--color-pair-${p.pair}-dark`,
+  ])
+  const resolved = useResolved(names)
+
+  return (
+    <div className="not-prose flex flex-col gap-3">
+      {pairs.map(p => {
+        const light = `--color-pair-${p.pair}-light`
+        const dark = `--color-pair-${p.pair}-dark`
+        return (
+          <div
+            key={p.pair}
+            className="overflow-hidden [border-radius:var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)]"
+          >
+            {/* The pair in use, both ways round. Two chips sharing an edge read as one
+                thing with two sides; two separate table rows never will. */}
+            <div className="flex">
+              <div
+                className="flex flex-1 items-center justify-center py-4 text-body-sm"
+                style={{ backgroundColor: `var(${light})`, color: `var(${dark})` }}
+              >
+                Dark on light
+              </div>
+              <div
+                className="flex flex-1 items-center justify-center py-4 text-body-sm"
+                style={{ backgroundColor: `var(${dark})`, color: `var(${light})` }}
+              >
+                Light on dark
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 border-t border-[var(--color-border-subtle)] p-3">
+              <span className="text-caption text-[var(--color-text-muted)]">{p.use}</span>
+              {/* The suffix is split out so the shared stem reads as the decision and
+                  -light / -dark as the two halves of it. */}
+              <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
+                {[light, dark].map(name => (
+                  <span key={name} className="flex min-w-0 items-baseline gap-2">
+                    <span
+                      aria-hidden
+                      className="size-3 shrink-0 translate-y-0.5 rounded-[3px] border border-[var(--color-border-default)]"
+                      style={{ backgroundColor: `var(${name})` }}
+                    />
+                    <TokenName>{name}</TokenName>
+                    <Resolved value={resolved?.[name]} />
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+/**
  * Non-colour tokens: radii, shadows, z-indices, spacing. Each renders a specimen the
  * token actually drives, so the value is visible rather than only stated.
  */
@@ -179,4 +251,4 @@ function Ramp({ family, steps }: { family: string; steps: number[] }) {
   )
 }
 
-export { ColorTokens, ScaleTokens, Ramp }
+export { ColorTokens, PairTokens, ScaleTokens, Ramp }

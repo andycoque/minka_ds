@@ -12,7 +12,7 @@ import { HelpExpanderDemo } from '@/components/docs/demos/batch4-demos'
 <HelpExpanderDemo />
 
 The default trigger is a circular question mark beside a heading, which is where all
-seven studio usages put it.
+six studio usages put it.
 
 ## Variants
 
@@ -26,11 +26,17 @@ including inside a dialog or a table cell. Use it unless you have a reason not t
 `inset` expands the card inside the nearest positioned container and frosts what is
 behind it.
 
-In practice it means **one place: a dialog's left panel.** All six uses in the product
-are there, each with `anchor="bottom-right"`, filling the space below a creation flow's
-preview card. It needs a positioned container with room to grow into, and the panel is
-the only surface that reliably has one — elsewhere the card either has nowhere to expand
-or covers the content the reader is working with.
+In practice it means **one place: the left panel of a dialog or a wizard.** All six uses
+in the product are there, sitting below the panel's preview or illustration and filling
+the space underneath it. Four are in dialogs, two in wizards.
+
+That is not a coincidence about where it happens to be used. `inset` expands into the
+nearest positioned container, so it needs one with room to grow into, and a side panel is
+the only surface that reliably has both: it is tall, it is not where the reader is
+typing, and the space under a preview card is otherwise dead. Elsewhere the card either
+has nowhere to expand or covers the fields being filled in.
+
+All six pass `anchor="bottom-right"`, which is already the default and can be omitted.
 
 ## Use something else when
 
@@ -53,8 +59,8 @@ or covers the content the reader is working with.
   </Rule>
   <Rule>
     <Do>
-      Use `inset` in a dialog's left panel, anchored bottom-right. That is what it was
-      built for and where every use of it lives.
+      Use `inset` in the left panel of a dialog or wizard, under the preview. That is
+      what it was built for and where all six uses live.
     </Do>
     <Dont>
       Use `inset` anywhere else. Outside a panel there is no positioned container with
@@ -74,6 +80,10 @@ or covers the content the reader is working with.
   </Prop>
   <Prop name="mode" type="'popover' | 'inset'" default="'popover'">
     See [Variants](#variants).
+  </Prop>
+  <Prop name="anchor" type="'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'" default="'bottom-right'">
+    Which corner of the panel an `inset` card grows out of. Every studio use takes the
+    default.
   </Prop>
   <Prop name="trigger" type="{ icon?: ReactNode; label?: string }">
     Overrides the default question mark. A `label` makes it a text trigger.

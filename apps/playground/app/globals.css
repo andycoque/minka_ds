@@ -9,6 +9,7 @@
 /* Primitives — raw scale values, source of truth */
 @import "../tokens/primitives.css";
 @import "../tokens/gradients.css";
+@import "../tokens/utilities.css";
 
 @custom-variant dark (&:is(.dark *));
 

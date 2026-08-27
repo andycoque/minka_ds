@@ -1,0 +1,110 @@
+---
+title: Section intro
+description: A first-visit takeover that explains a section's model, then hands the reader to its guide.
+tags: component, reference
+status: stable
+---
+
+import { SectionIntroDemo } from '@/components/docs/demos/guide-demos'
+
+## Anatomy
+
+<SectionIntroDemo />
+
+Replaces a section's content the first time someone arrives: a lightbulb, a welcome
+heading, the section's summary, three cards, and one call to action.
+
+The cards should explain the **mental model**, not tour the tabs. Tabs are discoverable on
+their own; the model is not. Each card pairs a mock of what the reader is about to see with
+one concept and its consequence.
+
+## Variants
+
+None. What varies is the three cards.
+
+## Element variations
+
+Card mocks should be built from the **real components** the reader will meet, not shapes
+that resemble them. The purpose of a card is recognition when the section fades in behind
+it, and an approximation teaches a layout that does not exist.
+
+A mock may animate when the idea is a change rather than a state: a balance that rises and
+falls needs motion, a table does not. Prefer one animated card in a set — three competing
+loops fight for the attention the copy needs.
+
+## Motion
+
+Entry staggers title, then bulb and summary together, then each card, then the button, on
+`transition-delay` rather than chained timers so a slow render cannot desync it.
+
+On continue, three separated beats:
+
+| Time | What happens |
+| --- | --- |
+| 0 → 900ms | The bulb travels to the guide launcher's corner and settles |
+| 900ms | The launcher's chrome appears around it, as a square, with a dot texture spreading behind |
+| 1250ms | Its icon and label follow, and the square widens to fit them |
+| 1950ms | The section is handed back and fades in |
+
+That last gap is the point. Handing back as the label appears drops the content on top of
+a gesture still in progress and cuts the arrival off mid-sentence.
+
+The bulb is measured, not assumed: it queries
+`[data-slot="page-help-launcher"]` for its target, because the launcher is fixed to the
+viewport with responsive insets. With no launcher on the route, the flight is skipped
+rather than animating to nowhere.
+
+## Use something else when
+
+- **The section reads as what it is.** A list of users is a list of users. A blocking
+  takeover before every table is a toll, not an onboarding.
+- **Only one concept needs explaining.** A guide topic, or a `HelpExpander`.
+
+Reserve this for sections a first-time reader would **misread**, not merely find
+unfamiliar: money appearing from nowhere, a credential that is not a person, two different
+things both called keys.
+
+## Do and don't
+
+<DoDont>
+  <Rule>
+    <Do>
+      Gate it per section, and let a preview query parameter force it open so it can be
+      reviewed without clearing storage.
+    </Do>
+    <Dont>
+      Write the dismissal flag in preview mode. It then shows once and cannot be seen
+      again without devtools.
+    </Dont>
+  </Rule>
+  <Rule>
+    <Do>
+      Let the arrival finish before handing the section back, and fade the content in.
+    </Do>
+    <Dont>
+      Swap the takeover for the content directly. With no entry transition it appears at
+      full opacity instantly, which reads as a jump however well the flight is timed.
+    </Dont>
+  </Rule>
+</DoDont>
+
+## Props
+
+<PropsTable>
+  <Prop name="title" type="string">
+    The section name as the nav calls it. Prefixed with a dimmed "Welcome to".
+  </Prop>
+  <Prop name="summary" type="string">
+    Reuses the guide's summary, so the two say the same thing. Split at the first colon.
+  </Prop>
+  <Prop name="cards" type="SectionIntroCard[]">
+    Three reads best; more and the row stops scanning.
+  </Prop>
+  <Prop name="onLauncherStage" type="(stage) => void">
+    Drives the guide launcher's staged reveal. A callback rather than a context read, so
+    the component does not need to know how an app wires its shell.
+  </Prop>
+  <Prop name="onDone" type="() => void">
+    Called once the arrival has settled.
+  </Prop>
+</PropsTable>

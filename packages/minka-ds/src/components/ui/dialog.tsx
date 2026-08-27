@@ -103,8 +103,23 @@ function DialogPanel({
   className,
   placement = "side",
   inset = false,
+  texture = false,
   ...props
-}: React.ComponentProps<"div"> & { placement?: PanelPlacement; inset?: boolean }) {
+}: React.ComponentProps<"div"> & {
+  placement?: PanelPlacement
+  inset?: boolean
+  /**
+   * The 8px line-grid stage used by every creation flow's panel.
+   *
+   * Promoted from 15 hand-rolled copies across studio: it was always the same panel with
+   * the same grid, so it was one design decision repeated by hand rather than fifteen
+   * decisions. Two call sites had already extracted it locally, which is the signal.
+   *
+   * Also sets the recessed fill the grid is drawn on, because the two always travelled
+   * together — the grid alone on `--color-bg-canvas` reads as noise rather than a surface.
+   */
+  texture?: boolean
+}) {
   return (
     <div
       data-slot="dialog-panel"
@@ -112,6 +127,7 @@ function DialogPanel({
       data-inset={inset || undefined}
       className={cn(
         "relative flex flex-col justify-center bg-[var(--color-bg-canvas)]",
+        texture && "ds-texture-grid bg-[var(--color-bg-base)]",
         // inset panels are tighter — the 8px frame already adds breathing room
         inset ? "p-5" : "p-7",
         // side: a column down the left; top: a banner across the top

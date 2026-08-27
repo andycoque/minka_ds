@@ -5,7 +5,7 @@ tags: token, reference
 icon: Palette
 ---
 
-import { ColorTokens, ScaleTokens } from '@/components/docs/token-table'
+import { ColorTokens, PairTokens, ScaleTokens } from '@/components/docs/token-table'
 
 The layer to build against. 234 tokens, each naming a job rather than a value:
 `--color-bg-raised`, not `--primitive-neutral-0`. A theme redefines these and nothing
@@ -127,23 +127,21 @@ family and for surfaces that carry brand rather than function.
 
 ### Pairs
 
-A pair is a light and a dark brand colour that belong together, so a diagram node can
-take a fill and its own legible ink from one decision instead of two.
+A pair is a light and a dark brand colour that hold contrast against each other. Take
+both halves from the same pair and a diagram node gets a ground and its own legible ink
+from one decision instead of two.
 
-Reach for a pair rather than picking two brand tokens yourself: the pairing is what
-guarantees the contrast holds.
+Either half can be the ground. `ProcessDiagram` uses light-on-dark for an emphasised
+node and dark-on-light everywhere else, so each row below shows the pair both ways
+round. Reach for a pair rather than picking two brand tokens yourself: the pairing is
+what guarantees the contrast holds in both directions.
 
-<ColorTokens tokens={[
-  { name: '--color-pair-yellow-darkforest-light', use: 'Fill.' },
-  { name: '--color-pair-yellow-darkforest-dark', use: 'Ink on that fill.' },
-  { name: '--color-pair-rose-coral-light', use: 'Fill.' },
-  { name: '--color-pair-rose-coral-dark', use: 'Ink on that fill.' },
-  { name: '--color-pair-blue-navy-light', use: 'Fill.' },
-  { name: '--color-pair-blue-navy-dark', use: 'Ink on that fill.' },
-  { name: '--color-pair-beige-bronze-light', use: 'Fill.' },
-  { name: '--color-pair-beige-bronze-dark', use: 'Ink on that fill.' },
-  { name: '--color-pair-gray-black-light', use: 'The neutral pair, for a node with no brand meaning.' },
-  { name: '--color-pair-gray-black-dark', use: 'Ink on that fill.' },
+<PairTokens pairs={[
+  { pair: 'yellow-darkforest', use: 'Default accent for a diagram node.' },
+  { pair: 'rose-coral', use: 'Warm accent.' },
+  { pair: 'blue-navy', use: 'Cool accent. Also the fallback for an emphasised node.' },
+  { pair: 'beige-bronze', use: 'Quiet accent, closest to the neutral grounds.' },
+  { pair: 'gray-black', use: 'The neutral pair, for a node with no brand meaning.' },
 ]} />
 
 ### Radius

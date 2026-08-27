@@ -13,6 +13,8 @@ export interface StatCardAction {
   label: string
   icon?: React.ReactNode
   onClick: () => void
+  /** Extra classes for this action's button, e.g. to show a driven pressed state. */
+  className?: string
 }
 
 interface StatCardBase {
@@ -31,7 +33,12 @@ export interface StatCardCountProps extends StatCardBase {
 
 export interface StatCardAmountProps extends StatCardBase {
   type: "amount"
-  value: string | number | null
+  /**
+   * The amount. A ReactNode is allowed so a caller can bring its own treatment (an
+   * animated counter, for instance) and still inherit the card's type and colour; `null`
+   * still means "no value" and renders the em dash.
+   */
+  value: React.ReactNode | null
   unit?: string
   percent?: number
   color?: StatCardColor
@@ -149,8 +156,8 @@ function StatCard(props: StatCardProps) {
           {secondary && <span className="text-caption text-[var(--color-text-muted)]">{secondary}</span>}
           {badge && <Badge variant="info">{badge}</Badge>}
         </div>
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-baseline gap-1.5">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+          <div className="flex min-w-0 items-baseline gap-1.5">
             {value === null ? (
               <span className="text-heading-1-serif text-[var(--color-text-disabled)]">—</span>
             ) : (
@@ -165,7 +172,7 @@ function StatCard(props: StatCardProps) {
           {actions && actions.length > 0 && (
             <div className="flex items-center gap-2 shrink-0">
               {actions.map((action, i) => (
-                <Button key={i} variant="outline" size="sm" onClick={action.onClick}>
+                <Button key={i} variant="outline" size="sm" onClick={action.onClick} className={action.className}>
                   {action.icon}{action.label}
                 </Button>
               ))}
