@@ -7,6 +7,8 @@ export { FullFrameTexture } from "./full-frame"
 export { FullHeightMTexture } from "./full-height-m"
 export { FullHeightSTexture } from "./full-height-s"
 export { FullWidthLTexture } from "./full-width-l"
+export { FullWidthRowsTexture } from "./full-width-rows"
+export { FullWidthPackedTexture } from "./full-width-packed"
 export { FullWidthMTexture } from "./full-width-m"
 export { FullWidthSTexture } from "./full-width-s"
 export { FullWidthXlTexture } from "./full-width-xl"
@@ -20,6 +22,8 @@ import { FullFrameTexture } from "./full-frame"
 import { FullHeightMTexture } from "./full-height-m"
 import { FullHeightSTexture } from "./full-height-s"
 import { FullWidthLTexture } from "./full-width-l"
+import { FullWidthRowsTexture } from "./full-width-rows"
+import { FullWidthPackedTexture } from "./full-width-packed"
 import { FullWidthMTexture } from "./full-width-m"
 import { FullWidthSTexture } from "./full-width-s"
 import { FullWidthXlTexture } from "./full-width-xl"
@@ -34,6 +38,10 @@ export const TEXTURES: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> =
   "full-height-m": FullHeightMTexture,
   "full-height-s": FullHeightSTexture,
   "full-width-l":  FullWidthLTexture,
+  // Same artwork with each row in its own group, for animating rows independently.
+  "full-width-rows": FullWidthRowsTexture,
+  // Fourteen rows for a denser field; see the component for how they are derived.
+  "full-width-packed": FullWidthPackedTexture,
   "full-width-m":  FullWidthMTexture,
   "full-width-s":  FullWidthSTexture,
   "full-width-xl": FullWidthXlTexture,

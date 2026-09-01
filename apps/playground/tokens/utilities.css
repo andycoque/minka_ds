@@ -34,7 +34,7 @@
     to   { opacity: 1 }
   }
   .ds-enter {
-    animation: ds-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: ds-enter 600ms cubic-bezier(0.33, 0, 0.67, 1) both;
   }
   @media (prefers-reduced-motion: reduce) {
     .ds-enter { animation: none }
@@ -61,8 +61,10 @@
   .ds-texture-dots {
     --ds-texture-size: 10px;
     --ds-texture-color: var(--color-text-hint);
+    /** Dot radius. Exposed so a caller can animate it — see the invite gate's pulse. */
+    --ds-texture-dot: 1px;
     background-image:
-      radial-gradient(circle, var(--ds-texture-color) 1px, transparent 1px);
+      radial-gradient(circle, var(--ds-texture-color) var(--ds-texture-dot), transparent var(--ds-texture-dot));
     background-size: var(--ds-texture-size) var(--ds-texture-size);
   }
 

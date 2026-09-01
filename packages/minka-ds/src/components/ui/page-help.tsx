@@ -175,12 +175,66 @@ function PageHelp({
   // reader comparing two concepts can hold both open instead of losing the first.
   const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set())
 
+  // Rows register themselves so an expanding one can be scrolled into view.
+  const rowRefs = React.useRef(new Map<string, HTMLDivElement>())
+
   const toggle = React.useCallback((id: string) => {
+    let opening = false
     setExpanded(prev => {
       const next = new Set(prev)
-      if (!next.delete(id)) next.add(id)
+      if (next.delete(id)) opening = false
+      else {
+        next.add(id)
+        opening = true
+      }
       return next
     })
+    if (!opening) return
+
+    // Expanding IS the reader saying they want to read this, so bring the answer into
+    // view rather than leaving them to scroll for it.
+    //
+    // Waited out rather than measured immediately: the body reveals over a 200ms
+    // grid-rows animation, so its height is still 0 on the frame the class flips and
+    // scrolling now would aim at the collapsed position. 260ms clears the animation.
+    window.setTimeout(() => {
+      const row = rowRefs.current.get(id)
+      const box = scrollRef.current
+      if (!row || !box) return
+
+      const rowRect = row.getBoundingClientRect()
+      const boxRect = box.getBoundingClientRect()
+      // Only act when the row actually overflows the panel. A row already fully visible
+      // needs no help, and scrolling it anyway would move content out from under the
+      // reader's eye for no reason.
+      const overflow = rowRect.bottom - boxRect.bottom
+      if (overflow <= 0) return
+
+      // Scroll by the overflow, but never so far that the row's own title leaves the top
+      // of the panel: for a body taller than the panel, land on the title with the answer
+      // running below it.
+      //
+      // This was a Math.min against the row's offset, which is wrong whenever the row
+      // starts at or above the panel's top edge — that offset is then NEGATIVE, min picks
+      // it, and the panel scrolls to 0 instead of moving. Which was most of the time.
+      // Scroll by the overflow, so the answer's end clears the fold.
+      const byOverflow = box.scrollTop + overflow + 12
+      // ...but never past the row's own title. That cap only applies when the title is
+      // still BELOW the panel's top edge; a row already at or above the top has nothing
+      // to be capped against, and treating its offset as a ceiling pinned the panel at 0.
+      const titleOffset = box.scrollTop + (rowRect.top - boxRect.top)
+      const target =
+        rowRect.top > boxRect.top ? Math.min(byOverflow, titleOffset) : byOverflow
+
+      box.scrollTo({
+        top: target,
+        // Smooth is the point of the gesture, but it is still motion: a reader who has
+        // asked for less gets taken there directly.
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      })
+    }, 260)
   }, [])
 
   // Close on Escape. A panel pinned to the viewport has no outside edge to click past on
@@ -327,7 +381,14 @@ function PageHelp({
                   const id = `${section.key}:${i}`
                   const isOpen = expanded.has(id)
                   return (
-                    <div key={id} className="flex flex-col">
+                    <div
+                      key={id}
+                      ref={el => {
+                        if (el) rowRefs.current.set(id, el)
+                        else rowRefs.current.delete(id)
+                      }}
+                      className="flex flex-col"
+                    >
                       <button
                         type="button"
                         aria-expanded={isOpen}
