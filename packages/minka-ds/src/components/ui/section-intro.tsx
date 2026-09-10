@@ -78,8 +78,15 @@ interface SectionIntroCard {
 type LauncherStage = "hidden" | "chrome" | "full"
 
 interface SectionIntroProps {
-  /** The section name as the nav calls it. Prefixed with a dimmed "Welcome to". */
+  /** The section name as the nav calls it. Rendered full-strength after `greeting`. */
   title: string
+  /**
+   * The dimmed lead-in before `title`, e.g. "Welcome to ". Trailing space is
+   * significant. Exposed as a prop so a translation layer can localise it: it
+   * used to be a literal in the markup, invisible to string extraction. Pass ""
+   * to drop the lead-in entirely.
+   */
+  greeting?: string
   /** Reuses the guide's summary, so the two say the same thing. Split at the first colon. */
   summary: string
   /** Exactly three reads best; more and the row stops scanning. */
@@ -98,6 +105,7 @@ interface SectionIntroProps {
 
 function SectionIntro({
   title,
+  greeting = "Welcome to ",
   summary,
   cards,
   onLauncherStage,
@@ -237,7 +245,9 @@ function SectionIntro({
           style={reveal(entered, DELAYS.title).style}
         >
           {/* Dimmed greeting, full-strength noun: the section name is the subject. */}
-          <span className="text-[var(--color-text-muted)]">Welcome to </span>
+          {greeting && (
+            <span className="text-[var(--color-text-muted)]">{greeting}</span>
+          )}
           {title}
         </h1>
 

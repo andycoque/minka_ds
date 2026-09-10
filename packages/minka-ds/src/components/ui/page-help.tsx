@@ -53,14 +53,41 @@ interface HelpTopic {
   icon?: React.ReactNode
 }
 
+/**
+ * One eyebrow-labelled group of topics in the guide panel.
+ *
+ * The DS does not decide what the groups ARE or what they are called: a caller
+ * passes as many as it needs, each with its own `label`. This keeps the eyebrow
+ * text out of the component (translation layers only see caller strings) and
+ * lets a product add a third or fourth group without a DS change.
+ */
+interface PageHelpSection {
+  /** Stable id, for React keys and expand state. Not shown. */
+  key: string
+  /** The eyebrow shown above the group. Caller-owned, so translatable. */
+  label: string
+  topics: HelpTopic[]
+}
+
 interface PageHelpProps {
   /** What this page is, in the reader's words. Shown as the panel heading. */
   title: string
   /** One or two sentences on what the page is for, above the sections. */
   summary?: React.ReactNode
-  /** Vocabulary the page assumes the reader already has. */
+  /**
+   * The topic groups, in render order. Each carries its own eyebrow `label`.
+   * Empty groups are dropped. Preferred over `concepts`/`actions`.
+   */
+  sections?: PageHelpSection[]
+  /**
+   * @deprecated Pass `sections` instead. Kept as a shortcut: when `sections` is
+   * omitted, a non-empty `concepts` becomes a group labelled "Concepts" and
+   * `actions` one labelled "What you can do". Those two literals are the reason
+   * `sections` exists — a caller that needs them translated should pass
+   * `sections` with its own labels.
+   */
   concepts?: HelpTopic[]
-  /** What the reader can actually do here. */
+  /** @deprecated See `concepts`. */
   actions?: HelpTopic[]
   /**
    * Draws attention to the launcher until it has been opened once.
@@ -93,6 +120,7 @@ interface PageHelpProps {
 function PageHelp({
   title,
   summary,
+  sections: sectionsProp,
   concepts = [],
   actions = [],
   highlight = false,
@@ -254,10 +282,15 @@ function PageHelp({
     if (!open) setExpanded(new Set())
   }, [open])
 
-  const sections: { key: string; label: string; topics: HelpTopic[] }[] = [
-    { key: "concepts", label: "Concepts", topics: concepts },
-    { key: "actions", label: "What you can do", topics: actions },
-  ].filter(s => s.topics.length > 0)
+  const sections: PageHelpSection[] = (
+    sectionsProp ?? [
+      // Fallback only. New callers pass `sections` with their own labels; these
+      // two strings are exactly what a translated build must not inherit from
+      // the DS.
+      { key: "concepts", label: "Concepts", topics: concepts },
+      { key: "actions", label: "What you can do", topics: actions },
+    ]
+  ).filter(section => section.topics.length > 0)
 
   return (
     <div
@@ -594,4 +627,4 @@ function maskFor({ top, bottom }: { top: boolean; bottom: boolean }): string | u
 }
 
 export { PageHelp }
-export type { PageHelpProps, HelpTopic }
+export type { PageHelpProps, PageHelpSection, HelpTopic }

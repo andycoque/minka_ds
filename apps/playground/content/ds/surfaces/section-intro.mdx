@@ -92,7 +92,11 @@ things both called keys.
 
 <PropsTable>
   <Prop name="title" type="string">
-    The section name as the nav calls it. Prefixed with a dimmed "Welcome to".
+    The section name as the nav calls it. Rendered full-strength after `greeting`.
+  </Prop>
+  <Prop name="greeting" type="string" default={`"Welcome to "`}>
+    The dimmed lead-in before `title`. Trailing space is significant. A prop, not
+    a literal, so a translation layer can localise it. Pass `""` to drop it.
   </Prop>
   <Prop name="summary" type="string">
     Reuses the guide's summary, so the two say the same thing. Split at the first colon.

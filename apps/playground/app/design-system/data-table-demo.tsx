@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
-import { DataTable, DataTableColumnHeader } from "@/components/ui/data-table"
+import { Button, DataTable, DataTableColumnHeader, DataTableEmpty } from "@/components/ui/data-table"
 import { TextStack, DataCell, AmountCell } from "@/components/ui/cell"
 
 type Client = {
@@ -158,6 +158,30 @@ export function DataTableDemo() {
           data={data}
           variant="compact"
           persistenceKey="playground-demo-columns"
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <p className="text-caption text-[var(--color-text-muted)]">
+          With <code className="text-code">emptyState</code> — an empty{" "}
+          <code className="text-code">data</code> array shows this instead of the
+          table.
+        </p>
+        <DataTable
+          columns={linearColumns}
+          data={[]}
+          variant="compact"
+          emptyState={
+            <DataTableEmpty
+              title="No issues match"
+              description="4 issues are hidden by the filters you selected."
+              actions={
+                <Button variant="outline" size="sm">
+                  Clear filters
+                </Button>
+              }
+            />
+          }
         />
       </div>
     </div>

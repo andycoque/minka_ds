@@ -59,13 +59,10 @@ function PageHelpDemo() {
             nav rather than the component&apos;s own name.
           </Part>
           <Part name="summary">What the page is for, in one or two sentences.</Part>
-          <Part name="concepts">
-            Vocabulary the page assumes. Titled by what the reader has seen on screen, not
-            by the term being defined.
-          </Part>
-          <Part name="actions">
-            What the reader can do. A topic may carry an entry point, rendered at the end of
-            its body.
+          <Part name="sections">
+            The topic groups, in order. Each has its own eyebrow <code>label</code> and a
+            list of <code>topics</code>. The component does not name the groups; the caller
+            does, so the labels are translatable and a product can add a third group.
           </Part>
           <Part name="highlight" optional>
             Marks the launcher until it has been opened once.
@@ -80,8 +77,10 @@ function PageHelpDemo() {
           <PageHelp
             title="About liquidity"
             summary="Where you watch and move funds across the ledger: what each participant holds, what is waiting on approval, and what has already settled."
-            concepts={CONCEPTS}
-            actions={ACTIONS}
+            sections={[
+              { key: "concepts", label: "Concepts", topics: CONCEPTS },
+              { key: "actions", label: "What you can do", topics: ACTIONS },
+            ]}
             highlight={state.highlight === true}
           />
         </div>

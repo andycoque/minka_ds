@@ -32,6 +32,48 @@ A column with `id: "actions"` is **auto-pinned**: never hidden, never listed in 
 toggle. Pin any other column with `enableHiding: false` on its `ColumnDef` — a table
 whose identifying column can be hidden leaves rows nobody can tell apart.
 
+## Empty state
+
+By default an empty table shows a bare "No results." row. Pass an `emptyState`
+to say something useful instead: what the table is empty of, and what to do
+about it. When `data` is empty and `emptyState` is set, it replaces the table
+entirely, headers included, since a header row invites sorting and filtering a
+table that has nothing in it.
+
+`<DataTableEmpty>` gives the standard layout: a muted icon in a circle, a
+heading, an optional line of explanation, and an optional row of actions. It is
+presentational only. Deciding *why* the table is empty, and wording it, is the
+page's job.
+
+```tsx
+<DataTable
+  columns={columns}
+  data={rows}
+  emptyState={
+    <DataTableEmpty
+      title="No API keys match"
+      description="2 keys are hidden by the filters you selected."
+      actions={<Button variant="outline" size="sm" onClick={clearFilters}>Clear filters</Button>}
+    />
+  }
+/>
+```
+
+<PropsTable>
+  <Prop name="title" type="ReactNode">
+    Required. The one-line statement of what is empty.
+  </Prop>
+  <Prop name="description" type="ReactNode">
+    An optional second line: the cause, or what to do next.
+  </Prop>
+  <Prop name="icon" type="ReactNode">
+    Overrides the default ghost outline. Pass a sized lucide icon.
+  </Prop>
+  <Prop name="actions" type="ReactNode">
+    A row of buttons, typically `outline` `size="sm"`. Omit for a stateless empty.
+  </Prop>
+</PropsTable>
+
 ## Batched rendering
 
 Rows render `batchSize` at a time (40 by default) and extend as you scroll. This is not
@@ -109,5 +151,10 @@ different interaction — one the product does not currently use.
   <Prop name="persistenceKey" type="string">
     Persists column visibility to localStorage, namespaced as
     `minka-ds:datatable:{key}`.
+  </Prop>
+  <Prop name="emptyState" type="ReactNode">
+    Shown in place of the whole table (headers included) when `data` is empty.
+    Pass a `<DataTableEmpty>` for the standard treatment. Omit for a plain
+    "No results." row.
   </Prop>
 </PropsTable>

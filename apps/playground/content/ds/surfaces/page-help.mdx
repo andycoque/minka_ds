@@ -97,11 +97,17 @@ conditional render can only pop.
   <Prop name="summary" type="ReactNode">
     One or two sentences on what the page is for.
   </Prop>
-  <Prop name="concepts" type="HelpTopic[]">
-    Vocabulary the page assumes the reader already has.
+  <Prop name="sections" type="PageHelpSection[]">
+    The topic groups, in render order. Each is `{ key, label, topics }` — the
+    caller owns the eyebrow `label`, so it is translatable and a product can add
+    a third group without a DS change. Empty groups are dropped.
   </Prop>
-  <Prop name="actions" type="HelpTopic[]">
-    What the reader can do here.
+  <Prop name="concepts" type="HelpTopic[]" deprecated>
+    Shortcut for a group labelled "Concepts", used only when `sections` is
+    omitted. Prefer `sections`.
+  </Prop>
+  <Prop name="actions" type="HelpTopic[]" deprecated>
+    Shortcut for a group labelled "What you can do". Prefer `sections`.
   </Prop>
   <Prop name="highlight" type="boolean" default="false">
     Marks the launcher until the panel has been opened once.

@@ -150,7 +150,11 @@ function FilterCombobox({
 
     if (cat.type === "hours") {
       setSelectedCategory(cat)
-      setSelectedValues(new Set())
+      // Seeded, not cleared, so the active window can show a check. A custom
+      // range is stored on this same category as a HoursValue object rather
+      // than a string, so filtering to strings leaves it out: it belongs to the
+      // Custom range row, not to any preset.
+      setSelectedValues(new Set(existing.filter((v): v is string => typeof v === "string")))
       setHoursInput("")
       setHoursInputTo("")
       setSearch("")
@@ -387,8 +391,8 @@ function FilterCombobox({
                       {selectedCategory.type === "hours" || singleSelect ? (
                         <PickerRow
                           onClick={() => { onApply(selectedCategory.id, [value]); handleClose() }}
-                          selected={singleSelect && selectedValues.has(value)}
-                          hideChevron={singleSelect}
+                          selected={selectedValues.has(value)}
+                          hideChevron
                         >
                           {selectedCategory.renderValue?.(value) ?? value}
                         </PickerRow>
