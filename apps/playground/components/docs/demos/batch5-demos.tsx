@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   Badge,
+  Button,
   DataCell,
   DataTable,
   Skeleton,
@@ -16,6 +17,7 @@ import {
 // From TanStack, not the DS: DataTable takes its column definitions directly, which
 // is also how every studio list page imports this type.
 import { type ColumnDef } from "@tanstack/react-table"
+import { Plus } from "lucide-react"
 import { Anatomy, Part } from "@/components/docs/anatomy"
 import { Code } from "@/components/docs/code"
 import { Playground, type Control } from "@/components/docs/playground"
@@ -177,7 +179,12 @@ function TabsDemo() {
       )}
     >
       {(state) => (
-        <Tabs defaultValue="all" className="w-full max-w-md">
+        // max-w-md only, no w-full: the stage centers its child by giving the extra
+        // space to flex's justify-center, which only works when the child actually
+        // has a natural width narrower than the cap for that space to exist. w-full
+        // claims the whole row up front and leaves nothing for justify-center to
+        // center.
+        <Tabs defaultValue="all" className="max-w-md">
           <TabsList variant={String(state.variant) as "default" | "subtle" | "line"}>
             {/* TabCount, not Badge: the liquidity tabs use it, and it is a fixed-size
                 circle built for this slot. */}
@@ -191,22 +198,76 @@ function TabsDemo() {
               Failed{state.counts ? <TabCount count={2} /> : null}
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="all">
-            <p className="pt-3 text-body-sm text-[var(--color-text-muted)]">
-              Every transaction in the period.
-            </p>
-          </TabsContent>
-          <TabsContent value="pending">
-            <p className="pt-3 text-body-sm text-[var(--color-text-muted)]">
-              Waiting on a participant.
-            </p>
-          </TabsContent>
-          <TabsContent value="failed">
-            <p className="pt-3 text-body-sm text-[var(--color-text-muted)]">
-              Rejected or timed out.
-            </p>
-          </TabsContent>
+          <TabsContent value="all" />
+          <TabsContent value="pending" />
+          <TabsContent value="failed" />
         </Tabs>
+      )}
+    </Playground>
+  )
+}
+
+// ── Tabs, overflow ────────────────────────────────────────────────────────────
+
+/**
+ * Five is the sane ceiling for a tab row — past that a reader is scanning, not
+ * choosing. This is the fallback for a caller who does not get to pick their tab
+ * count: a client-configured intent list, a data-driven set of statuses. Not a
+ * layout to design toward.
+ *
+ * Fixed narrow width rather than the reader's own viewport, so the overflow is
+ * guaranteed to show regardless of how wide their window happens to be. Content
+ * is the shape that surfaced this — intent types plus a "Create X intent" CTA,
+ * the servibanca case that this behavior was built for.
+ */
+const OVERFLOW_TABS = ["P2P push", "P2B push", "Wallet limit", "Withdraw", "Top-up", "Destroy"]
+
+const OVERFLOW_CONTROLS: Control[] = [
+  { type: "toggle", name: "withCTA", label: "With a CTA beside it", defaultValue: true },
+]
+
+function TabsOverflowDemo() {
+  return (
+    <Playground
+      controls={OVERFLOW_CONTROLS}
+      minHeight={140}
+      details={() => (
+        <Anatomy>
+          <Part name="scroll">
+            <Code>TabsList</Code> scrolls horizontally once its tabs no longer fit —
+            it never overlaps a neighbor or squeezes a trigger below its label.
+          </Part>
+          <Part name="fade">
+            A gradient mask on whichever edge still has tabs to scroll to. Neither
+            edge shows if everything already fits.
+          </Part>
+        </Anatomy>
+      )}
+    >
+      {(state) => (
+        <div
+          className={
+            state.withCTA
+              ? "flex w-[360px] items-center justify-between gap-3"
+              : "w-[360px]"
+          }
+        >
+          <Tabs defaultValue={OVERFLOW_TABS[0]} className="min-w-0">
+            <TabsList variant="subtle">
+              {OVERFLOW_TABS.map(label => (
+                <TabsTrigger key={label} value={label}>
+                  {label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+          {state.withCTA && (
+            <Button size="sm" className="shrink-0">
+              <Plus className="size-4" />
+              Create intent
+            </Button>
+          )}
+        </div>
       )}
     </Playground>
   )
@@ -346,4 +407,4 @@ function SkeletonDemo() {
   )
 }
 
-export { DataTableDemo, TabsDemo, BadgeDemo, SkeletonDemo }
+export { DataTableDemo, TabsDemo, TabsOverflowDemo, BadgeDemo, SkeletonDemo }

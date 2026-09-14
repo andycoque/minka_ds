@@ -5,7 +5,7 @@ tags: component, reference
 status: stable
 ---
 
-import { TabsDemo } from '@/components/docs/demos/batch5-demos'
+import { TabsDemo, TabsOverflowDemo } from '@/components/docs/demos/batch5-demos'
 
 ## Anatomy
 
@@ -45,11 +45,27 @@ this slot, so a two-digit count does not change the tab's height.
 - **The views are different subjects.** Sidebar navigation or a route. Tabs imply
   "different angles on one thing"; using them across unrelated pages hides half the
   product inside a row nobody scans.
-- **There are more than about five.** A `Select`, or rethink the grouping. A tab row
-  that wraps or scrolls has stopped being a row.
+- **There are more than about five.** A `Select`, or rethink the grouping. Five is
+  where scanning turns into reading — design toward it, do not rely on the row's
+  own overflow handling as a substitute for that call.
 - **There is one tab.** Nothing, or a heading. A control with a single option is not a
   control — this is why the Signers page dropped its tab row when API keys were
   deferred.
+
+## When the count is not yours to choose
+
+`TabsList` scrolls horizontally rather than overlap a neighbor or clip its last tab.
+This exists for a caller with no say in how many tabs there are — a client's own
+configured intent types, a data-driven set of statuses — not as license to design
+past five on purpose. It is the fallback for when five was exceeded by the data, not
+a second way to lay out a tab row.
+
+<TabsOverflowDemo />
+
+The row scrolls; it does not shrink a trigger below its label or let the tabs push
+into whatever sits beside them (here, the create button). A gradient marks whichever
+edge still has tabs to scroll to, and disappears once there is nothing left in that
+direction.
 
 ## Do and don't
 
