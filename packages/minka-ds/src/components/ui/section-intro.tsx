@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { createPortal } from "react-dom"
 import { Lightbulb } from "lucide-react"
 import { Button } from "./button"
 import { cn } from "../../lib/utils"
@@ -137,6 +138,15 @@ function SectionIntro({
 
   function start() {
     const from = bulbRef.current?.getBoundingClientRect()
+    // Measured while the launcher is still "hidden": at that stage it is a
+    // fixed 40px (h-10, w-10) square, not yet the wider label-bearing pill it
+    // becomes once revealed. Flying to that SQUARE's center is deliberate —
+    // the button's own width-grow transition (380ms ease, already on the
+    // button) then visually carries the icon the rest of the way to its final
+    // spot once the chrome stage starts, right as this clone fades out. Flying
+    // instead to the EXPANDED button's center would require knowing its final
+    // width up front, which depends on the rendered label (and so on locale)
+    // and cannot be read without first rendering that expanded state.
     const target = document
       .querySelector('[data-slot="page-help-launcher"]')
       ?.getBoundingClientRect()
@@ -195,10 +205,22 @@ function SectionIntro({
         className="ds-texture-dots ds-texture-fade-up pointer-events-none absolute inset-x-0 bottom-0 h-1/2 opacity-30"
       />
 
-      {/* The travelling bulb, rendered OUTSIDE the fading wrapper: parent opacity
-          compounds onto children, so a bulb inside it would fade away mid-flight no
-          matter what opacity it carried itself. */}
-      {leaving && flight && origin && (
+      {/* The travelling bulb, portaled to `document.body`: this page's own route
+          content is wrapped by studio's `.ledger-in` mount animation, and even
+          once that animation finishes it leaves the wrapper's computed
+          `transform` at a resting identity matrix rather than `none` (an
+          `animation ... both` never releases the property). Per the CSS
+          spec, ANY non-`none` transform on an ancestor — including a resting
+          identity one — makes that ancestor the containing block for a
+          `position: fixed` descendant instead of the viewport. Left nested in
+          this tree, the clone's `fixed` coordinates would resolve against
+          that wrapper's box while its flight TARGET (the real launcher,
+          measured via `getBoundingClientRect`) is in true viewport
+          coordinates — two different coordinate systems producing a landing
+          spot that is off by a large, consistent amount at every viewport
+          size. The portal sidesteps the trap entirely rather than trying to
+          compensate for an ancestor this component does not own. */}
+      {leaving && flight && origin && typeof document !== "undefined" && createPortal(
         <span
           aria-hidden
           className="pointer-events-none fixed z-50 flex size-12 items-center justify-center text-[var(--color-text-muted)]"
@@ -213,7 +235,8 @@ function SectionIntro({
           }}
         >
           <Lightbulb className="size-12" />
-        </span>
+        </span>,
+        document.body
       )}
 
       <div

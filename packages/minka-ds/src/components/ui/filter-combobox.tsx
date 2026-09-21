@@ -28,6 +28,11 @@ interface FilterCategory {
   values?: string[]
   maxRangeDays?: number
   renderValue?: (value: string) => React.ReactNode
+  /** Restricts this one "list" category to picking a single value — e.g. when
+   *  the field queries a backend that only accepts one value at a time.
+   *  Overrides the component-level `singleSelect` prop for this category only;
+   *  other categories in the same dropdown stay multi-select. */
+  singleSelect?: boolean
 }
 
 type AmountValue   = { exact: number } | { min?: number; max?: number }
@@ -267,9 +272,8 @@ function FilterCombobox({
     handleClose()
   }
 
-  function toggleValue(value: string, singleSelect = false) {
+  function toggleValue(value: string) {
     setSelectedValues(prev => {
-      if (singleSelect) return prev.has(value) ? new Set() : new Set([value])
       const next = new Set(prev)
       next.has(value) ? next.delete(value) : next.add(value)
       return next
@@ -294,6 +298,8 @@ function FilterCombobox({
   const canApplyAmount = amountMode === "exact"
     ? amountExact !== "" && !isNaN(parseFloat(amountExact))
     : amountMin !== "" || amountMax !== ""
+
+  const isCategorySingleSelect = selectedCategory?.singleSelect ?? singleSelect
 
   // ── Render ───────────────────────────────────────────────────────────────────
 
@@ -388,7 +394,7 @@ function FilterCombobox({
                   ? <EmptyRow />
                   : step2Filtered.map(value => (
                     <li key={value}>
-                      {selectedCategory.type === "hours" || singleSelect ? (
+                      {selectedCategory.type === "hours" || isCategorySingleSelect ? (
                         <PickerRow
                           onClick={() => { onApply(selectedCategory.id, [value]); handleClose() }}
                           selected={selectedValues.has(value)}
@@ -413,7 +419,7 @@ function FilterCombobox({
                   </li>
                 )}
               </ul>
-              {selectedValues.size > 0 && selectedCategory.type !== "hours" && !singleSelect && (
+              {selectedValues.size > 0 && selectedCategory.type !== "hours" && !isCategorySingleSelect && (
                 <div className="p-1">
                   <Button size="sm" className="w-full" onClick={applyValues}>
                     Apply

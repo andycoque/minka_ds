@@ -72,6 +72,17 @@ export interface WizardProps {
   discardDescription?: string
   keepEditingLabel?: string
   discardLabel?: string
+  /** Footer's back-slot label on the first step, where Back has nothing to
+   *  return to and the action is really "leave the wizard". */
+  cancelLabel?: React.ReactNode
+  /** Footer's back-slot label on every step after the first. */
+  backLabel?: React.ReactNode
+  /** Forward action's label on every step except the last (which uses
+   *  `finishLabel` instead). */
+  nextLabel?: React.ReactNode
+  /** Step counter, e.g. "2 of 4". Receives the current 1-based step and the
+   *  total step count so a caller can localize word order, not just words. */
+  stepCounterLabel?: (current: number, total: number) => React.ReactNode
   className?: string
 }
 
@@ -101,6 +112,10 @@ export function Wizard({
   discardDescription = "Your progress won't be saved.",
   keepEditingLabel = "Keep editing",
   discardLabel = "Discard",
+  cancelLabel = "Cancel",
+  backLabel = "Back",
+  nextLabel = "Next",
+  stepCounterLabel = (current, total) => `${current} of ${total}`,
   className,
 }: WizardProps) {
   const [confirmDiscard, setConfirmDiscard] = React.useState(false)
@@ -291,15 +306,15 @@ export function Wizard({
       >
         {total > 1 && (
           <span className="text-caption text-[var(--color-text-muted)] sm:mr-auto">
-            {display} of {total}
+            {stepCounterLabel(display, total)}
           </span>
         )}
         {step > floor ? (
           <Button variant="ghost" onClick={handleBack}>
-            <ArrowLeft className="size-4" />Back
+            <ArrowLeft className="size-4" />{backLabel}
           </Button>
         ) : (
-          <Button variant="ghost" onClick={requestClose}>Cancel</Button>
+          <Button variant="ghost" onClick={requestClose}>{cancelLabel}</Button>
         )}
         {/* aria-disabled rather than disabled, so the click still lands and
             onNextBlocked can reveal the step's field errors. */}
@@ -308,7 +323,7 @@ export function Wizard({
           aria-disabled={forwardBlocked}
           className={forwardBlocked ? "opacity-50 cursor-not-allowed" : ""}
         >
-          {isLast ? finishLabel : "Next"}
+          {isLast ? finishLabel : nextLabel}
         </Button>
       </DialogFooter>
   )

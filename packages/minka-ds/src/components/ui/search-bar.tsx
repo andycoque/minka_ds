@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { PlusIcon, SearchIcon, XIcon } from "lucide-react"
+import { PlusIcon, SearchIcon, SlidersHorizontalIcon, XIcon } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 
 import { cn } from "../../lib/utils"
@@ -68,6 +68,24 @@ interface SearchBarProps {
   alwaysShowFilterBar?: boolean
   size?: "default" | "sm"
 
+  /**
+   * An escalation out of the plain text search, for criteria that do not fit
+   * a single query string — e.g. a field the real backend can only search as
+   * its own targeted column (an account number), not as part of a broad
+   * multi-column text match. Rendered as a ghost icon button at the end of
+   * the search input; clicking it reveals `advancedSearchContent` in its own
+   * row, directly below the input and above the filter bar. The plain search
+   * box and any active filters stay live the whole time — this only ADDS
+   * criteria, it never replaces the simple search.
+   *
+   * Left to the caller whether opening resets or preserves the fields: the
+   * transactions list, the first consumer, clears them on collapse so a
+   * hidden row can never keep silently narrowing results.
+   */
+  advancedSearchOpen?: boolean
+  onAdvancedSearchToggle?: () => void
+  advancedSearchContent?: React.ReactNode
+
   children?: React.ReactNode
   className?: string
 }
@@ -90,11 +108,15 @@ function SearchBar({
   filterValueLabel = defaultFilterValueLabel,
   alwaysShowFilterBar = false,
   size = "default",
+  advancedSearchOpen = false,
+  onAdvancedSearchToggle,
+  advancedSearchContent,
   children,
   className,
 }: SearchBarProps) {
   const hasActiveFilters = Object.values(activeFilters).some(v => v.length > 0)
   const showFilterBar    = hasActiveFilters || alwaysShowFilterBar
+  const hasAdvancedSearch = !!onAdvancedSearchToggle
 
   return (
     <div data-search-bar className={cn("relative flex flex-col", className)}>
@@ -103,7 +125,14 @@ function SearchBar({
       <InputGroup
         className={cn(
           size === "sm" ? "h-9" : "h-12",
-          showFilterBar && "[border-bottom-left-radius:0] [border-bottom-right-radius:0]"
+          (showFilterBar || advancedSearchOpen) &&
+            "[border-bottom-left-radius:0] [border-bottom-right-radius:0]",
+          // Only advanced search removes the divider below the input: the
+          // input and the advanced fields read as one continuous search
+          // surface. The regular state (just the filter bar below) keeps its
+          // divider — the filter bar is a distinct row of applied criteria,
+          // not part of the search itself, so the seam stays meaningful there.
+          advancedSearchOpen && "border-b-0"
         )}
       >
         <InputGroupAddon align="inline-start">
@@ -118,7 +147,7 @@ function SearchBar({
           onFocus={onFocus}
           autoComplete="off"
         />
-        {(!!value || (!value && !!kbdHint)) && (
+        {(!!value || (!value && !!kbdHint) || hasAdvancedSearch) && (
           <InputGroupAddon align="inline-end">
             {value && (
               <InputGroupButton size="sm" variant="ghost" onClick={() => onChange("")} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]">
@@ -126,9 +155,44 @@ function SearchBar({
               </InputGroupButton>
             )}
             {!value && kbdHint && <Kbd>{kbdHint}</Kbd>}
+            {hasAdvancedSearch && (
+              <InputGroupButton
+                size="icon-xs"
+                variant="ghost"
+                aria-label="Advanced search"
+                aria-pressed={advancedSearchOpen}
+                onClick={onAdvancedSearchToggle}
+                className={cn(
+                  "text-[var(--color-text-muted)] hover:text-[var(--color-text-default)]",
+                  advancedSearchOpen && "text-[var(--color-text-default)] bg-[var(--color-action-ghost-hover)]"
+                )}
+              >
+                <SlidersHorizontalIcon className="size-4" />
+              </InputGroupButton>
+            )}
           </InputGroupAddon>
         )}
       </InputGroup>
+
+      {/* Advanced search row — criteria that do not fit the plain text search
+          (a field the backend can only search as its own targeted column).
+          Sits directly below the input, above the filter bar: always visible
+          while open rather than a popover, and pushes the filter bar/table
+          down like the filter bar itself already does. */}
+      {advancedSearchOpen && (
+        <div
+          className={cn(
+            // Up to 3 fields per row, label beside its field rather than
+            // above it: each field is its own [label, input] pair, laid out
+            // as a 2-column sub-grid so every label takes only the width its
+            // own text needs and every input lines up with the others.
+            "grid grid-cols-1 gap-x-6 gap-y-3 border border-t-0 border-[var(--color-border-default)] bg-[var(--color-bg-raised)] px-3 py-2.5 sm:grid-cols-2 lg:grid-cols-3",
+            showFilterBar ? "" : "[border-bottom-left-radius:var(--radius-card)] [border-bottom-right-radius:var(--radius-card)]"
+          )}
+        >
+          {advancedSearchContent}
+        </div>
+      )}
 
       {/* Filter bar */}
       {showFilterBar && (

@@ -417,7 +417,7 @@ function DataTable<TData, TValue>({
       <div
         onScroll={handleScroll}
         data-slot={rowsEntering ? "data-table-rows-in" : undefined}
-        className="flex-1 min-h-0 overflow-auto rounded-[var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] [&_[data-slot=table-container]]:overflow-visible"
+        className="ds-scroll flex-1 min-h-0 overflow-auto rounded-[var(--radius-card)] border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] [&_[data-slot=table-container]]:overflow-visible"
       >
 
         <Table className={cn(

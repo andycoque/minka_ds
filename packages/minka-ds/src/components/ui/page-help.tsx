@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Lightbulb, X, ChevronRight, ArrowRight } from "lucide-react"
+import { Lightbulb, X, ChevronRight, ArrowRight, MessageCircle } from "lucide-react"
 import { cn } from "../../lib/utils"
 
 /**
@@ -114,6 +114,37 @@ interface PageHelpProps {
   /** Optional link out to full documentation. */
   docHref?: string
   docLabel?: string
+  /**
+   * Whether this ledger's support agreement includes live chat. Not every
+   * client's agreement covers it (or covers it 24/7), so the caller resolves
+   * that from its own ledger config rather than this component assuming
+   * chat is always on. Omitted or `false`: the launcher and panel render
+   * exactly as before, with no chat affordance anywhere.
+   */
+  chatEnabled?: boolean
+  /**
+   * Whether the reader already has a live conversation with support. While
+   * true, chat gets its OWN floating button next to the launcher instead of
+   * living inside the guide panel — a conversation already in progress is
+   * its own destination, not a sub-feature of the guide, and needs to stay
+   * reachable (and eventually show unread state) independent of whether the
+   * reader has the guide open. The merged "Guide and support" launcher
+   * reverts to plain "Guide" for the same reason: once chat has its own
+   * button, offering a second route to it from inside the guide would be
+   * redundant.
+   */
+  hasActiveConversation?: boolean
+  /**
+   * A support reply is waiting to be read. Only meaningful alongside
+   * `hasActiveConversation`, since the dot marks the conversation's own
+   * button — a separate red dot from `highlight`'s brand-coloured one,
+   * because the two mean different things: `highlight` nudges toward a
+   * feature the reader has not tried yet, this says something actually
+   * needs their attention.
+   */
+  hasUnreadReply?: boolean
+  /** Opens the support chat. Required when `chatEnabled` is true. */
+  onChatOpen?: () => void
   className?: string
 }
 
@@ -128,8 +159,16 @@ function PageHelp({
   launcherReveal = "full",
   docHref,
   docLabel = "Read the full documentation",
+  chatEnabled = false,
+  hasActiveConversation = false,
+  hasUnreadReply = false,
+  onChatOpen,
   className,
 }: PageHelpProps) {
+  // Chat only merges into the guide launcher/panel while there is no
+  // conversation yet to protect; once one exists it gets its own button.
+  const showMergedChat = chatEnabled && !hasActiveConversation
+  const showConversationButton = chatEnabled && hasActiveConversation
   const [open, setOpen] = React.useState(false)
 
   // Keep the panel mounted through its close transition, and only flip to the shown
@@ -331,6 +370,12 @@ function PageHelp({
           to   { opacity: 0;  transform: scale(1.6) }
         }
       `}</style>
+      {/* Launcher (or open panel) and the separate conversation button sit in
+          one horizontal row, not stacked in the outer column: they are two
+          independent entry points at the same corner, not a list. The outer
+          column itself stays `flex-col` because the PANEL, when open, is a
+          tall element that still needs to grow upward from this corner. */}
+      <div className="flex items-end gap-3">
       {mounted ? (
         <div
           role="dialog"
@@ -376,6 +421,21 @@ function PageHelp({
                 className="size-7 shrink-0 text-[var(--color-text-muted)]"
               />
               <h2 className="min-w-0 flex-1 text-heading-2-serif text-[var(--color-text-default)]">{title}</h2>
+              {/* Chat lives next to the close button, not the title: it is a
+                  separate action from "read the guide", and grouping it with
+                  Close keeps both quick-actions in the same reach. Only shown
+                  while chat is still merged into this panel — once a
+                  conversation is active it moves to its own floating button. */}
+              {showMergedChat && (
+                <button
+                  type="button"
+                  onClick={onChatOpen}
+                  aria-label="Start a conversation with support"
+                  className="flex size-7 shrink-0 self-start items-center justify-center [border-radius:var(--radius-button)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-action-ghost-hover)] hover:text-[var(--color-text-default)]"
+                >
+                  <MessageCircle className="size-4" />
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -566,7 +626,11 @@ function PageHelp({
           "relative flex h-10 shrink-0 items-center gap-2 [border-radius:var(--radius-button)]",
           "border border-[var(--color-border-default)] bg-[var(--color-bg-overlay)]",
           "text-body-sm text-[var(--color-text-default)] shadow-[var(--shadow-popover)]",
-          "hover:bg-[var(--color-bg-table-hover)]",
+          // A solid hover fill, not `--color-bg-table-hover` (a translucent
+          // wash meant for a row over an already-opaque table): this button
+          // sits directly over live page content, so a translucent hover
+          // would let that content show/shift through the button on hover.
+          "hover:bg-[var(--color-action-ghost-hover)]",
           "outline-none focus-visible:border-[var(--color-border-focus)] focus-visible:ring-[3px] focus-visible:ring-[var(--color-border-focus)]/50",
           // The chrome pops in with a slight overshoot so it reads as arriving rather than
           // fading up, THEN widens to fit its label. Width is animated separately with a
@@ -595,7 +659,7 @@ function PageHelp({
           )}
         >
           <Lightbulb className="size-4 shrink-0" />
-          <span className="hidden sm:inline">Guide</span>
+          <span className="hidden sm:inline">{showMergedChat ? "Guide and support" : "Guide"}</span>
         </span>
         {highlight && (
           <span
@@ -606,6 +670,42 @@ function PageHelp({
       </button>
         </>
       )}
+      {/* The conversation's own button, once one exists. Rendered alongside
+          the guide launcher/panel rather than instead of it (a live
+          conversation and "what is this page" are different needs the
+          reader can have at the same time), and outside the `mounted`
+          branch above so it stays reachable whether or not the guide panel
+          is open. */}
+      {showConversationButton && (
+        <button
+          type="button"
+          onClick={onChatOpen}
+          aria-label={
+            hasUnreadReply
+              ? "Continue your conversation with support: new reply"
+              : "Continue your conversation with support"
+          }
+          className={cn(
+            "relative flex size-10 shrink-0 items-center justify-center [border-radius:var(--radius-button)]",
+            "border border-[var(--color-border-default)] bg-[var(--color-bg-overlay)]",
+            "text-[var(--color-text-default)] shadow-[var(--shadow-popover)]",
+            // Same solid hover fill as the guide launcher, for the same reason:
+            // a translucent hover here would let the page content underneath
+            // show through this corner button.
+            "hover:bg-[var(--color-action-ghost-hover)]",
+            "outline-none focus-visible:border-[var(--color-border-focus)] focus-visible:ring-[3px] focus-visible:ring-[var(--color-border-focus)]/50"
+          )}
+        >
+          <MessageCircle className="size-4 shrink-0" />
+          {hasUnreadReply && (
+            <span
+              aria-hidden
+              className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full bg-[var(--color-feedback-error)] ring-2 ring-[var(--color-bg-overlay)]"
+            />
+          )}
+        </button>
+      )}
+      </div>
     </div>
   )
 }
