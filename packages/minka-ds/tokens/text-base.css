@@ -1,0 +1,128 @@
+/* ── Base text scale ─────────────────────────────────────────────────────────
+   The starting point for a consuming app's own type scale: every non-serif
+   text-* class the DS's components and docs reference (text-display,
+   text-heading-*, text-body*, text-label*, text-caption, text-overline,
+   text-code), built from the DS's own primitive font/line-height/tracking
+   tokens so a new app gets a working scale on day one instead of having to
+   reverse-engineer one from another consumer's globals.css.
+
+   Import this file in your app's CSS after @import "tailwindcss" and the
+   primitive token files, the same way you'd import text-utilities.css (the
+   serif variants) or utilities.css (ds-scroll, etc.):
+
+     @import "minka-ds/tokens/text-base.css";
+
+   This is a STARTING POINT, not a locked contract: weight, tracking and
+   line-height here reflect one app's (studio's) actual choices, and another
+   app is free to override any of these classes after this import if its
+   own type direction differs. What every consumer should NOT invent
+   independently is the class NAMES and which size step each one maps to —
+   that naming is the actual cross-app contract, so a component built against
+   `text-body-sm` reads correctly in any app that imported this file, whatever
+   weight that app chose for it.
+
+   Does NOT set font-family — that's the consuming app's responsibility, same
+   as text-utilities.css.
+   ────────────────────────────────────────────────────────────────────────── */
+@layer utilities {
+  .text-display {
+    font-size:      var(--primitive-font-size-7xl);
+    font-weight:    var(--primitive-font-weight-600);
+    line-height:    var(--primitive-line-height-tight);
+    letter-spacing: var(--primitive-letter-spacing-tight);
+  }
+  .text-heading-1 {
+    font-size:      var(--primitive-font-size-4xl);
+    font-weight:    var(--primitive-font-weight-600);
+    line-height:    var(--primitive-line-height-tight);
+    letter-spacing: var(--primitive-letter-spacing-tight);
+  }
+  .text-heading-2 {
+    font-size:      var(--primitive-font-size-3xl);
+    font-weight:    var(--primitive-font-weight-600);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-tight);
+  }
+  .text-heading-3 {
+    font-size:      var(--primitive-font-size-2xl);
+    font-weight:    var(--primitive-font-weight-600);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-heading-4 {
+    font-size:      var(--primitive-font-size-xl);
+    font-weight:    var(--primitive-font-weight-600);
+    line-height:    var(--primitive-line-height-snug);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-paragraph-lg {
+    font-size:      var(--primitive-font-size-lg);
+    font-weight:    var(--primitive-font-weight-500);
+    line-height:    var(--primitive-line-height-loose);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-paragraph {
+    font-size:      var(--primitive-font-size-base);
+    font-weight:    var(--primitive-font-weight-500);
+    line-height:    var(--primitive-line-height-relaxed);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-paragraph-sm {
+    font-size:      var(--primitive-font-size-sm);
+    font-weight:    var(--primitive-font-weight-500);
+    line-height:    var(--primitive-line-height-relaxed);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-body-lg {
+    font-size:      var(--primitive-font-size-lg);
+    font-weight:    var(--primitive-font-weight-500);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-body {
+    font-size:      var(--primitive-font-size-base);
+    font-weight:    var(--primitive-font-weight-500);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-body-sm {
+    font-size:      var(--primitive-font-size-sm);
+    font-weight:    var(--primitive-font-weight-500);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-label {
+    font-size:      var(--primitive-font-size-sm);
+    font-weight:    var(--primitive-font-weight-600);
+    line-height:    var(--primitive-line-height-none);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-label-sm {
+    font-size:      var(--primitive-font-size-xs);
+    font-weight:    var(--primitive-font-weight-600);
+    line-height:    var(--primitive-line-height-none);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-caption {
+    font-size:      var(--primitive-font-size-xs);
+    font-weight:    var(--primitive-font-weight-500);
+    line-height:    var(--primitive-line-height-normal);
+    letter-spacing: var(--primitive-letter-spacing-normal);
+  }
+  .text-overline {
+    font-size:      var(--primitive-font-size-2xs);
+    font-weight:    var(--primitive-font-weight-600);
+    line-height:    var(--primitive-line-height-none);
+    letter-spacing: var(--primitive-letter-spacing-wide);
+    text-transform: uppercase;
+  }
+  .text-code {
+    font-family:      var(--font-mono);
+    font-weight:      var(--primitive-font-weight-400);
+    font-size:        inherit;
+    line-height:      inherit;
+    background-color: var(--color-bg-overlay);
+    padding:          0.1em 0.3em;
+    border-radius:    var(--primitive-radius-xs);
+  }
+}
