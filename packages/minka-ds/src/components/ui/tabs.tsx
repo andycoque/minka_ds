@@ -3,6 +3,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Tabs as TabsPrimitive } from "radix-ui"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 import { cn } from "../../lib/utils"
 
@@ -13,6 +14,14 @@ import { cn } from "../../lib/utils"
  * compositing layer, and there is no reason to pay for one when both ends are resolved.
  * Mirrors `PageHelp`'s `maskFor`, horizontal instead of vertical.
  */
+// How far TabsList's wrapper pads each edge when that side's scroll button is
+// showing (pl-5/pr-5 below) — shared with TabsTrigger's own scroll-into-view so
+// the two agree on where "visible" actually ends. A tab landing flush with the
+// SCROLL CONTAINER's true edge is not the same as landing flush with the
+// READER'S visible edge once a button is floating on top of that space; only
+// the reserved-edge boundary is the one a reader can actually see past.
+const EDGE_RESERVE_PX = 20
+
 function maskForX({ left, right }: { left: boolean; right: boolean }): string | undefined {
   if (!left && !right) return undefined
   const stops: string[] = []
@@ -149,11 +158,22 @@ function TabsList({
   const syncEdges = React.useCallback(() => {
     const el = scrollRef.current
     if (!el) return
-    const { scrollLeft, scrollWidth, clientWidth } = el
+    const row = el.firstElementChild
+    const tabs = row ? (Array.from(row.children) as HTMLElement[]) : []
+    const first = tabs[0]
+    const last = tabs[tabs.length - 1]
+    // Measured the same way scrollByTab decides its target: the LAST/FIRST TAB's own
+    // edge against the container's edge, both via getBoundingClientRect. Not
+    // scrollWidth/clientWidth (both integers, truncated) versus scrollLeft (fractional)
+    // — that mix disagreed with the tab geometry by several px in practice (scrollWidth
+    // includes the row's own padding/border, which the actual "is the last tab fully
+    // visible" question has nothing to do with), so a button could keep rendering, and
+    // re-clicking it would land on a no-op scroll, after every tab was already fully in
+    // view by any measure a reader could perceive.
+    const elRect = el.getBoundingClientRect()
     setEdges({
-      left: scrollLeft > 1,
-      // 1px of slack: fractional scroll widths mean exact equality never lands.
-      right: scrollLeft + clientWidth < scrollWidth - 1,
+      left: !!first && first.getBoundingClientRect().left < elRect.left - 1,
+      right: !!last && last.getBoundingClientRect().right > elRect.right + 1,
     })
   }, [])
 
@@ -174,33 +194,130 @@ function TabsList({
     }
   }, [syncEdges])
 
+  // Click affordance for anyone without a trackpad's native horizontal-scroll gesture —
+  // the fade alone tells you there is more, but not how to reach it. Scrolls by one tab
+  // at a time rather than a fixed pixel amount, so it adapts to whatever widths the
+  // triggers actually have instead of over- or under-shooting a real tab boundary.
+  const scrollByTab = React.useCallback((direction: "left" | "right") => {
+    const el = scrollRef.current
+    if (!el) return
+    // The row's own children (the triggers) live one level down, inside the w-fit div —
+    // scrollRef is the scrolling element itself, not the row, so its own .children is
+    // that single wrapper div, not the triggers. Reach into it for the real trigger list.
+    const row = el.firstElementChild
+    const tabs = row ? Array.from(row.children) as HTMLElement[] : []
+    // getBoundingClientRect() for BOTH edges, not clientWidth for one side: clientWidth
+    // is always an integer (truncated), while getBoundingClientRect() is fractional, so
+    // mixing them (rowLeft + clientWidth) computes a boundary up to ~1px more permissive
+    // than the container's true right edge. A tab sitting almost exactly flush against
+    // that true edge then reads as "still clipped" under the truncated math, gets handed
+    // to scrollIntoView, and — because it is not actually clipped — the browser scrolls
+    // it by nothing, which looked like the button had silently stopped working.
+    const { left: rowLeft, right: rowRight } = el.getBoundingClientRect()
+    const target =
+      direction === "right"
+        // First tab whose right edge is still beyond the visible area's right edge —
+        // i.e. the next one not fully in view — scrolled just enough to bring it flush.
+        ? tabs.find(t => t.getBoundingClientRect().right > rowRight + 1)
+        // Same from the other side: last tab still starting before the visible area's
+        // left edge.
+        : [...tabs].reverse().find(t => t.getBoundingClientRect().left < rowLeft - 1)
+    if (!target) return
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+    // scrollIntoView alone lands the target tab exactly flush with the edge — correct
+    // by distance, but it reads as still half-clipped: flush against the fade/button is
+    // visually indistinguishable from "still cut off" until the reader looks closely.
+    // scrollBy an extra 20% of that tab's own width past flush so it lands with real
+    // clearance, using the same getBoundingClientRect the flush-detection above already
+    // trusts rather than introducing a second measurement (e.g. offsetWidth) that could
+    // disagree with it.
+    const targetRect = target.getBoundingClientRect()
+    const overshoot = targetRect.width * 0.2
+    const distance =
+      direction === "right"
+        ? targetRect.right - rowRight + overshoot
+        : rowLeft - targetRect.left + overshoot
+    el.scrollBy({ left: direction === "right" ? distance : -distance, behavior })
+  }, [])
+
   return (
-    <TabsPrimitive.List
-      ref={scrollRef}
-      data-slot="tabs-list"
-      data-variant={variant}
+    <div
       className={cn(
-        tabsListVariants({ variant }),
-        // Scrollable, native scrollbar hidden: a visible bar under a 36px-tall tab row
-        // would eat into the row rather than sit politely under it, unlike `ds-scroll`'s
-        // taller panels. The mask is the affordance instead — direction-aware, so it only
-        // shows where there genuinely is more to scroll to.
-        "overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-        className
+        "relative min-w-0",
+        // Real layout padding, not just extra room inside this box: a floating
+        // button is positioned via `translate`, which only moves it visually and
+        // never changes the LAYOUT box a flex sibling measures against. Without
+        // this, a caller using plain `justify-between` (no explicit gap) between
+        // Tabs and something beside it — the liquidity page's timestamp label is
+        // the case that surfaced this — had nothing reserving space for the
+        // button, so it rendered flush against that neighbor with a caller-owned
+        // `gap-3` being the only thing that happened to save it elsewhere.
+        edges.left && "pl-5",
+        edges.right && "pr-5"
       )}
-      style={{
-        maskImage: maskForX(edges),
-        WebkitMaskImage: maskForX(edges),
-      }}
-      {...props}
     >
-      {/* The actual row of triggers, at its natural width — this is what scrolls inside
-          the (possibly narrower) container above. Kept as a separate element from the
-          scroll/mask container because Radix's Tabs.List renders a single node, and that
-          node has to be the one with overflow-x-auto for the mask and scroll listener to
-          agree on the same box. */}
-      <div className={tabsListRowVariants({ variant })}>{children}</div>
-    </TabsPrimitive.List>
+      <TabsPrimitive.List
+        ref={scrollRef}
+        data-slot="tabs-list"
+        data-variant={variant}
+        className={cn(
+          tabsListVariants({ variant }),
+          // Scrollable, native scrollbar hidden: a visible bar under a 36px-tall tab row
+          // would eat into the row rather than sit politely under it, unlike `ds-scroll`'s
+          // taller panels. The mask is the affordance instead — direction-aware, so it only
+          // shows where there genuinely is more to scroll to.
+          "overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          className
+        )}
+        style={{
+          maskImage: maskForX(edges),
+          WebkitMaskImage: maskForX(edges),
+        }}
+        {...props}
+      >
+        {/* The actual row of triggers, at its natural width — this is what scrolls inside
+            the (possibly narrower) container above. Kept as a separate element from the
+            scroll/mask container because Radix's Tabs.List renders a single node, and that
+            node has to be the one with overflow-x-auto for the mask and scroll listener to
+            agree on the same box. */}
+        <div className={tabsListRowVariants({ variant })}>{children}</div>
+      </TabsPrimitive.List>
+
+      {/* Floating, not inline: pushing the chrome box's own layout every time a button
+          appears/disappears would shift whatever sits next to Tabs (a CTA, a count) on
+          every scroll-position change. Overlapping the fade instead keeps the row's own
+          footprint constant regardless of scroll state.
+
+          Inset INWARD (left-1.5/right-1.5) with ONLY a vertical translate, not a
+          horizontal one: `translate-x-1/2` (tried first) shifts the button by half its
+          OWN width AFTER the left/right offset positions it, which moved it back
+          outside the padded space `pl-5`/`pr-5` above just reserved — net result, still
+          overlapping whatever sat beside Tabs, just by a smaller margin than the flush
+          version. left-1.5/right-1.5 alone, with no horizontal translate, keeps the
+          whole button within that reserved padding. */}
+      {edges.left && (
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label="Scroll tabs left"
+          onClick={() => scrollByTab("left")}
+          className="absolute top-1/2 left-1.5 z-10 flex size-6 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] text-[var(--color-text-muted)] shadow-[var(--shadow-popover)] transition-colors hover:text-[var(--color-text-default)]"
+        >
+          <ChevronLeftIcon className="size-3.5" />
+        </button>
+      )}
+      {edges.right && (
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label="Scroll tabs right"
+          onClick={() => scrollByTab("right")}
+          className="absolute top-1/2 right-1.5 z-10 flex size-6 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-raised)] text-[var(--color-text-muted)] shadow-[var(--shadow-popover)] transition-colors hover:text-[var(--color-text-default)]"
+        >
+          <ChevronRightIcon className="size-3.5" />
+        </button>
+      )}
+    </div>
   )
 }
 
@@ -218,16 +335,47 @@ function TabsTrigger({
       data-slot="tabs-trigger"
       onClick={(e) => {
         onClick?.(e)
-        // Bring a partially-clipped tab fully into view on select. `inline: "nearest"`
-        // is the point: it moves only as far as needed to clear whichever edge is cut
-        // off, and does nothing at all for a tab that is already fully visible — unlike
-        // "center", which would shift an already-visible row for no reason.
-        ref.current?.scrollIntoView({
-          inline: "nearest",
-          block: "nearest",
-          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-            ? "auto"
-            : "smooth",
+        // Bring a partially-clipped tab fully into view on select — moving only as
+        // far as needed to clear whichever edge is cut off, and doing nothing at
+        // all for a tab that is already fully visible.
+        //
+        // NOT native scrollIntoView({inline: "nearest"}): that computes "visible"
+        // against the SCROLL CONTAINER's own box, with no idea that a floating
+        // scroll button (an absolutely-positioned sibling, not part of the
+        // container's own layout) may be sitting on top of part of it. It landed
+        // a just-selected tab flush with the true container edge while a chevron
+        // button still covered the last ~20px of it — "flush" by the DOM's
+        // measure, still visibly clipped by the reader's. Measuring against the
+        // reserved-edge boundary instead (EDGE_RESERVE_PX) is the fix used by
+        // scrollByTab above; this reuses the same idea for the auto-scroll-on-
+        // select path so the two cannot disagree about where "visible" ends.
+        // rAF, not measured synchronously in this handler: selecting a tab can
+        // itself change the ROW's own width (the active trigger goes bold, per
+        // `data-[state=active]:font-bold` — a wider label), so the overflow this
+        // scroll is meant to fix may not exist yet in the DOM at click time. React
+        // applies that state change before the browser's next paint, so one rAF
+        // is enough to measure against the real, post-selection layout instead of
+        // a stale one — this was previously the difference between correctly
+        // clearing the clipped edge and moving a few px in the wrong direction
+        // because a tab that was not yet overflowing looked already "visible".
+        requestAnimationFrame(() => {
+          const trigger = ref.current
+          const scrollEl = trigger?.closest('[data-slot="tabs-list"]') as HTMLElement | null
+          if (!trigger || !scrollEl) return
+          const triggerRect = trigger.getBoundingClientRect()
+          const scrollRect = scrollEl.getBoundingClientRect()
+          const visibleLeft = scrollRect.left + EDGE_RESERVE_PX
+          const visibleRight = scrollRect.right - EDGE_RESERVE_PX
+          let distance = 0
+          if (triggerRect.right > visibleRight) distance = triggerRect.right - visibleRight
+          else if (triggerRect.left < visibleLeft) distance = triggerRect.left - visibleLeft
+          if (distance === 0) return
+          scrollEl.scrollBy({
+            left: distance,
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth",
+          })
         })
       }}
       className={cn(
