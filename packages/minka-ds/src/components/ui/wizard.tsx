@@ -134,6 +134,10 @@ export function Wizard({
   const scrollRef = React.useRef<HTMLDivElement | null>(null)
   const contentElRef = React.useRef<HTMLDivElement | null>(null)
   const roRef = React.useRef<ResizeObserver | null>(null)
+  // Tallest content height seen so far this time the dialog is open. The body is held
+  // to this floor rather than shrinking to each step's own height, so the footer lands
+  // at the same bottom position on every step instead of hugging short ones.
+  const maxBodyH = React.useRef(0)
 
   const remeasure = React.useCallback(() => {
     const content = contentElRef.current
@@ -149,10 +153,11 @@ export function Wizard({
     const availableH = scroll.clientHeight
     const over = contentH > availableH + 1
     setOverflowing(over)
-    // Not overflowing -> morph the body to the true content height (never clips a
-    // freshly revealed field). Overflowing -> drop the fixed height so the scroll
-    // region takes over.
-    setBodyH(over ? null : contentH)
+    if (!over) maxBodyH.current = Math.max(maxBodyH.current, contentH)
+    // Not overflowing -> morph the body to the tallest step seen so far (never clips a
+    // freshly revealed field, never shrinks back down for a shorter step). Overflowing
+    // -> drop the fixed height so the scroll region takes over.
+    setBodyH(over ? null : maxBodyH.current)
   }, [])
 
   // Re-measure now, on the next frame, and after reveal animations settle (~360ms),
@@ -231,6 +236,7 @@ export function Wizard({
     if (!open) {
       setConfirmDiscard(false); setBodyH(null); setOverflowing(false); setDir("fwd")
       setSeenSteps(new Set())
+      maxBodyH.current = 0
     }
   }, [open])
 
