@@ -389,7 +389,7 @@ function FilterCombobox({
                   <SearchInput ref={searchRef} value={search} onChange={setSearch} />
                 </div>
               )}
-              <ul className="max-h-52 overflow-y-auto p-1">
+              <ul className="max-h-[26rem] overflow-y-auto p-1">
                 {step2Filtered.length === 0
                   ? <EmptyRow />
                   : step2Filtered.map(value => (
